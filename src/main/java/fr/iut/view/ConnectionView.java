@@ -13,7 +13,6 @@ public class ConnectionView extends StackPane {
 
     public ConnectionView(App app) { //TODO : T'as une instance du controller pour faire un app.tryLogin(user, pass) quand l'utilisateur clique sur le bouton pour se co
         this.app = app;
-
         //TODO : Maxime tu sais ce qu'il te reste à faire ;)
 
         Button connectionButton = new Button();

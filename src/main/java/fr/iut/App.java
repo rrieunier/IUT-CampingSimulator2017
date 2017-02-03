@@ -34,6 +34,7 @@ public class App extends Application {
     }
 
     public void GO_MAMENE_GOOOOOOOOOO() {
+
         //TODO : Ici on fait du sale genre on affiche la bonne grosse fenetre de gestion du camping à l'ancienne tmtc
     }
 }
