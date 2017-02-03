@@ -31,8 +31,8 @@ USE `CampingSimulator` ;
 CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Log` (
   `idLog` INT NOT NULL AUTO_INCREMENT,
   `datetime` DATETIME NOT NULL DEFAULT NOW(),
-  `action` NVARCHAR(150) NOT NULL,
-  `user_Host` NVARCHAR(60) NOT NULL,
+  `action` VARCHAR(150) NOT NULL,
+  `user_Host` VARCHAR(60) NOT NULL,
   `user_User` VARCHAR(80) NOT NULL,
   PRIMARY KEY (`idLog`),
   INDEX `fk_Log_user1_idx` (`user_Host` ASC, `user_User` ASC),
@@ -49,13 +49,13 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Employee` (
   `idEmployee` INT NOT NULL AUTO_INCREMENT,
-  `last_name` NVARCHAR(45) NOT NULL,
-  `first_name` NVARCHAR(45) NOT NULL,
+  `last_name` VARCHAR(45) NOT NULL,
+  `first_name` VARCHAR(45) NOT NULL,
   `phone` VARCHAR(11) NULL,
   `email` VARCHAR(45) NULL,
-  `user_Host` NVARCHAR(60) NULL,
+  `user_Host` VARCHAR(60) NULL,
   `user_User` VARCHAR(80) NULL,
-  `complete_address` NVARCHAR(150) NULL,
+  `complete_address` VARCHAR(150) NULL,
   PRIMARY KEY (`idEmployee`),
   INDEX `fk_Employee_user1_idx` (`user_Host` ASC, `user_User` ASC),
   CONSTRAINT `fk_Employee_user1`
@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Task` (
   `idTask` INT NOT NULL AUTO_INCREMENT,
   `starttime` DATETIME NULL,
   `endtime` DATETIME NULL,
-  `label` NVARCHAR(50) NOT NULL,
+  `label` VARCHAR(50) NOT NULL,
   `idEmployee` INT NOT NULL,
   `idLocation` INT NULL,
   PRIMARY KEY (`idTask`),
@@ -107,8 +107,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Client` (
   `idClient` INT NOT NULL AUTO_INCREMENT,
-  `last_name` NVARCHAR(45) NOT NULL,
-  `first_name` NVARCHAR(45) NOT NULL,
+  `last_name` VARCHAR(45) NOT NULL,
+  `first_name` VARCHAR(45) NOT NULL,
   `phone` VARCHAR(11) NULL,
   `email` VARCHAR(45) NULL,
   PRIMARY KEY (`idClient`))
@@ -139,7 +139,7 @@ CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Problem` (
   `appearance_datetime` DATETIME NOT NULL DEFAULT NOW(),
   `label` VARCHAR(45) NOT NULL,
   `solution_datetime` DATETIME NULL,
-  `state` NVARCHAR(45) NOT NULL DEFAULT 'non résolu',
+  `state` VARCHAR(45) NOT NULL DEFAULT 'non résolu',
   PRIMARY KEY (`idProblem`))
 ENGINE = InnoDB;
 
@@ -151,7 +151,7 @@ CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Reservation` (
   `idClient` INT NOT NULL,
   `idSpot` INT NOT NULL,
   `idReservation` INT NOT NULL AUTO_INCREMENT,
-  `client_comment` NVARCHAR(250) NULL,
+  `client_comment` VARCHAR(250) NULL,
   PRIMARY KEY (`idReservation`),
   INDEX `fk_Client_has_Spot_Spot1_idx` (`idSpot` ASC),
   INDEX `fk_Client_has_Spot_Client1_idx` (`idClient` ASC),
@@ -202,7 +202,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Supplier` (
   `idSupplier` INT NOT NULL AUTO_INCREMENT,
-  `name` NVARCHAR(45) NOT NULL,
+  `name` VARCHAR(45) NOT NULL,
   `phone` VARCHAR(11) NULL,
   `email` VARCHAR(45) NULL,
   `website` VARCHAR(45) NULL,
