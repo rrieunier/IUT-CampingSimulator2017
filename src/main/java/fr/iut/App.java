@@ -5,10 +5,15 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.awt.*;
+
 public class App extends Application {
 
-    private static final int SCREEN_WIDTH = 800;
-    private static final int SCREEN_HEIGHT = 600;
+    private static final Dimension SCREEN_SIZE = Toolkit.getDefaultToolkit().getScreenSize();
+
+    public static final double SCREEN_W = SCREEN_SIZE.getWidth();
+    public static final double SCREEN_H = SCREEN_SIZE.getHeight();
+
     private Stage stage;
 
     public static void main(String[] args) {
@@ -19,18 +24,17 @@ public class App extends Application {
     public void start(Stage primaryStage) throws Exception{
         stage = primaryStage;
         primaryStage.setTitle("Camping Simulator 2017");
-        Scene scene = new Scene(new ConnectionView(this), SCREEN_WIDTH, SCREEN_HEIGHT, false);
+        Scene scene = new ConnectionView(this);
         primaryStage.setScene(scene);
+        primaryStage.setResizable(false);
 
-        primaryStage.setHeight(SCREEN_HEIGHT);
-        primaryStage.setWidth(SCREEN_WIDTH);
         primaryStage.show();
     }
 
     @SuppressWarnings("unused")
     public boolean tryLogin(String username, String password) {
         //TODO : demander à la base de données si les identifiants sont bons, s'il ne le sont pas, la fonction retourne false et ConnectionView affiche un message d'erreur
-        return false;
+        return true;
     }
 
     public void GO_MAMENE_GOOOOOOOOOO() {
