@@ -13,13 +13,12 @@ DROP SCHEMA IF EXISTS `CampingSimulator` ;
 -- Schema CampingSimulator
 -- -----------------------------------------------------
 CREATE SCHEMA IF NOT EXISTS `CampingSimulator` DEFAULT CHARACTER SET utf8 ;
+
 USE `CampingSimulator` ;
 
 -- -----------------------------------------------------
 -- Table `CampingSimulator`.`Log`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `CampingSimulator`.`Log` ;
-
 CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Log` (
   `idLog` INT NOT NULL AUTO_INCREMENT,
   `datetime` DATETIME NOT NULL DEFAULT NOW(),
@@ -27,7 +26,6 @@ CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Log` (
   `user_Host` VARCHAR(60) NOT NULL,
   `user_User` VARCHAR(80) NOT NULL,
   PRIMARY KEY (`idLog`),
-  INDEX `fk_Log_user1_idx` (`user_Host` ASC, `user_User` ASC),
   CONSTRAINT `fk_Log_user1`
     FOREIGN KEY (`user_Host` , `user_User`)
     REFERENCES `mysql`.`user` (`Host` , `User`)
@@ -39,8 +37,6 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `CampingSimulator`.`Employee`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `CampingSimulator`.`Employee` ;
-
 CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Employee` (
   `idEmployee` INT NOT NULL AUTO_INCREMENT,
   `last_name` VARCHAR(45) NOT NULL,
@@ -51,7 +47,6 @@ CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Employee` (
   `user_User` VARCHAR(80) NULL,
   `complete_address` VARCHAR(150) NULL,
   PRIMARY KEY (`idEmployee`),
-  INDEX `fk_Employee_user1_idx` (`user_Host` ASC, `user_User` ASC),
   CONSTRAINT `fk_Employee_user1`
     FOREIGN KEY (`user_Host` , `user_User`)
     REFERENCES `mysql`.`user` (`Host` , `User`)
@@ -63,8 +58,6 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `CampingSimulator`.`Location`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `CampingSimulator`.`Location` ;
-
 CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Location` (
   `idLocation` INT NOT NULL AUTO_INCREMENT,
   `map_polygon` GEOMETRY NOT NULL,
@@ -75,8 +68,6 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `CampingSimulator`.`Task`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `CampingSimulator`.`Task` ;
-
 CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Task` (
   `idTask` INT NOT NULL AUTO_INCREMENT,
   `starttime` DATETIME NULL,
@@ -103,8 +94,6 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `CampingSimulator`.`Client`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `CampingSimulator`.`Client` ;
-
 CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Client` (
   `idClient` INT NOT NULL AUTO_INCREMENT,
   `last_name` VARCHAR(45) NOT NULL,
@@ -118,8 +107,6 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `CampingSimulator`.`Spot`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `CampingSimulator`.`Spot` ;
-
 CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Spot` (
   `idSpot` INT NOT NULL,
   `price_per_day` FLOAT NULL,
@@ -136,8 +123,6 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `CampingSimulator`.`Problem`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `CampingSimulator`.`Problem` ;
-
 CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Problem` (
   `idProblem` INT NOT NULL AUTO_INCREMENT,
   `appearance_datetime` DATETIME NOT NULL DEFAULT NOW(),
@@ -151,8 +136,6 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `CampingSimulator`.`Reservation`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `CampingSimulator`.`Reservation` ;
-
 CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Reservation` (
   `idClient` INT NOT NULL,
   `idSpot` INT NOT NULL,
@@ -177,8 +160,6 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `CampingSimulator`.`ClientInvoice`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `CampingSimulator`.`ClientInvoice` ;
-
 CREATE TABLE IF NOT EXISTS `CampingSimulator`.`ClientInvoice` (
   `idClientInvoice` INT NOT NULL AUTO_INCREMENT,
   `idReservation` INT NOT NULL,
@@ -197,8 +178,6 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `CampingSimulator`.`Product`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `CampingSimulator`.`Product` ;
-
 CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Product` (
   `idProduct` INT NOT NULL AUTO_INCREMENT,
   `stock` INT NOT NULL DEFAULT 0,
@@ -210,8 +189,6 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `CampingSimulator`.`Supplier`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `CampingSimulator`.`Supplier` ;
-
 CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Supplier` (
   `idSupplier` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
@@ -225,8 +202,6 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `CampingSimulator`.`Client_has_Problem`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `CampingSimulator`.`Client_has_Problem` ;
-
 CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Client_has_Problem` (
   `idClient` INT NOT NULL,
   `idProblem` INT NOT NULL,
@@ -250,8 +225,6 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `CampingSimulator`.`Location_has_Problem`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `CampingSimulator`.`Location_has_Problem` ;
-
 CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Location_has_Problem` (
   `idLocation` INT NOT NULL,
   `idProblem` INT NOT NULL,
@@ -274,8 +247,6 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `CampingSimulator`.`Purchase`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `CampingSimulator`.`Purchase` ;
-
 CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Purchase` (
   `idPurchase` INT NOT NULL AUTO_INCREMENT,
   `datetime` DATETIME NOT NULL DEFAULT NOW(),
@@ -301,8 +272,6 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `CampingSimulator`.`Supplier_has_Product`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `CampingSimulator`.`Supplier_has_Product` ;
-
 CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Supplier_has_Product` (
   `idSupplier` INT NOT NULL,
   `idProduct` INT NOT NULL,
@@ -326,8 +295,6 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `CampingSimulator`.`Restocking`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `CampingSimulator`.`Restocking` ;
-
 CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Restocking` (
   `idRestocking` INT NOT NULL AUTO_INCREMENT,
   `quantity` INT NULL,
@@ -348,3 +315,28 @@ CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Restocking` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+USE `CampingSimulator`;
+
+DELIMITER $$
+USE `CampingSimulator`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `CampingSimulator`.`Task_BEFORE_INSERT` BEFORE INSERT ON `Task`
+FOR EACH ROW
+BEGIN
+	DECLARE count INT;
+	SELECT COUNT(*) INTO count from Task
+		WHERE idEmployee = NEW.idEmployee
+        AND starttime <= NEW.starttime
+		AND endtime >= NEW.endtime;
+
+    IF count > 0 THEN
+		signal sqlstate '45000' set MESSAGE_TEXT = 'saucisse';
+    END IF;
+END$$
+
+
+DELIMITER ;
