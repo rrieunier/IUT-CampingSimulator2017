@@ -15,11 +15,16 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 
 public class ConnectionView extends Scene {
 
-    public static final double LOGIN_WIDTH = App.SCREEN_W / 2.5;
-    public static final double LOGIN_HEIGHT = App.SCREEN_H / 2.5;
+    public static final double LOGIN_WIDTH = App.SCREEN_W / 2;
+    public static final double LOGIN_HEIGHT = App.SCREEN_H / 2;
     private static final Color LOGIN_BACKGROUNG = Color.rgb(12, 27, 51);
 
     App app;
@@ -35,7 +40,7 @@ public class ConnectionView extends Scene {
     protected VBox fields = new VBox();
     protected TextField login_field = new TextField();
     protected PasswordField password_field = new PasswordField();
-    protected TextField password_shown = new TextField();
+    protected TextField password_shown = new TextField(); // affiché quand "afficher le mdp" est coché
 
     protected HBox radio_buttons = new HBox();
     protected RadioButton remember = new RadioButton("Se souvenir de moi");
@@ -47,6 +52,7 @@ public class ConnectionView extends Scene {
         super(new Group(), LOGIN_WIDTH, LOGIN_HEIGHT);
         components = (Group) getRoot();
         this.app = app;
+
         setFill(LOGIN_BACKGROUNG);
 
         title_back.setWidth(LOGIN_WIDTH);
@@ -59,12 +65,26 @@ public class ConnectionView extends Scene {
         login_field.setMaxWidth(LOGIN_WIDTH / 1.1);
         login_field.setMinHeight(LOGIN_HEIGHT / 8);
         login_field.setPromptText("Identifiant");
-        login_field.setStyle("-fx-font-weight: bold;");
+        login_field.setStyle("-fx-font-weight: bold;" +
+                "-fx-font-size: 17px;");
+        if (Files.exists(Paths.get("login"))) { // si "remember me" était cohé à la dernière connection
+            remember.setSelected(true);
+            try {
+                char username[] = new String(Files.readAllBytes(Paths.get("login"))).toCharArray();
+                for (int i = 0; i < username.length; i++) {
+                    username[i] = (char) (username[i] ^ 42);
+                }
+                login_field.setText(new String(username));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
         password_field.setMaxWidth(LOGIN_WIDTH / 1.1);
         password_field.setMinHeight(LOGIN_HEIGHT / 8);
         password_field.setPromptText("Mot de passe");
-        password_field.setStyle("-fx-font-weight: bold;");
+        password_field.setStyle("-fx-font-weight: bold;" +
+                "-fx-font-size: 17px;");
         password_shown.setMinWidth(LOGIN_WIDTH / 1.1);
         password_shown.setMinHeight(LOGIN_HEIGHT / 8);
         password_shown.setPromptText("Mot de passe");
@@ -94,10 +114,11 @@ public class ConnectionView extends Scene {
         radio_buttons.setAlignment(Pos.CENTER);
         radio_buttons.getChildren().addAll(remember, show_pass);
 
-        confirm.setMinSize(LOGIN_WIDTH / 8, LOGIN_HEIGHT / 10);
-        confirm.setLayoutX(LOGIN_WIDTH / 1.2);
+        confirm.setMinSize(LOGIN_WIDTH / 6, LOGIN_HEIGHT / 10);
+        confirm.setLayoutX((LOGIN_WIDTH - confirm.getMinWidth()) / 2);
         confirm.setLayoutY(LOGIN_HEIGHT / 1.2);
         confirm.setText("Valider");
+        confirm.setStyle("-fx-");
         confirm.setOnMouseClicked(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
                 connectionButtonAction(login_field.getText(), password_field.getText());
@@ -114,8 +135,28 @@ public class ConnectionView extends Scene {
     private void connectionButtonAction(String username, String password) {
         boolean connected = app.tryLogin(username, password);
 
-        if (connected)
+        if (connected) {
+            if (remember.isSelected()) {
+                try {
+                    PrintWriter writer = new PrintWriter("login", "UTF-8");
+                    for (char l : username.toCharArray()) {
+                        writer.print((char)(l ^ 42));
+                    }
+                    writer.close();
+                } catch (IOException e) {
+                    System.err.println("Can't write to \'login\' file.");
+                }
+            } else {
+                if (Files.exists(Paths.get("login"))) {
+                    try {
+                        Files.delete(Paths.get("login"));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
             app.GO_MAMENE_GOOOOOOOOOO();
+        }
 
         else {
             Alert alert = new Alert(Alert.AlertType.ERROR);

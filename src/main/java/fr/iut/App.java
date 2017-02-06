@@ -26,6 +26,7 @@ public class App extends Application {
         primaryStage.setTitle("Camping Simulator 2017");
         Scene scene = new ConnectionView(this);
         primaryStage.setScene(scene);
+        primaryStage.setResizable(false);
 
         primaryStage.show();
     }
@@ -33,7 +34,7 @@ public class App extends Application {
     @SuppressWarnings("unused")
     public boolean tryLogin(String username, String password) {
         //TODO : demander à la base de données si les identifiants sont bons, s'il ne le sont pas, la fonction retourne false et ConnectionView affiche un message d'erreur
-        return false;
+        return true;
     }
 
     public void GO_MAMENE_GOOOOOOOOOO() {
