@@ -27,26 +27,26 @@ public class ConnectionView extends Scene {
     public static final double LOGIN_HEIGHT = App.SCREEN_H / 2;
     private static final Color LOGIN_BACKGROUNG = Color.rgb(12, 27, 51);
 
-    App app;
+    private App app;
 
-    protected Group components;
+    private Group components;
 
-    protected VBox wrapper = new VBox();
+    private VBox wrapper = new VBox();
 
-    protected StackPane header = new StackPane();
-    protected Rectangle title_back = new Rectangle(); // rectangle de fond du titre
-    protected Text title = new Text("Connexion");
+    private StackPane header = new StackPane();
+    private Rectangle title_back = new Rectangle(); // rectangle de fond du titre
+    private Text title = new Text("Connexion");
 
-    protected VBox fields = new VBox();
-    protected TextField login_field = new TextField();
-    protected PasswordField password_field = new PasswordField();
-    protected TextField password_shown = new TextField(); // affiché quand "afficher le mdp" est coché
+    private VBox fields = new VBox();
+    private TextField login_field = new TextField();
+    private PasswordField password_field = new PasswordField();
+    private TextField password_shown = new TextField(); // affiché quand "afficher le mdp" est coché
 
-    protected HBox radio_buttons = new HBox();
-    protected RadioButton remember = new RadioButton("Se souvenir de moi");
-    protected RadioButton show_pass = new RadioButton("Afficher le mot de passe");
+    private HBox radio_buttons = new HBox();
+    private RadioButton remember = new RadioButton("Se souvenir de moi");
+    private RadioButton show_pass = new RadioButton("Afficher le mot de passe");
 
-    protected Button confirm = new Button("Valider");
+    private Button confirm = new Button("Valider");
 
     public ConnectionView(App app) {
         super(new Group(), LOGIN_WIDTH, LOGIN_HEIGHT);
@@ -146,7 +146,9 @@ public class ConnectionView extends Scene {
                 } catch (IOException e) {
                     System.err.println("Can't write to \'login\' file.");
                 }
-            } else {
+            }
+
+            else {
                 if (Files.exists(Paths.get("login"))) {
                     try {
                         Files.delete(Paths.get("login"));
@@ -155,7 +157,8 @@ public class ConnectionView extends Scene {
                     }
                 }
             }
-            app.GO_MAMENE_GOOOOOOOOOO();
+
+            app.start(username);
         }
 
         else {

@@ -1,11 +1,14 @@
 package fr.iut;
 
 import fr.iut.view.ConnectionView;
+import fr.iut.view.MainView;
+import fr.iut.view.MapCreatorView;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.awt.*;
+import java.io.File;
 
 public class App extends Application {
 
@@ -37,8 +40,19 @@ public class App extends Application {
         return true;
     }
 
-    public void GO_MAMENE_GOOOOOOOOOO() {
+    public void start(String username) {
 
-        //TODO : Ici on fait du sale genre on affiche la bonne grosse fenetre de gestion du camping à l'ancienne tmtc
+        File mapFile = new File("map.png");
+        File delimiters = new File("map_components.xml");
+
+        Scene sceneToDisplay;
+
+        if(mapFile.exists() && delimiters.exists()) //Si la map et la délimitation des differentes zones existe, on lance le progiciel
+            sceneToDisplay = new MainView(this, username);
+        else
+            sceneToDisplay = new MapCreatorView(this); //Sinon on lance la création de la map
+
+        stage.setScene(sceneToDisplay);
+        stage.setMaximized(true);
     }
 }
