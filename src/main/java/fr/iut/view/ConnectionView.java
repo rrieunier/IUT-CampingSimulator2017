@@ -118,7 +118,7 @@ public class ConnectionView extends Scene {
         confirm.setLayoutX((LOGIN_WIDTH - confirm.getMinWidth()) / 2);
         confirm.setLayoutY(LOGIN_HEIGHT / 1.2);
         confirm.setText("Valider");
-        confirm.setStyle("-fx-");
+
         confirm.setOnMouseClicked(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
                 connectionButtonAction(login_field.getText(), password_field.getText());

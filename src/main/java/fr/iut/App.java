@@ -31,6 +31,7 @@ public class App extends Application {
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
 
+
         primaryStage.show();
     }
 
@@ -53,6 +54,12 @@ public class App extends Application {
             sceneToDisplay = new MapCreatorView(this); //Sinon on lance la création de la map
 
         stage.setScene(sceneToDisplay);
+        stage.setResizable(true);
         stage.setMaximized(true);
+        stage.centerOnScreen();
+    }
+
+    public Stage getStage() {
+        return stage;
     }
 }
