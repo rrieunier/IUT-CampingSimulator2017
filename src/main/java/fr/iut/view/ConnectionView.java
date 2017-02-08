@@ -66,7 +66,8 @@ public class ConnectionView extends Scene {
         login_field.setMinHeight(LOGIN_HEIGHT / 8);
         login_field.setPromptText("Identifiant");
         login_field.setStyle("-fx-font-weight: bold;" +
-                "-fx-font-size: 17px;");
+                            "-fx-font-size: 17px;");
+
         if (Files.exists(Paths.get("login"))) { // si "remember me" était cohé à la dernière connection
             remember.setSelected(true);
             try {
@@ -119,11 +120,7 @@ public class ConnectionView extends Scene {
         confirm.setLayoutY(LOGIN_HEIGHT / 1.2);
         confirm.setText("Valider");
 
-        confirm.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent event) {
-                connectionButtonAction(login_field.getText(), password_field.getText());
-            }
-        });
+        confirm.setOnMouseClicked(event -> connectionButtonAction(login_field.getText(), password_field.getText()));
 
         wrapper.setSpacing(LOGIN_HEIGHT / 10);
         wrapper.setAlignment(Pos.CENTER);

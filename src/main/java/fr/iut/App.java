@@ -54,8 +54,9 @@ public class App extends Application {
             sceneToDisplay = new MapCreatorView(this); //Sinon on lance la création de la map
 
         stage.setScene(sceneToDisplay);
-        stage.setResizable(true);
-        stage.setMaximized(true);
+        getStage().setMaximized(true);
+        getStage().setWidth(App.SCREEN_W);
+        getStage().setHeight(App.SCREEN_H);
         stage.centerOnScreen();
     }
 
