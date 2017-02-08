@@ -72,18 +72,6 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `CampingSimulator`.`Map`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `CampingSimulator`.`Map` ;
-
-CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Map` (
-  `idMap` INT NOT NULL AUTO_INCREMENT,
-  `image` MEDIUMBLOB NOT NULL,
-  PRIMARY KEY (`idMap`))
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
 -- Table `CampingSimulator`.`Location`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `CampingSimulator`.`Location` ;
@@ -92,15 +80,8 @@ CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Location` (
   `idLocation` INT NOT NULL AUTO_INCREMENT,
   `point` POINT NOT NULL,
   `name` VARCHAR(45) NOT NULL,
-  `idMap` INT NOT NULL,
   PRIMARY KEY (`idLocation`),
-  UNIQUE INDEX `name_UNIQUE` (`name` ASC),
-  INDEX `fk_Location_Map1_idx` (`idMap` ASC),
-  CONSTRAINT `fk_Location_Map1`
-    FOREIGN KEY (`idMap`)
-    REFERENCES `CampingSimulator`.`Map` (`idMap`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+  UNIQUE INDEX `name_UNIQUE` (`name` ASC))
 ENGINE = InnoDB;
 
 
@@ -427,6 +408,19 @@ CREATE TABLE IF NOT EXISTS `CampingSimulator`.`User_has_Authorization` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
+
+-- -----------------------------------------------------
+-- Table `CampingSimulator`.`Map`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `CampingSimulator`.`Map` ;
+
+CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Map` (
+  `idMap` INT NOT NULL AUTO_INCREMENT,
+  `image` MEDIUMBLOB NOT NULL,
+  `name` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`idMap`))
+ENGINE = InnoDB;
+
 USE `CampingSimulator` ;
 
 -- -----------------------------------------------------
@@ -489,6 +483,18 @@ START TRANSACTION;
 USE `CampingSimulator`;
 INSERT INTO `CampingSimulator`.`Client` (`idClient`, `last_name`, `first_name`, `phone`, `email`) VALUES (DEFAULT, 'Dupont', 'Herbert', '', NULL);
 INSERT INTO `CampingSimulator`.`Client` (`idClient`, `last_name`, `first_name`, `phone`, `email`) VALUES (DEFAULT, 'Félix', 'Patrick', NULL, NULL);
+
+COMMIT;
+
+
+-- -----------------------------------------------------
+-- Data for table `CampingSimulator`.`SpotType`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `CampingSimulator`;
+INSERT INTO `CampingSimulator`.`SpotType` (`idSpotType`, `label`) VALUES (DEFAULT, 'TENTE');
+INSERT INTO `CampingSimulator`.`SpotType` (`idSpotType`, `label`) VALUES (DEFAULT, 'BUNGALO');
+INSERT INTO `CampingSimulator`.`SpotType` (`idSpotType`, `label`) VALUES (DEFAULT, 'CARAVANE');
 
 COMMIT;
 
