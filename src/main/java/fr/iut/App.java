@@ -43,15 +43,19 @@ public class App extends Application {
 
     public void start(String username) {
 
-        File mapFile = new File("map.png");
-        File delimiters = new File("map_components.xml");
+        boolean mapIsAlreadyCreated = false;
+
+        if(username.equals("dev")) //TODO : remove
+            mapIsAlreadyCreated = true;
+
+        //TODO : query DB
 
         Scene sceneToDisplay;
 
-        if(mapFile.exists() && delimiters.exists()) //Si la map et la délimitation des differentes zones existe, on lance le progiciel
+        if(mapIsAlreadyCreated)
             sceneToDisplay = new MainView(this, username);
         else
-            sceneToDisplay = new MapCreatorView(this); //Sinon on lance la création de la map
+            sceneToDisplay = new MapCreatorView(this, username);
 
         stage.setScene(sceneToDisplay);
         getStage().setMaximized(true);

@@ -1,5 +1,6 @@
 package fr.iut.view;
 
+import fr.iut.model.Location;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -18,6 +19,10 @@ import java.util.Optional;
 public class LocationDialog extends Dialog<Map<String, String>> {
 
     public LocationDialog(ImageView imageView) {
+        this(imageView, null);
+    }
+
+    public LocationDialog(ImageView imageView, Location location) {
 
         setTitle("Création d'emplacement");
         setHeaderText("Renseignez les informations concernant cet emplacement.");
@@ -33,12 +38,26 @@ public class LocationDialog extends Dialog<Map<String, String>> {
 
         TextField name = new TextField();
         name.setPromptText("Nom");
+
+        if(location != null)
+            name.setText(location.getName());
+
         Spinner<Integer> capacity = new Spinner<>();
         SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 99, 0);
+
+        if(location != null)
+            valueFactory.setValue(location.getCapacity());
+
         capacity.setValueFactory(valueFactory);
         CheckBox water = new CheckBox("Point d'eau");
         CheckBox elec = new CheckBox("Electricité");
         CheckBox shadow = new CheckBox("Ombre");
+
+        if(location != null) {
+            water.setSelected(location.hasWater());
+            elec.setSelected(location.hasElectricity());
+            shadow.setSelected(location.hasShadow());
+        }
 
         grid.add(new Label("Nom:"), 0, 0);
         grid.add(name, 1, 0);
@@ -50,7 +69,7 @@ public class LocationDialog extends Dialog<Map<String, String>> {
 
         // Enable/Disable login button depending on whether a username was entered.
         Node loginButton = getDialogPane().lookupButton(okButtonType);
-        loginButton.setDisable(true);
+        loginButton.setDisable(name.getText().length() == 0);
 
         name.textProperty().addListener((observable, oldValue, newValue) -> {
             loginButton.setDisable(newValue.trim().isEmpty());

@@ -3,6 +3,8 @@ package fr.iut.view;
 import fr.iut.App;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.layout.GridPane;
+import javafx.scene.text.Text;
 
 /**
  * Created by shellcode on 2/6/17.
@@ -15,10 +17,10 @@ public class MainView extends Scene {
     private App app;
 
     public MainView(App app, String username) {
-        super(new Group(), WIDTH, HEIGHT);
+        super(new GridPane(), WIDTH, HEIGHT);
         this.app = app;
 
-        Group components = (Group)getRoot();
-
+        GridPane components = (GridPane)getRoot();
+        components.add(new Text("Interface d'accueil !"), 1, 1);
     }
 }
