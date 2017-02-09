@@ -1,0 +1,24 @@
+.tab-pane > .tab-header-area > .headers-region > .tab {
+    -fx-padding: 20px;
+    -fx-background-color: #336699;
+}
+
+.tab-pane > .tab-header-area > .headers-region > .tab:selected {
+    -fx-padding: 20px;
+    -fx-background-color: #336699;
+    -fx-border-width: 1px;
+    -fx-border-color: black;
+}
+
+.tab-pane > .tab-header-area > .headers-region >.tab:selected .focus-indicator{
+    -fx-border-width: 0px;
+}
+
+.tab .tab-label {
+    -fx-skin: "com.sun.javafx.scene.control.skin.LabelSkin";
+    -fx-background-color: transparent;
+    -fx-alignment: CENTER;
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
