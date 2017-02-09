@@ -5,6 +5,7 @@ package fr.iut.view;
  */
 
 import fr.iut.App;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -21,7 +22,7 @@ public class NewClientView extends Scene {
 
     public static final double WINDOW_WIDTH = 500;
     public static final double WINDOW_HEIGHT = 750;
-    private static final Color COLOR_BACKGROUND = Color.rgb(12, 27, 51);
+    private static final Color COLOR_BACKGROUND = Color.rgb(42, 42, 42);
 
     private Group components;
     private StackPane header = new StackPane();
@@ -56,20 +57,38 @@ public class NewClientView extends Scene {
         title.setFont(Font.font("DejaVu Sans", 30));
         header.getChildren().addAll(title_back, title);
 
-        last_name.setMaxWidth(WINDOW_WIDTH / 1.1);
+       // last_name.setMaxWidth(WINDOW_WIDTH / 1.1);
         last_name.setMinHeight(WINDOW_HEIGHT / 8);
+        last_name.setLayoutX(WINDOW_WIDTH/2);
         last_name.setPromptText("Nom");
         last_name.setStyle("-fx-font-weight: bold;" + "-fx-font-size: 17px;");
 
         first_name.setMaxWidth(WINDOW_WIDTH / 1.1);
         first_name.setMinHeight(WINDOW_HEIGHT / 8);
-        first_name.setPromptText("Nom");
+        first_name.setPromptText("Prénom");
         first_name.setStyle("-fx-font-weight: bold;" + "-fx-font-size: 17px;");
 
         address.setMaxWidth(WINDOW_WIDTH / 1.1);
         address.setMinHeight(WINDOW_HEIGHT / 8);
-        address.setPromptText("Nom");
+        address.setPromptText("Adresse");
         address.setStyle("-fx-font-weight: bold;" + "-fx-font-size: 17px;");
+
+        phone.setMaxWidth(WINDOW_WIDTH / 1.1);
+        phone.setMinHeight(WINDOW_HEIGHT / 8);
+        phone.setPromptText("N° de téléphone");
+        phone.setStyle("-fx-font-weight: bold;" + "-fx-font-size: 17px;");
+
+        fields.getChildren().addAll(last_name, first_name, address, phone);
+        fields.setSpacing(WINDOW_HEIGHT / 10);
+        fields.setAlignment(Pos.CENTER);
+
+        confirm.setMinSize(WINDOW_WIDTH / 6, WINDOW_HEIGHT / 10);
+        confirm.setLayoutX((WINDOW_WIDTH - confirm.getMinWidth()) / 2);
+        confirm.setLayoutY(WINDOW_HEIGHT / 1.2);
+        confirm.setText("Valider");
+
+        components.getChildren().addAll(title, title_back, fields, confirm);
+
 
     }
 
