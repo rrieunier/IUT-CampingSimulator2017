@@ -1,5 +1,6 @@
 package fr.iut;
 
+import fr.iut.view.AutorisationsView;
 import fr.iut.view.ConnectionView;
 import fr.iut.view.MainView;
 import fr.iut.view.MapCreatorView;
@@ -30,7 +31,6 @@ public class App extends Application {
         Scene scene = new ConnectionView(this);
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
-
 
         primaryStage.show();
     }

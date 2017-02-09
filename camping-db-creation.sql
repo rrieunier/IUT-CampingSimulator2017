@@ -78,7 +78,7 @@ DROP TABLE IF EXISTS `CampingSimulator`.`Location` ;
 
 CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Location` (
   `idLocation` INT NOT NULL AUTO_INCREMENT,
-  `map_polygon` GEOMETRY NOT NULL,
+  `point` POINT NOT NULL,
   `name` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`idLocation`),
   UNIQUE INDEX `name_UNIQUE` (`name` ASC))
@@ -129,6 +129,18 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
+-- Table `CampingSimulator`.`SpotType`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `CampingSimulator`.`SpotType` ;
+
+CREATE TABLE IF NOT EXISTS `CampingSimulator`.`SpotType` (
+  `idSpotType` INT NOT NULL AUTO_INCREMENT,
+  `label` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`idSpotType`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
 -- Table `CampingSimulator`.`Spot`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `CampingSimulator`.`Spot` ;
@@ -136,11 +148,22 @@ DROP TABLE IF EXISTS `CampingSimulator`.`Spot` ;
 CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Spot` (
   `idSpot` INT NOT NULL,
   `price_per_day` FLOAT NOT NULL,
+  `capacity` INT NOT NULL DEFAULT 1,
+  `water` TINYINT(1) NOT NULL,
+  `electricity` TINYINT(1) NOT NULL,
+  `shadow` TINYINT(1) NOT NULL,
+  `table1_SpotType` INT NOT NULL,
   INDEX `fk_Spot_Location1_idx` (`idSpot` ASC),
   PRIMARY KEY (`idSpot`),
+  INDEX `fk_Spot_table11_idx` (`table1_SpotType` ASC),
   CONSTRAINT `fk_Spot_Location1`
     FOREIGN KEY (`idSpot`)
     REFERENCES `CampingSimulator`.`Location` (`idLocation`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Spot_table11`
+    FOREIGN KEY (`table1_SpotType`)
+    REFERENCES `CampingSimulator`.`SpotType` (`idSpotType`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -158,52 +181,6 @@ CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Problem` (
   `solution_datetime` DATETIME NULL,
   `state` VARCHAR(45) NOT NULL DEFAULT 'non résolu',
   PRIMARY KEY (`idProblem`))
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `CampingSimulator`.`Reservation`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `CampingSimulator`.`Reservation` ;
-
-CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Reservation` (
-  `idClient` INT NOT NULL,
-  `idSpot` INT NOT NULL,
-  `idReservation` INT NOT NULL AUTO_INCREMENT,
-  `client_comment` VARCHAR(250) NULL,
-  PRIMARY KEY (`idReservation`),
-  INDEX `fk_Client_has_Spot_Spot1_idx` (`idSpot` ASC),
-  INDEX `fk_Client_has_Spot_Client1_idx` (`idClient` ASC),
-  CONSTRAINT `fk_Client_has_Spot_Client1`
-    FOREIGN KEY (`idClient`)
-    REFERENCES `CampingSimulator`.`Client` (`idClient`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Client_has_Spot_Spot1`
-    FOREIGN KEY (`idSpot`)
-    REFERENCES `CampingSimulator`.`Spot` (`idSpot`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `CampingSimulator`.`ClientInvoice`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `CampingSimulator`.`ClientInvoice` ;
-
-CREATE TABLE IF NOT EXISTS `CampingSimulator`.`ClientInvoice` (
-  `idClientInvoice` INT NOT NULL AUTO_INCREMENT,
-  `idReservation` INT NOT NULL,
-  `start_date` DATE NOT NULL,
-  `end_date` DATE NOT NULL,
-  PRIMARY KEY (`idClientInvoice`),
-  INDEX `fk_ClientInvoice_Reservation1_idx` (`idReservation` ASC),
-  CONSTRAINT `fk_ClientInvoice_Reservation1`
-    FOREIGN KEY (`idReservation`)
-    REFERENCES `CampingSimulator`.`Reservation` (`idReservation`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
@@ -287,6 +264,36 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
+-- Table `CampingSimulator`.`Reservation`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `CampingSimulator`.`Reservation` ;
+
+CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Reservation` (
+  `idClient` INT NOT NULL,
+  `idSpot` INT NOT NULL,
+  `idReservation` INT NOT NULL AUTO_INCREMENT,
+  `client_comment` VARCHAR(250) NULL,
+  `startdate` DATETIME NOT NULL,
+  `enddate` DATETIME NOT NULL,
+  `reservation_date` DATETIME NOT NULL DEFAULT NOW(),
+  `person_count` INT NOT NULL,
+  PRIMARY KEY (`idReservation`),
+  INDEX `fk_Client_has_Spot_Spot1_idx` (`idSpot` ASC),
+  INDEX `fk_Client_has_Spot_Client1_idx` (`idClient` ASC),
+  CONSTRAINT `fk_Client_has_Spot_Client1`
+    FOREIGN KEY (`idClient`)
+    REFERENCES `CampingSimulator`.`Client` (`idClient`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Client_has_Spot_Spot1`
+    FOREIGN KEY (`idSpot`)
+    REFERENCES `CampingSimulator`.`Spot` (`idSpot`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
 -- Table `CampingSimulator`.`Purchase`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `CampingSimulator`.`Purchase` ;
@@ -296,17 +303,17 @@ CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Purchase` (
   `datetime` DATETIME NOT NULL DEFAULT NOW(),
   `quantity` INT NOT NULL,
   `idProduct` INT NOT NULL,
-  `Client_idClient` INT NOT NULL,
+  `idClient` INT NOT NULL,
   PRIMARY KEY (`idPurchase`),
   INDEX `fk_Purchase_Product1_idx` (`idProduct` ASC),
-  INDEX `fk_Purchase_Client1_idx` (`Client_idClient` ASC),
+  INDEX `fk_Purchase_Client1_idx` (`idClient` ASC),
   CONSTRAINT `fk_Purchase_Product1`
     FOREIGN KEY (`idProduct`)
     REFERENCES `CampingSimulator`.`Product` (`idProduct`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Purchase_Client1`
-    FOREIGN KEY (`Client_idClient`)
+    FOREIGN KEY (`idClient`)
     REFERENCES `CampingSimulator`.`Client` (`idClient`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
@@ -401,6 +408,38 @@ CREATE TABLE IF NOT EXISTS `CampingSimulator`.`User_has_Authorization` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
+
+-- -----------------------------------------------------
+-- Table `CampingSimulator`.`Map`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `CampingSimulator`.`Map` ;
+
+CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Map` (
+  `idMap` INT NOT NULL AUTO_INCREMENT,
+  `image` MEDIUMBLOB NOT NULL,
+  `name` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`idMap`))
+ENGINE = InnoDB;
+
+USE `CampingSimulator` ;
+
+-- -----------------------------------------------------
+-- Placeholder table for view `CampingSimulator`.`PurchasesOnReservation`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `CampingSimulator`.`PurchasesOnReservation` (`idClient` INT, `idReservation` INT, `idSpot` INT, `idPurchase` INT);
+
+-- -----------------------------------------------------
+-- View `CampingSimulator`.`PurchasesOnReservation`
+-- -----------------------------------------------------
+DROP VIEW IF EXISTS `CampingSimulator`.`PurchasesOnReservation` ;
+DROP TABLE IF EXISTS `CampingSimulator`.`PurchasesOnReservation`;
+USE `CampingSimulator`;
+CREATE  OR REPLACE VIEW `PurchasesOnReservation` AS
+SELECT Client.idClient, Reservation.idReservation, idSpot, idPurchase
+FROM Reservation
+INNER JOIN Client ON Reservation.idClient = Client.idClient
+INNER JOIN Purchase ON Client.idClient = Purchase.idClient
+WHERE Purchase.datetime >= Reservation.startdate AND Purchase.datetime <= Reservation.enddate;
 SET SQL_MODE = '';
 GRANT USAGE ON *.* TO camping;
  DROP USER camping;
@@ -438,18 +477,6 @@ COMMIT;
 
 
 -- -----------------------------------------------------
--- Data for table `CampingSimulator`.`Location`
--- -----------------------------------------------------
-START TRANSACTION;
-USE `CampingSimulator`;
-INSERT INTO `CampingSimulator`.`Location` (`idLocation`, `map_polygon`, `name`) VALUES (DEFAULT, GeomFromText('MULTIPOINT(30 30,30 40, 40 40, 40 30)'), 'Toilette');
-INSERT INTO `CampingSimulator`.`Location` (`idLocation`, `map_polygon`, `name`) VALUES (DEFAULT, GeomFromText('MULTIPOINT(10 10, 10 20, 20 20, 20 10)'), 'Emplacement 1');
-INSERT INTO `CampingSimulator`.`Location` (`idLocation`, `map_polygon`, `name`) VALUES (DEFAULT, GeomFromText('MULTIPOINT(50 50, 50 60, 60 60, 60 50)'), 'Emplacement 2');
-
-COMMIT;
-
-
--- -----------------------------------------------------
 -- Data for table `CampingSimulator`.`Client`
 -- -----------------------------------------------------
 START TRANSACTION;
@@ -461,12 +488,13 @@ COMMIT;
 
 
 -- -----------------------------------------------------
--- Data for table `CampingSimulator`.`Spot`
+-- Data for table `CampingSimulator`.`SpotType`
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `CampingSimulator`;
-INSERT INTO `CampingSimulator`.`Spot` (`idSpot`, `price_per_day`) VALUES (3, 50);
-INSERT INTO `CampingSimulator`.`Spot` (`idSpot`, `price_per_day`) VALUES (2, 40);
+INSERT INTO `CampingSimulator`.`SpotType` (`idSpotType`, `label`) VALUES (DEFAULT, 'TENTE');
+INSERT INTO `CampingSimulator`.`SpotType` (`idSpotType`, `label`) VALUES (DEFAULT, 'BUNGALO');
+INSERT INTO `CampingSimulator`.`SpotType` (`idSpotType`, `label`) VALUES (DEFAULT, 'CARAVANE');
 
 COMMIT;
 

@@ -58,13 +58,7 @@ public class MapCreatorView extends Scene {
         verticalWrap.setStyle("-fx-background-color: rgb(12, 27, 51);");
 
 
-        StackPane header = new StackPane();
-        header.setPadding(new Insets(20));
-        header.setStyle("-fx-background-color: #336699;");
-        Text title = new Text("Création de la carte");
-        title.setFill(Color.WHITESMOKE);
-        title.setFont(Font.font("DejaVu Sans", 30));
-        header.getChildren().addAll(title);
+        HeaderView header = new HeaderView("Création de la carte");
 
         map = new Canvas(800, 500);
         map.getGraphicsContext2D().setFill(Color.BLACK);
