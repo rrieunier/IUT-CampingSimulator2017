@@ -78,8 +78,9 @@ DROP TABLE IF EXISTS `CampingSimulator`.`Location` ;
 
 CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Location` (
   `idLocation` INT NOT NULL AUTO_INCREMENT,
-  `point` POINT NOT NULL,
   `name` VARCHAR(45) NOT NULL,
+  `point_x` DOUBLE NULL,
+  `point_y` DOUBLE NULL,
   PRIMARY KEY (`idLocation`),
   UNIQUE INDEX `name_UNIQUE` (`name` ASC))
 ENGINE = InnoDB;
