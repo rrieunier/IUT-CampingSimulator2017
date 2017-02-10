@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <property name="connection.url">jdbc:mysql://localhost:3306/CampingSimulator</property>
+        <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+        <mapping resource="fr/iut/model/AuthorizationEntity.hbm.xml"/>
+        <mapping class="fr.iut.model.AuthorizationEntity"/>
+        <mapping resource="fr/iut/model/ClientEntity.hbm.xml"/>
+        <mapping class="fr.iut.model.ClientEntity"/>
+        <mapping class="fr.iut.model.ClientHasProblemEntity"/>
+        <mapping resource="fr/iut/model/ClientHasProblemEntity.hbm.xml"/>
+        <mapping resource="fr/iut/model/EmployeeEntity.hbm.xml"/>
+        <mapping class="fr.iut.model.EmployeeEntity"/>
+        <mapping class="fr.iut.model.LocationEntity"/>
+        <mapping resource="fr/iut/model/LocationEntity.hbm.xml"/>
+        <mapping class="fr.iut.model.LocationHasProblemEntity"/>
+        <mapping resource="fr/iut/model/LocationHasProblemEntity.hbm.xml"/>
+        <mapping class="fr.iut.model.LogEntity"/>
+        <mapping resource="fr/iut/model/LogEntity.hbm.xml"/>
+        <mapping class="fr.iut.model.MapEntity"/>
+        <mapping resource="fr/iut/model/MapEntity.hbm.xml"/>
+        <mapping class="fr.iut.model.ProblemEntity"/>
+        <mapping resource="fr/iut/model/ProblemEntity.hbm.xml"/>
+        <mapping class="fr.iut.model.ProductEntity"/>
+        <mapping resource="fr/iut/model/ProductEntity.hbm.xml"/>
+        <mapping class="fr.iut.model.PurchaseEntity"/>
+        <mapping resource="fr/iut/model/PurchaseEntity.hbm.xml"/>
+        <mapping class="fr.iut.model.ReservationEntity"/>
+        <mapping resource="fr/iut/model/ReservationEntity.hbm.xml"/>
+        <mapping resource="fr/iut/model/RestockingEntity.hbm.xml"/>
+        <mapping class="fr.iut.model.RestockingEntity"/>
+        <mapping resource="fr/iut/model/SpotEntity.hbm.xml"/>
+        <mapping class="fr.iut.model.SpotEntity"/>
+        <mapping class="fr.iut.model.SpotTypeEntity"/>
+        <mapping resource="fr/iut/model/SpotTypeEntity.hbm.xml"/>
+        <mapping class="fr.iut.model.SupplierEntity"/>
+        <mapping resource="fr/iut/model/SupplierEntity.hbm.xml"/>
+        <mapping class="fr.iut.model.SupplierHasProductEntity"/>
+        <mapping resource="fr/iut/model/SupplierHasProductEntity.hbm.xml"/>
+        <mapping class="fr.iut.model.TaskEntity"/>
+        <mapping resource="fr/iut/model/TaskEntity.hbm.xml"/>
+        <mapping class="fr.iut.model.UserEntity"/>
+        <mapping resource="fr/iut/model/UserEntity.hbm.xml"/>
+        <mapping resource="fr/iut/model/UserHasAuthorizationEntity.hbm.xml"/>
+        <mapping class="fr.iut.model.UserHasAuthorizationEntity"/>
+        <mapping class="fr.iut.model.PurchasesOnReservationEntity"/>
+        <mapping resource="fr/iut/model/PurchasesOnReservationEntity.hbm.xml"/>
+        <!-- <property name="connection.username"/> -->
+        <!-- <property name="connection.password"/> -->
+
+        <!-- DB schema will be updated if needed -->
+        <!-- <property name="hbm2ddl.auto">update</property> -->
+    </session-factory>
+</hibernate-configuration>

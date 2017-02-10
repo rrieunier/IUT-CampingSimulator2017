@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="fr.iut.model.EmployeeEntity" table="Employee" schema="CampingSimulator">
+        <id name="idEmployee">
+            <column name="idEmployee" sql-type="int(11)"/>
+        </id>
+        <property name="lastName">
+            <column name="last_name" sql-type="varchar(45)" length="45"/>
+        </property>
+        <property name="firstName">
+            <column name="first_name" sql-type="varchar(45)" length="45"/>
+        </property>
+        <property name="phone">
+            <column name="phone" sql-type="varchar(11)" length="11" not-null="true"/>
+        </property>
+        <property name="email">
+            <column name="email" sql-type="varchar(45)" length="45" not-null="true"/>
+        </property>
+        <property name="completeAddress">
+            <column name="complete_address" sql-type="varchar(150)" length="150" not-null="true"/>
+        </property>
+        <set name="tasksByIdEmployee" inverse="true">
+            <key>
+                <column name="idEmployee"/>
+            </key>
+            <one-to-many not-found="ignore" class="fr.iut.model.TaskEntity"/>
+        </set>
+        <set name="usersByIdEmployee" inverse="true">
+            <key>
+                <column name="Employee_idEmployee" not-null="true"/>
+            </key>
+            <one-to-many not-found="ignore" class="fr.iut.model.UserEntity"/>
+        </set>
+    </class>
+</hibernate-mapping>

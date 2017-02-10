@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="fr.iut.model.PurchasesOnReservationEntity" table="PurchasesOnReservation" schema="CampingSimulator">
+        <property name="idClient">
+            <column name="idClient" sql-type="int(11)"/>
+        </property>
+        <property name="idReservation">
+            <column name="idReservation" sql-type="int(11)"/>
+        </property>
+        <property name="idSpot">
+            <column name="idSpot" sql-type="int(11)"/>
+        </property>
+        <property name="idPurchase">
+            <column name="idPurchase" sql-type="int(11)"/>
+        </property>
+    </class>
+</hibernate-mapping>

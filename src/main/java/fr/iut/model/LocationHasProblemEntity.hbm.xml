@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="fr.iut.model.LocationHasProblemEntity" table="Location_has_Problem" schema="CampingSimulator">
+        <composite-id mapped="true" class="fr.iut.model.LocationHasProblemEntityPK">
+            <key-property name="idLocation">
+                <column name="idLocation" sql-type="int(11)"/>
+            </key-property>
+            <key-property name="idProblem">
+                <column name="idProblem" sql-type="int(11)"/>
+            </key-property>
+        </composite-id>
+        <many-to-one name="locationByIdLocation" class="fr.iut.model.LocationEntity">
+            <column name="idLocation"/>
+        </many-to-one>
+        <many-to-one name="problemByIdProblem" class="fr.iut.model.ProblemEntity">
+            <column name="idProblem"/>
+        </many-to-one>
+    </class>
+</hibernate-mapping>

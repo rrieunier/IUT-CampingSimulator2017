@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="fr.iut.model.ClientEntity" table="Client" schema="CampingSimulator">
+        <id name="idClient">
+            <column name="idClient" sql-type="int(11)"/>
+        </id>
+        <property name="lastName">
+            <column name="last_name" sql-type="varchar(45)" length="45"/>
+        </property>
+        <property name="firstName">
+            <column name="first_name" sql-type="varchar(45)" length="45"/>
+        </property>
+        <property name="phone">
+            <column name="phone" sql-type="varchar(11)" length="11" not-null="true"/>
+        </property>
+        <property name="email">
+            <column name="email" sql-type="varchar(45)" length="45" not-null="true"/>
+        </property>
+        <set name="clientHasProblemsByIdClient" inverse="true">
+            <key>
+                <column name="idClient"/>
+            </key>
+            <one-to-many not-found="ignore" class="fr.iut.model.ClientHasProblemEntity"/>
+        </set>
+        <set name="purchasesByIdClient" inverse="true">
+            <key>
+                <column name="idClient"/>
+            </key>
+            <one-to-many not-found="ignore" class="fr.iut.model.PurchaseEntity"/>
+        </set>
+        <set name="reservationsByIdClient" inverse="true">
+            <key>
+                <column name="idClient"/>
+            </key>
+            <one-to-many not-found="ignore" class="fr.iut.model.ReservationEntity"/>
+        </set>
+    </class>
+</hibernate-mapping>

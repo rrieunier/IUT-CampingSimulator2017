@@ -1,6 +1,5 @@
 package fr.iut.view;
 
-import fr.iut.model.Location;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -11,7 +10,6 @@ import javafx.util.Pair;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * Created by shellcode on 2/8/17.

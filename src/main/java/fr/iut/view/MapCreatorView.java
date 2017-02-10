@@ -1,7 +1,6 @@
 package fr.iut.view;
 
 import fr.iut.App;
-import fr.iut.model.Location;
 import javafx.application.Platform;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
@@ -32,12 +31,10 @@ import java.util.Optional;
  */
 public class MapCreatorView extends Scene {
 
-    private App app;
-    private ScrollPane mapViewPort;
-
     private final static int MAP_VIEWPORT_WIDTH = (int)(App.SCREEN_W*3/4);
     private final static int MAP_VIEWPORT_HEIGHT = (int)(App.SCREEN_H*2/3);
-
+    private App app;
+    private ScrollPane mapViewPort;
     private ArrayList<Location> locations = new ArrayList<>();
 
     private StackPane mapPane;

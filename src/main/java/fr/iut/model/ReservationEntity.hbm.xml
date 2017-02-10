@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="fr.iut.model.ReservationEntity" table="Reservation" schema="CampingSimulator">
+        <id name="idReservation">
+            <column name="idReservation" sql-type="int(11)"/>
+        </id>
+        <property name="idClient">
+            <column name="idClient" sql-type="int(11)"/>
+        </property>
+        <property name="idSpot">
+            <column name="idSpot" sql-type="int(11)"/>
+        </property>
+        <property name="clientComment">
+            <column name="client_comment" sql-type="varchar(250)" length="250" not-null="true"/>
+        </property>
+        <property name="starttime">
+            <column name="starttime" sql-type="datetime"/>
+        </property>
+        <property name="endtime">
+            <column name="endtime" sql-type="datetime"/>
+        </property>
+        <property name="reservationDate">
+            <column name="reservation_date" sql-type="datetime"/>
+        </property>
+        <property name="personCount">
+            <column name="person_count" sql-type="int(11)"/>
+        </property>
+        <many-to-one name="clientByIdClient" class="fr.iut.model.ClientEntity">
+            <column name="idClient"/>
+        </many-to-one>
+        <many-to-one name="spotByIdSpot" class="fr.iut.model.SpotEntity">
+            <column name="idSpot"/>
+        </many-to-one>
+    </class>
+</hibernate-mapping>

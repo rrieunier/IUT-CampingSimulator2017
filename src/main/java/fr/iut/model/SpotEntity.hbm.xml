@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="fr.iut.model.SpotEntity" table="Spot" schema="CampingSimulator">
+        <id name="idSpot">
+            <column name="idSpot" sql-type="int(11)"/>
+        </id>
+        <property name="pricePerDay">
+            <column name="price_per_day" sql-type="float" precision="-1"/>
+        </property>
+        <property name="capacity">
+            <column name="capacity" sql-type="int(11)"/>
+        </property>
+        <property name="water">
+            <column name="water" sql-type="tinyint(1)"/>
+        </property>
+        <property name="electricity">
+            <column name="electricity" sql-type="tinyint(1)"/>
+        </property>
+        <property name="shadow">
+            <column name="shadow" sql-type="tinyint(1)"/>
+        </property>
+        <property name="table1SpotType">
+            <column name="table1_SpotType" sql-type="int(11)"/>
+        </property>
+        <many-to-one name="spotTypeByTable1SpotType" class="fr.iut.model.SpotTypeEntity">
+            <column name="table1_SpotType"/>
+        </many-to-one>
+        <one-to-one name="locationByIdSpot" class="fr.iut.model.LocationEntity"/>
+        <set name="reservationsByIdSpot" inverse="true">
+            <key>
+                <column name="idSpot"/>
+            </key>
+            <one-to-many not-found="ignore" class="fr.iut.model.ReservationEntity"/>
+        </set>
+    </class>
+</hibernate-mapping>
