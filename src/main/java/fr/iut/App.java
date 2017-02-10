@@ -1,5 +1,6 @@
 package fr.iut;
 
+import fr.iut.view.AutorisationsView;
 import fr.iut.view.ConnectionView;
 import fr.iut.view.MainView;
 import fr.iut.view.MapCreatorView;
@@ -33,7 +34,6 @@ public class App extends Application {
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
 
-
         primaryStage.show();
     }
 
@@ -53,17 +53,23 @@ public class App extends Application {
         /*
         File mapFile = new File("map.png");
         File delimiters = new File("map_components.xml");
+        boolean mapIsAlreadyCreated = false;
 
+        if(username.equals("dev")) //TODO : remove
+            mapIsAlreadyCreated = true;
+
+        //TODO : query DB
         Scene sceneToDisplay;
 
-        if(mapFile.exists() && delimiters.exists()) //Si la map et la délimitation des differentes zones existe, on lance le progiciel
+        if(mapIsAlreadyCreated)
             sceneToDisplay = new MainView(this, username);
         else
-            sceneToDisplay = new MapCreatorView(this); //Sinon on lance la création de la map
+            sceneToDisplay = new MapCreatorView(this, username);
 
         stage.setScene(sceneToDisplay);
-        stage.setResizable(true);
-        stage.setMaximized(true);
+        getStage().setMaximized(true);
+        getStage().setWidth(App.SCREEN_W);
+        getStage().setHeight(App.SCREEN_H);
         stage.centerOnScreen();
         */
     }

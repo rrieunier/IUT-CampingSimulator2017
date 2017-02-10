@@ -17,6 +17,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
@@ -68,8 +69,9 @@ public class ConnectionView extends Scene {
         login_field.setMinHeight(LOGIN_HEIGHT / 8);
         login_field.setPromptText("Identifiant");
         login_field.setStyle("-fx-font-weight: bold;" +
-                "-fx-font-size: 17px;");
-        if (Files.exists(Paths.get("login"))) { // si "remember me" était coché à la dernière connection
+                            "-fx-font-size: 17px;");
+
+        if (Files.exists(Paths.get("login"))) { // si "remember me" était cohé à la dernière connection
             remember.setSelected(true);
             try {
                 char username[] = new String(Files.readAllBytes(Paths.get("login"))).toCharArray();
@@ -125,6 +127,9 @@ public class ConnectionView extends Scene {
                 connectionButtonAction(login_field.getText(), password_field.getText());
             }
         });
+        confirm.getStylesheets().add(new File("res/style.css").toURI().toString());
+        confirm.getStyleClass().add("record-sales");
+        confirm.setOnMouseClicked(event -> connectionButtonAction(login_field.getText(), password_field.getText()));
 
         this.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
