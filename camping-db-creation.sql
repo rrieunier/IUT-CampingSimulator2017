@@ -273,8 +273,8 @@ CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Reservation` (
   `idSpot` INT NOT NULL,
   `idReservation` INT NOT NULL AUTO_INCREMENT,
   `client_comment` VARCHAR(250) NULL,
-  `startdate` DATETIME NOT NULL,
-  `enddate` DATETIME NOT NULL,
+  `starttime` DATETIME NOT NULL,
+  `endtime` DATETIME NOT NULL,
   `reservation_date` DATETIME NOT NULL DEFAULT NOW(),
   `person_count` INT NOT NULL,
   PRIMARY KEY (`idReservation`),
@@ -352,8 +352,8 @@ DROP TABLE IF EXISTS `CampingSimulator`.`Restocking` ;
 
 CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Restocking` (
   `idRestocking` INT NOT NULL AUTO_INCREMENT,
-  `quantity` INT NULL,
-  `datetime` DATETIME NULL,
+  `quantity` INT NOT NULL,
+  `datetime` DATETIME NOT NULL DEFAULT NOW(),
   `idSupplier` INT NOT NULL,
   `idProduct` INT NOT NULL,
   PRIMARY KEY (`idRestocking`),
@@ -415,10 +415,7 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `CampingSimulator`.`Map` ;
 
 CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Map` (
-  `idMap` INT NOT NULL AUTO_INCREMENT,
-  `image` MEDIUMBLOB NOT NULL,
-  `name` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`idMap`))
+  `image` MEDIUMBLOB NOT NULL)
 ENGINE = InnoDB;
 
 USE `CampingSimulator` ;
@@ -439,7 +436,7 @@ SELECT Client.idClient, Reservation.idReservation, idSpot, idPurchase
 FROM Reservation
 INNER JOIN Client ON Reservation.idClient = Client.idClient
 INNER JOIN Purchase ON Client.idClient = Purchase.idClient
-WHERE Purchase.datetime >= Reservation.startdate AND Purchase.datetime <= Reservation.enddate;
+WHERE Purchase.datetime >= Reservation.starttime AND Purchase.datetime <= Reservation.endtime;
 SET SQL_MODE = '';
 GRANT USAGE ON *.* TO camping;
  DROP USER camping;
@@ -534,3 +531,62 @@ INSERT INTO `CampingSimulator`.`Authorization` (`idAuthorization`, `label`) VALU
 
 COMMIT;
 
+USE `CampingSimulator`;
+
+DELIMITER $$
+
+USE `CampingSimulator`$$
+DROP TRIGGER IF EXISTS `CampingSimulator`.`Task_BEFORE_INSERT` $$
+USE `CampingSimulator`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `CampingSimulator`.`Task_BEFORE_INSERT` BEFORE INSERT ON `Task` 
+FOR EACH ROW
+BEGIN
+	DECLARE count INT;
+    
+    IF NEW.starttime < NEW.endtime THEN
+    		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'ERREUR : La date de fin est avant la date de début';
+    END IF;
+    
+	SELECT COUNT(*) INTO count from Task 
+		WHERE idEmployee = NEW.idEmployee 
+        AND starttime <= NEW.starttime
+		AND endtime >= NEW.endtime;
+	
+    IF count > 0 THEN
+		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'ERREUR : Une tâche est déjà assignée pour ce créneau';
+    END IF;
+END;$$
+
+
+USE `CampingSimulator`$$
+DROP TRIGGER IF EXISTS `CampingSimulator`.`Reservation_BEFORE_INSERT` $$
+USE `CampingSimulator`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `CampingSimulator`.`Reservation_BEFORE_INSERT` BEFORE INSERT ON `Reservation` FOR EACH ROW
+BEGIN
+DECLARE count INT;
+
+	IF NEW.starttime < NEW.endtime THEN
+    		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'ERREUR : La date de fin est avant la date de début';
+    END IF;
+
+	SELECT COUNT(*) INTO count from Reservation 
+		WHERE idClient = NEW.idClient
+        AND starttime <= NEW.starttime
+		AND endtime >= NEW.endtime;
+	
+    IF count > 0 THEN
+		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'ERREUR : Ce client a déjà effectué une réservation durant cette période';
+    END IF;
+    
+    SELECT COUNT(*) INTO count from Reservation 
+		WHERE idSpot = NEW.idSpot 
+        AND starttime <= NEW.starttime
+		AND endtime >= NEW.endtime;
+	
+    IF count > 0 THEN
+		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'ERREUR : Cette emplacement est déjà réservé sur cette période';
+    END IF;
+END$$
+
+
+DELIMITER ;
