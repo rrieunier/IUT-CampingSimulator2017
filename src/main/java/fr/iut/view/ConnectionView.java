@@ -6,6 +6,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -67,7 +69,7 @@ public class ConnectionView extends Scene {
         login_field.setPromptText("Identifiant");
         login_field.setStyle("-fx-font-weight: bold;" +
                 "-fx-font-size: 17px;");
-        if (Files.exists(Paths.get("login"))) { // si "remember me" était cohé à la dernière connection
+        if (Files.exists(Paths.get("login"))) { // si "remember me" était coché à la dernière connection
             remember.setSelected(true);
             try {
                 char username[] = new String(Files.readAllBytes(Paths.get("login"))).toCharArray();
@@ -118,10 +120,18 @@ public class ConnectionView extends Scene {
         confirm.setLayoutX((LOGIN_WIDTH - confirm.getMinWidth()) / 2);
         confirm.setLayoutY(LOGIN_HEIGHT / 1.2);
         confirm.setText("Valider");
-
         confirm.setOnMouseClicked(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
                 connectionButtonAction(login_field.getText(), password_field.getText());
+            }
+        });
+
+        this.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (event.getCode() == KeyCode.ENTER) {
+                    connectionButtonAction(login_field.getText(), password_field.getText());
+                }
             }
         });
 

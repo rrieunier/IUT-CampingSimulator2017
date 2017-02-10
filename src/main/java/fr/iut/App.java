@@ -3,12 +3,14 @@ package fr.iut;
 import fr.iut.view.ConnectionView;
 import fr.iut.view.MainView;
 import fr.iut.view.MapCreatorView;
+import fr.iut.view.ProductManagerView;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.awt.*;
 import java.io.File;
+import java.util.ArrayList;
 
 public class App extends Application {
 
@@ -43,6 +45,12 @@ public class App extends Application {
 
     public void start(String username) {
 
+        stage.setScene(new ProductManagerView(this));
+        stage.setResizable(true);
+        stage.setMaximized(true);
+        stage.centerOnScreen();
+
+        /*
         File mapFile = new File("map.png");
         File delimiters = new File("map_components.xml");
 
@@ -57,9 +65,18 @@ public class App extends Application {
         stage.setResizable(true);
         stage.setMaximized(true);
         stage.centerOnScreen();
+        */
     }
 
     public Stage getStage() {
         return stage;
+    }
+
+    public ArrayList<String> getProductsList() { // codé en dur en attendant les entités générées (JE TE POINTE DU DOIGTS OPEL MOCCKO)
+        ArrayList<String> products = new ArrayList<>();
+        for (int i = 0 ; i < 20 ; i++) {
+            products.add("Produit n°" + String.valueOf(i));
+        }
+        return products;
     }
 }
