@@ -15,6 +15,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
@@ -119,6 +120,8 @@ public class ConnectionView extends Scene {
         confirm.setLayoutX((LOGIN_WIDTH - confirm.getMinWidth()) / 2);
         confirm.setLayoutY(LOGIN_HEIGHT / 1.2);
         confirm.setText("Valider");
+        confirm.getStylesheets().add(new File("res/style.css").toURI().toString());
+        confirm.getStyleClass().add("record-sales");
 
         confirm.setOnMouseClicked(event -> connectionButtonAction(login_field.getText(), password_field.getText()));
 

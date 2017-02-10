@@ -203,6 +203,10 @@ public class MapCreatorView extends Scene {
         buttonsBox.getChildren().addAll(buttonReset, buttonFinish);
         buttonsBox.setAlignment(Pos.TOP_CENTER);
         buttonsBox.setSpacing(100);
+        buttonReset.getStylesheets().add(new File("res/style.css").toURI().toString());
+        buttonReset.getStyleClass().add("record-sales");
+        buttonFinish.getStylesheets().add(new File("res/style.css").toURI().toString());
+        buttonFinish.getStyleClass().add("record-sales");
 
         buttonReset.setOnMouseClicked(mouseEvent -> {
             mapFile = null;
