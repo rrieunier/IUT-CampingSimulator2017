@@ -1,16 +1,13 @@
 package fr.iut;
 
-import fr.iut.view.AutorisationsView;
 import fr.iut.view.ConnectionView;
-import fr.iut.view.MainView;
-import fr.iut.view.MapCreatorView;
+import fr.iut.view.PermissionsView;
 import fr.iut.view.ProductManagerView;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.awt.*;
-import java.io.File;
 import java.util.ArrayList;
 
 public class App extends Application {
@@ -31,6 +28,7 @@ public class App extends Application {
         stage = primaryStage;
         primaryStage.setTitle("Camping Simulator 2017");
         Scene scene = new ConnectionView(this);
+
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
 

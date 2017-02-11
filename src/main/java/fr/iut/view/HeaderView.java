@@ -1,5 +1,6 @@
 package fr.iut.view;
 
+import fr.iut.App;
 import javafx.geometry.Insets;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -19,6 +20,7 @@ public class HeaderView extends StackPane{
 
         setPadding(new Insets(20));
         setStyle("-fx-background-color: #336699;");
+        //setWidth(App.SCREEN_W);
         this.title = new Text(title);
         this.title.setFill(Color.WHITESMOKE);
         this.title.setFont(Font.font("DejaVu Sans", 30));
