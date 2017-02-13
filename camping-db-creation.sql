@@ -429,6 +429,11 @@ USE `CampingSimulator` ;
 CREATE TABLE IF NOT EXISTS `CampingSimulator`.`PurchasesOnReservation` (`Reservation_id` INT, `Purchase_id` INT);
 
 -- -----------------------------------------------------
+-- Placeholder table for view `CampingSimulator`.`ReservedOrOccupiedSpots`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `CampingSimulator`.`ReservedOrOccupiedSpots` (`id` INT);
+
+-- -----------------------------------------------------
 -- View `CampingSimulator`.`PurchasesOnReservation`
 -- -----------------------------------------------------
 DROP VIEW IF EXISTS `CampingSimulator`.`PurchasesOnReservation` ;
@@ -440,6 +445,76 @@ FROM Reservation
 INNER JOIN Client ON Reservation.Client_id = Client.id
 INNER JOIN Purchase ON Client.id = Purchase.id
 WHERE Purchase.datetime >= Reservation.starttime AND Purchase.datetime <= Reservation.endtime;
+
+-- -----------------------------------------------------
+-- View `CampingSimulator`.`ReservedOrOccupiedSpots`
+-- -----------------------------------------------------
+DROP VIEW IF EXISTS `CampingSimulator`.`ReservedOrOccupiedSpots` ;
+DROP TABLE IF EXISTS `CampingSimulator`.`ReservedOrOccupiedSpots`;
+USE `CampingSimulator`;
+CREATE  OR REPLACE VIEW `ReservedOrOccupiedSpots` AS
+SELECT Spot.id FROM Spot
+INNER JOIN Reservation ON Spot.id = Reservation.Spot_id
+WHERE Reservation.endtime >= NOW();
+USE `CampingSimulator`;
+
+DELIMITER $$
+
+USE `CampingSimulator`$$
+DROP TRIGGER IF EXISTS `CampingSimulator`.`Task_BEFORE_INSERT` $$
+USE `CampingSimulator`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `CampingSimulator`.`Task_BEFORE_INSERT` BEFORE INSERT ON `Task` 
+FOR EACH ROW
+BEGIN
+	DECLARE count INT;
+    
+    IF NEW.starttime < NEW.endtime THEN
+    		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'ERREUR : La date de fin est avant la date de début';
+    END IF;
+    
+	SELECT COUNT(*) INTO count from Task 
+		WHERE Employee_id = NEW.Employee_id
+        AND starttime <= NEW.starttime
+		AND endtime >= NEW.endtime;
+	
+    IF count > 0 THEN
+		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'ERREUR : Une tâche est déjà assignée pour ce créneau';
+    END IF;
+END;$$
+
+
+USE `CampingSimulator`$$
+DROP TRIGGER IF EXISTS `CampingSimulator`.`Reservation_BEFORE_INSERT` $$
+USE `CampingSimulator`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `CampingSimulator`.`Reservation_BEFORE_INSERT` BEFORE INSERT ON `Reservation` FOR EACH ROW
+BEGIN
+DECLARE count INT;
+
+	IF NEW.starttime < NEW.endtime THEN
+    		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'ERREUR : La date de fin est avant la date de début';
+    END IF;
+
+	SELECT COUNT(*) INTO count from Reservation 
+		WHERE Client_id = NEW.Client_id
+        AND starttime <= NEW.starttime
+		AND endtime >= NEW.endtime;
+	
+    IF count > 0 THEN
+		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'ERREUR : Ce client a déjà effectué une réservation durant cette période';
+    END IF;
+    
+    SELECT COUNT(*) INTO count from Reservation 
+		WHERE Spot_id = NEW.Spot_id
+        AND starttime <= NEW.starttime
+		AND endtime >= NEW.endtime;
+	
+    IF count > 0 THEN
+		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'ERREUR : Cette emplacement est déjà réservé sur cette période';
+    END IF;
+END$$
+
+
+DELIMITER ;
 SET SQL_MODE = '';
 GRANT USAGE ON *.* TO camping;
  DROP USER camping;
@@ -534,62 +609,3 @@ INSERT INTO `CampingSimulator`.`Authorization` (`id`, `label`) VALUES (DEFAULT, 
 
 COMMIT;
 
-USE `CampingSimulator`;
-
-DELIMITER $$
-
-USE `CampingSimulator`$$
-DROP TRIGGER IF EXISTS `CampingSimulator`.`Task_BEFORE_INSERT` $$
-USE `CampingSimulator`$$
-CREATE DEFINER = CURRENT_USER TRIGGER `CampingSimulator`.`Task_BEFORE_INSERT` BEFORE INSERT ON `Task` 
-FOR EACH ROW
-BEGIN
-	DECLARE count INT;
-    
-    IF NEW.starttime < NEW.endtime THEN
-    		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'ERREUR : La date de fin est avant la date de début';
-    END IF;
-    
-	SELECT COUNT(*) INTO count from Task 
-		WHERE Employee_id = NEW.Employee_id
-        AND starttime <= NEW.starttime
-		AND endtime >= NEW.endtime;
-	
-    IF count > 0 THEN
-		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'ERREUR : Une tâche est déjà assignée pour ce créneau';
-    END IF;
-END;$$
-
-
-USE `CampingSimulator`$$
-DROP TRIGGER IF EXISTS `CampingSimulator`.`Reservation_BEFORE_INSERT` $$
-USE `CampingSimulator`$$
-CREATE DEFINER = CURRENT_USER TRIGGER `CampingSimulator`.`Reservation_BEFORE_INSERT` BEFORE INSERT ON `Reservation` FOR EACH ROW
-BEGIN
-DECLARE count INT;
-
-	IF NEW.starttime < NEW.endtime THEN
-    		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'ERREUR : La date de fin est avant la date de début';
-    END IF;
-
-	SELECT COUNT(*) INTO count from Reservation 
-		WHERE Client_id = NEW.Client_id
-        AND starttime <= NEW.starttime
-		AND endtime >= NEW.endtime;
-	
-    IF count > 0 THEN
-		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'ERREUR : Ce client a déjà effectué une réservation durant cette période';
-    END IF;
-    
-    SELECT COUNT(*) INTO count from Reservation 
-		WHERE Spot_id = NEW.Spot_id
-        AND starttime <= NEW.starttime
-		AND endtime >= NEW.endtime;
-	
-    IF count > 0 THEN
-		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'ERREUR : Cette emplacement est déjà réservé sur cette période';
-    END IF;
-END$$
-
-
-DELIMITER ;

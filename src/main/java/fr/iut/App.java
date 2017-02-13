@@ -1,16 +1,15 @@
 package fr.iut;
 
+import fr.iut.controller.ConnectionController;
+import fr.iut.controller.HomeController;
+import fr.iut.controller.MapController;
 import fr.iut.view.ConnectionView;
-import fr.iut.view.MainView;
-import fr.iut.view.MapCreatorView;
-import fr.iut.view.ProductManagerView;
+import fr.iut.view.HomeView;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.awt.*;
-import java.io.File;
-import java.util.ArrayList;
 
 public class App extends Application {
 
@@ -21,6 +20,11 @@ public class App extends Application {
 
     private Stage stage;
 
+    //Controllers, il doit y avoir un état (classe State) par controller
+    private ConnectionController connectionController = new ConnectionController(this);
+    private MapController mapController;
+    private HomeController homeController;
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -29,52 +33,45 @@ public class App extends Application {
     public void start(Stage primaryStage) throws Exception{
         stage = primaryStage;
         primaryStage.setTitle("Camping Simulator 2017");
-        Scene scene = new ConnectionView(this);
-        scene = new MainView(this, "TestUser"); //TODO : remove
-        primaryStage.setScene(scene);
+
+        primaryStage.setScene(connectionController.getView());
         primaryStage.setResizable(false);
 
         primaryStage.show();
     }
 
-    @SuppressWarnings("unused")
-    public boolean tryLogin(String username, String password) {
-        //TODO : demander à la base de données si les identifiants sont bons, s'il ne le sont pas, la fonction retourne false et ConnectionView affiche un message d'erreur
-        return true;
-    }
+    public void switchState(State state) {
 
-    public void start(String username) {
+        stage.setWidth(SCREEN_W);
+        stage.setHeight(SCREEN_H);
 
-        boolean mapIsAlreadyCreated = false;
+        switch (state) {
+            case CONNECTION:
+                connectionController.logout();
+                stage.setScene(connectionController.getView());
+                stage.setWidth(ConnectionView.LOGIN_WIDTH);
+                stage.setHeight(ConnectionView.LOGIN_HEIGHT);
+                break;
 
-        if(username.equals("dev")) //TODO : remove
-            mapIsAlreadyCreated = true;
+            case MAP_CREATOR:
+                mapController = new MapController(this);
+                stage.setScene(mapController.getView());
+                break;
 
-        //TODO : query DB
+            case HOME:
 
-        Scene sceneToDisplay;
+                if(connectionController == null) {
+                    System.out.println("Impossible d'afficher l'interface d'accueil sans avoir été authentifié !!!");
+                    System.exit(1);
+                }
 
-        if(mapIsAlreadyCreated)
-            sceneToDisplay = new MainView(this, username);
-        else
-            sceneToDisplay = new MapCreatorView(this, username);
-
-        stage.setScene(sceneToDisplay);
-        getStage().setMaximized(true);
-        getStage().setWidth(App.SCREEN_W);
-        getStage().setHeight(App.SCREEN_H);
-        stage.centerOnScreen();
-    }
-
-    public Stage getStage() {
-        return stage;
-    }
-
-    public ArrayList<String> getProductsList() { // codé en dur en attendant les entités générées (JE TE POINTE DU DOIGTS OPEL MOCCKO)
-        ArrayList<String> products = new ArrayList<>();
-        for (int i = 0 ; i < 20 ; i++) {
-            products.add("Produit n°" + String.valueOf(i));
+                homeController = new HomeController(this, connectionController.getConnectedUser());
+                stage.setScene(homeController.getView());
+                break;
         }
-        return products;
+
+        //stage.setMaximized(false);
+        //stage.setMaximized(true);
+        stage.centerOnScreen();
     }
 }

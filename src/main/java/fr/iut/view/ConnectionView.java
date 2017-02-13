@@ -1,6 +1,7 @@
 package fr.iut.view;
 
 import fr.iut.App;
+import fr.iut.controller.ConnectionController;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -30,33 +31,35 @@ public class ConnectionView extends Scene {
     public static final double LOGIN_HEIGHT = App.SCREEN_H / 2;
     private static final Color LOGIN_BACKGROUNG = Color.rgb(12, 27, 51);
 
-    private App app;
+    private ConnectionController controller;
 
     private Group components;
 
-    private VBox wrapper = new VBox();
-
-    private StackPane header = new StackPane();
-    private Rectangle title_back = new Rectangle(); // rectangle de fond du titre
-    private Text title = new Text("Connexion");
-
-    private VBox fields = new VBox();
     private TextField login_field = new TextField();
     private PasswordField password_field = new PasswordField();
-    private TextField password_shown = new TextField(); // affiché quand "afficher le mdp" est coché
 
-    private HBox radio_buttons = new HBox();
     private RadioButton remember = new RadioButton("Se souvenir de moi");
     private RadioButton show_pass = new RadioButton("Afficher le mot de passe");
 
-    private Button confirm = new Button("Valider");
-
-    public ConnectionView(App app) {
+    public ConnectionView(ConnectionController app) {
         super(new Group(), LOGIN_WIDTH, LOGIN_HEIGHT);
         components = (Group) getRoot();
-        this.app = app;
+        this.controller = app;
 
         setFill(LOGIN_BACKGROUNG);
+
+        VBox wrapper = new VBox();
+
+        StackPane header = new StackPane();
+        Rectangle title_back = new Rectangle(); // rectangle de fond du titre
+        Text title = new Text("Connexion");
+
+        VBox fields = new VBox();
+        TextField password_shown = new TextField(); // affiché quand "afficher le mdp" est coché
+
+        HBox radio_buttons = new HBox();
+
+        Button confirm = new Button("Valider");
 
         title_back.setWidth(LOGIN_WIDTH);
         title_back.setHeight(LOGIN_HEIGHT / 6);
@@ -122,21 +125,14 @@ public class ConnectionView extends Scene {
         confirm.setLayoutX((LOGIN_WIDTH - confirm.getMinWidth()) / 2);
         confirm.setLayoutY(LOGIN_HEIGHT / 1.2);
         confirm.setText("Valider");
-        confirm.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent event) {
-                connectionButtonAction(login_field.getText(), password_field.getText());
-            }
-        });
+        confirm.setOnMouseClicked(event -> connectionButtonAction(login_field.getText(), password_field.getText()));
         confirm.getStylesheets().add(new File("res/style.css").toURI().toString());
         confirm.getStyleClass().add("record-sales");
         confirm.setOnMouseClicked(event -> connectionButtonAction(login_field.getText(), password_field.getText()));
 
-        this.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                if (event.getCode() == KeyCode.ENTER) {
-                    connectionButtonAction(login_field.getText(), password_field.getText());
-                }
+        this.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                connectionButtonAction(login_field.getText(), password_field.getText());
             }
         });
 
@@ -148,7 +144,7 @@ public class ConnectionView extends Scene {
     }
 
     private void connectionButtonAction(String username, String password) {
-        boolean connected = app.tryLogin(username, password);
+        boolean connected = controller.tryLogin(username, password);
 
         if (connected) {
             if (remember.isSelected()) {
@@ -173,7 +169,7 @@ public class ConnectionView extends Scene {
                 }
             }
 
-            app.start(username);
+            controller.finish();
         }
 
         else {

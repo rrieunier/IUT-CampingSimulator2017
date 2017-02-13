@@ -1,14 +1,13 @@
 package fr.iut.view;
 
-import fr.iut.model.LocationEntity;
-import fr.iut.model.SpotEntity;
+import fr.iut.model.Location;
+import fr.iut.model.Spot;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-import javafx.util.Pair;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,12 +21,12 @@ public class LocationDialog extends Dialog<Map<String, String>> {
         this(imageView, null);
     }
 
-    public LocationDialog(ImageView imageView, LocationEntity location) {
+    public LocationDialog(ImageView imageView, Location location) {
 
-        SpotEntity spot = null;
+        Spot spot = null;
 
         if(location != null)
-            spot = location.getSpot();
+            spot = location.getSpotById();
 
         setTitle("Création d'emplacement");
         setHeaderText("Renseignez les informations concernant cet emplacement.");

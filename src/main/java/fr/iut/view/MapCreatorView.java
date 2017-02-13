@@ -1,8 +1,9 @@
 package fr.iut.view;
 
 import fr.iut.App;
-import fr.iut.model.LocationEntity;
-import fr.iut.model.SpotEntity;
+import fr.iut.controller.MapController;
+import fr.iut.model.Location;
+import fr.iut.model.Spot;
 import javafx.application.Platform;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
@@ -34,10 +35,10 @@ import java.util.Optional;
 public class MapCreatorView extends Scene {
 
     private final static int MAP_VIEWPORT_WIDTH = (int)(App.SCREEN_W*3/4);
-    private final static int MAP_VIEWPORT_HEIGHT = (int)(App.SCREEN_H/2);
-    private App app;
+    private final static int MAP_VIEWPORT_HEIGHT = (int)(App.SCREEN_H / 2 + App.SCREEN_H / 10);
+    private MapController controller;
     private ScrollPane mapViewPort;
-    private ArrayList<LocationEntity> locations = new ArrayList<>();
+    private ArrayList<Location> locations = new ArrayList<>();
 
     private StackPane mapPane;
     private File mapFile = null;
@@ -47,12 +48,11 @@ public class MapCreatorView extends Scene {
     private double mouseX ;
     private double mouseY ;
 
-    public MapCreatorView(App app, String username) {
+    public MapCreatorView(MapController controller) {
         super(new StackPane());
-        this.app = app;
+        this.controller = controller;
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Bienvenue " + username);
         alert.setHeaderText(null);
         alert.setContentText("Cette interface permet de créer la carte de votre camping, glissez/deposez les éléments dessus.");
 
@@ -113,9 +113,9 @@ public class MapCreatorView extends Scene {
                         imageView.setTranslateY(map_coords.getMinY());
                         mapPane.getChildren().add(imageView);
 
-                        LocationEntity location = new LocationEntity();
-                        SpotEntity spot = new SpotEntity();
-                        location.setSpot(spot);
+                        Location location = new Location();
+                        Spot spot = new Spot();
+                        location.setSpotById(spot);
 
                         location.setName(mapResult.get("name"));
                         location.setPointX(map_coords.getMinX());
@@ -124,6 +124,7 @@ public class MapCreatorView extends Scene {
                         spot.setElectricity(Boolean.parseBoolean(mapResult.get("elec")));
                         spot.setWater(Boolean.parseBoolean(mapResult.get("water")));
                         spot.setShadow(Boolean.parseBoolean(mapResult.get("shadow")));
+
 
                         imageView.setOnMouseClicked(mouseEvent1 -> {
                             Optional<Map<String, String>> edit_result = new LocationDialog(bigIcon, location).showAndWait();
@@ -143,6 +144,7 @@ public class MapCreatorView extends Scene {
                                     spot.setElectricity(Boolean.parseBoolean(mapEditResult.get("elec")));
                                     spot.setWater(Boolean.parseBoolean(mapEditResult.get("water")));
                                     spot.setShadow(Boolean.parseBoolean(mapEditResult.get("shadow")));
+
                                 }
                             });
                         });
@@ -242,13 +244,8 @@ public class MapCreatorView extends Scene {
         });
 
         buttonFinish.setOnMouseClicked(mouseEvent -> {
-            System.out.println("Saving map & points in database");
-            /*
-            for(Location location : locations)
-                location.store();
-                */
-
-            app.start("dev");
+            controller.store(mapFile, locations);
+            controller.finish();
         });
 
         mapPane.setOnMouseClicked(mouseEvent -> {
