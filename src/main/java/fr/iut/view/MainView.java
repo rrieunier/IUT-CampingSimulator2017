@@ -1,16 +1,16 @@
 package fr.iut.view;
 
 import fr.iut.App;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.geometry.VPos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.SubScene;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -35,8 +35,8 @@ public class MainView extends Scene {
         components.setStyle("-fx-background-color: rgb(12, 27, 51);");
         RowConstraints row1 = new RowConstraints();
         RowConstraints row2 = new RowConstraints();
-        row1.setPercentHeight(90);
-        row2.setPercentHeight(10);
+        row1.setPercentHeight(87);
+        row2.setPercentHeight(13);
         row2.setValignment(VPos.TOP);
         components.getRowConstraints().addAll(row1, row2);
 
@@ -84,44 +84,52 @@ public class MainView extends Scene {
         StackPane container = new StackPane();
         container.setStyle("-fx-background-color: rgb(12, 27, 51);");
 
-        TabPane tabPane = new TabPane();
-        tabPane.setSide(Side.LEFT);
-        tabPane.setRotateGraphic(true);
-        tabPane.setTabMinHeight(App.SCREEN_H / 10);
-        tabPane.setTabMaxHeight(App.SCREEN_H / 10);
-        tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-        tabPane.getStylesheets().add(new File("res/style.css").toURI().toString());
-        tabPane.getStyleClass().add("horizontalTabs");
+        VBox verticalTabs = new VBox();
+        verticalTabs.getStylesheets().add(new File("res/style.css").toURI().toString());
+        verticalTabs.getStyleClass().add("horizontalTabs");
+        verticalTabs.setSpacing(30);
+        BorderPane.setMargin(verticalTabs, new Insets(50, 0, 0, 30));
 
         BorderPane borderPane = new BorderPane();
 
         String tabsValue[] = {"Clients", "Incidents", "Salariés", "Fournisseurs", "Stocks", "Statistiques"};
 
-        for(int i = 0; i < 6; i++) {
-            Tab t = new Tab();
-            Label l = new Label(tabsValue[i]);
-            l.setRotate(90);
-            l.setTextFill(Color.WHITE);
-            HBox box = new HBox();
-            box.getChildren().add(l);
-            box.setRotate(90);
-            t.setGraphic(box);
-            tabPane.getTabs().add(t);
+        ToggleGroup buttonsGroup = new ToggleGroup();
 
-            //TODO : contenu des onglets
-            switch (i) {
-                case 0: t.setContent(null); break;
-                case 1: t.setContent(null); break;
-                case 2: t.setContent(null); break;
-                case 3: t.setContent(null); break;
-                case 4: t.setContent(null); break;
-                case 5: t.setContent(null); break;
-            }
+        for(int i = 0; i < 6; i++) {
+            ToggleButton newTab = new ToggleButton();
+
+            if(i == 0)
+                newTab.setSelected(true);
+
+            newTab.setToggleGroup(buttonsGroup);
+            newTab.setText(tabsValue[i]);
+            newTab.getStylesheets().add(new File("res/style.css").toURI().toString());
+            newTab.getStyleClass().add("buttonTab");
+            newTab.setMinWidth(App.SCREEN_W / 10);
+            newTab.setMinHeight(App.SCREEN_H / 10);
+            verticalTabs.getChildren().add(newTab);
+
+            int finalI = i;
+            newTab.setOnAction(actionEvent -> {
+
+                SubScene subScene = null;
+
+                switch (finalI) {
+                    case 0: break;
+                    case 1: break;
+                    case 2: break;
+                    case 3: break;
+                    case 4: subScene = new ProductManagerView(app); break;
+                    case 5: break;
+                }
+
+                borderPane.setCenter(subScene);
+            });
         }
 
-        borderPane.setCenter(tabPane);
+        borderPane.setLeft(verticalTabs);
 
-        StackPane.setMargin(borderPane, new Insets(30, 0, 0, 30));
         container.getChildren().add(borderPane);
 
         tab.setContent(container);

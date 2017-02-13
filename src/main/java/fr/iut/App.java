@@ -1,6 +1,9 @@
 package fr.iut;
 
-import fr.iut.view.*;
+import fr.iut.view.ConnectionView;
+import fr.iut.view.MainView;
+import fr.iut.view.MapCreatorView;
+import fr.iut.view.ProductManagerView;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -26,8 +29,8 @@ public class App extends Application {
     public void start(Stage primaryStage) throws Exception{
         stage = primaryStage;
         primaryStage.setTitle("Camping Simulator 2017");
-        Scene scene = new ReductionsView(this);
-        //scene = new MainView(this, "TestUser"); //TODO : remove
+        Scene scene = new ConnectionView(this);
+        scene = new MainView(this, "TestUser"); //TODO : remove
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
 

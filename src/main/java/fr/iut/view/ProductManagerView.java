@@ -6,6 +6,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.SubScene;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -13,12 +14,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
-public class ProductManagerView extends Scene{
+public class ProductManagerView extends SubScene {
 
     App app;
 
     public ProductManagerView (App app) {
-        super(new AnchorPane());
+        super(new AnchorPane(), App.SCREEN_W * 5/6, App.SCREEN_H * 5/6);
         this.app = app;
 
         final StackPane[] lastClicked = {null};
