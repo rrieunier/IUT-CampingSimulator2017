@@ -6,6 +6,7 @@ import fr.iut.view.MapCreatorView;
 import fr.iut.view.ProductManagerView;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.awt.*;
@@ -44,6 +45,8 @@ public class App extends Application {
 
     public void start(String username) {
 
+        File mapFile = new File("map.png");
+        File delimiters = new File("map_components.xml");
         boolean mapIsAlreadyCreated = false;
 
         if(username.equals("dev")) //TODO : remove
@@ -58,10 +61,10 @@ public class App extends Application {
         else
             sceneToDisplay = new MapCreatorView(this, username);
 
+
         stage.setScene(sceneToDisplay);
-        getStage().setMaximized(true);
-        getStage().setWidth(App.SCREEN_W);
-        getStage().setHeight(App.SCREEN_H);
+        getStage().setWidth(SCREEN_W);
+        getStage().setHeight(SCREEN_H);
         stage.centerOnScreen();
     }
 

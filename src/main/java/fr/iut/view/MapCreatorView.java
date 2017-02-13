@@ -125,6 +125,7 @@ public class MapCreatorView extends Scene {
                         spot.setWater(Boolean.parseBoolean(mapResult.get("water")));
                         spot.setShadow(Boolean.parseBoolean(mapResult.get("shadow")));
 
+
                         imageView.setOnMouseClicked(mouseEvent1 -> {
                             Optional<Map<String, String>> edit_result = new LocationDialog(bigIcon, location).showAndWait();
 
@@ -143,6 +144,7 @@ public class MapCreatorView extends Scene {
                                     spot.setElectricity(Boolean.parseBoolean(mapEditResult.get("elec")));
                                     spot.setWater(Boolean.parseBoolean(mapEditResult.get("water")));
                                     spot.setShadow(Boolean.parseBoolean(mapEditResult.get("shadow")));
+
                                 }
                             });
                         });

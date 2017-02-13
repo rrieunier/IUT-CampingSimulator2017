@@ -34,22 +34,11 @@ public class ConnectionView extends Scene {
 
     private Group components;
 
-    private VBox wrapper = new VBox();
-
-    private StackPane header = new StackPane();
-    private Rectangle title_back = new Rectangle(); // rectangle de fond du titre
-    private Text title = new Text("Connexion");
-
-    private VBox fields = new VBox();
     private TextField login_field = new TextField();
     private PasswordField password_field = new PasswordField();
-    private TextField password_shown = new TextField(); // affiché quand "afficher le mdp" est coché
 
-    private HBox radio_buttons = new HBox();
     private RadioButton remember = new RadioButton("Se souvenir de moi");
     private RadioButton show_pass = new RadioButton("Afficher le mot de passe");
-
-    private Button confirm = new Button("Valider");
 
     public ConnectionView(App app) {
         super(new Group(), LOGIN_WIDTH, LOGIN_HEIGHT);
@@ -57,6 +46,19 @@ public class ConnectionView extends Scene {
         this.app = app;
 
         setFill(LOGIN_BACKGROUNG);
+
+        VBox wrapper = new VBox();
+
+        StackPane header = new StackPane();
+        Rectangle title_back = new Rectangle(); // rectangle de fond du titre
+        Text title = new Text("Connexion");
+
+        VBox fields = new VBox();
+        TextField password_shown = new TextField(); // affiché quand "afficher le mdp" est coché
+
+        HBox radio_buttons = new HBox();
+
+        Button confirm = new Button("Valider");
 
         title_back.setWidth(LOGIN_WIDTH);
         title_back.setHeight(LOGIN_HEIGHT / 6);

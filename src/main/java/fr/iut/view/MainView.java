@@ -74,7 +74,6 @@ public class MainView extends Scene {
         VBox.setMargin(welcome_text, new Insets(0, 0, 0, 30));
         VBox.setMargin(decoButton, new Insets(0, 0, 0, 30));
 
-
         vboxUser.getChildren().addAll(welcome_text, decoButton);
         components.addRow(1, vboxUser);
     }
@@ -89,7 +88,7 @@ public class MainView extends Scene {
         verticalTabs.getStylesheets().add(new File("res/style.css").toURI().toString());
         verticalTabs.getStyleClass().add("horizontalTabs");
         verticalTabs.setSpacing(30);
-        BorderPane.setMargin(verticalTabs, new Insets(50, 0, 0, 30));
+        BorderPane.setMargin(verticalTabs, new Insets(50, 0, 0, 80));
 
         BorderPane borderPane = new BorderPane();
 
