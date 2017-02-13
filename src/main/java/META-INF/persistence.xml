@@ -1,40 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence" version="2.1">
 
-    <persistence-unit name="NewPersistenceUnit">
-        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+    <persistence-unit name="persistenceUnit">
         <mapping-file>fr/iut/model/mapping.xml</mapping-file>
-        <class>fr.iut.model.AuthorizationEntity</class>
-        <class>fr.iut.model.ClientEntity</class>
-        <class>fr.iut.model.ClientHasProblemEntity</class>
-        <class>fr.iut.model.EmployeeEntity</class>
-        <class>fr.iut.model.LocationEntity</class>
-        <class>fr.iut.model.LocationHasProblemEntity</class>
-        <class>fr.iut.model.LogEntity</class>
-        <class>fr.iut.model.MapEntity</class>
-        <class>fr.iut.model.ProblemEntity</class>
-        <class>fr.iut.model.ProductEntity</class>
-        <class>fr.iut.model.PurchaseEntity</class>
-        <class>fr.iut.model.ReservationEntity</class>
-        <class>fr.iut.model.RestockingEntity</class>
-        <class>fr.iut.model.SpotEntity</class>
-        <class>fr.iut.model.SpotTypeEntity</class>
-        <class>fr.iut.model.SupplierEntity</class>
-        <class>fr.iut.model.SupplierHasProductEntity</class>
-        <class>fr.iut.model.TaskEntity</class>
-        <class>fr.iut.model.UserEntity</class>
-        <class>fr.iut.model.UserHasAuthorizationEntity</class>
-        <class>fr.iut.model.PurchasesOnReservationEntity</class>
-        <class>fr.iut.model.ReservedOrOccupiedSpotsEntity</class>
+        <class>fr.iut.model.Authorization</class>
+        <class>fr.iut.model.Client</class>
+        <class>fr.iut.model.ClientHasProblem</class>
+        <class>fr.iut.model.Employee</class>
+        <class>fr.iut.model.Location</class>
+        <class>fr.iut.model.LocationHasProblem</class>
+        <class>fr.iut.model.Log</class>
+        <class>fr.iut.model.Map</class>
+        <class>fr.iut.model.Problem</class>
+        <class>fr.iut.model.Product</class>
+        <class>fr.iut.model.Purchase</class>
+        <class>fr.iut.model.Reservation</class>
+        <class>fr.iut.model.Restocking</class>
+        <class>fr.iut.model.Spot</class>
+        <class>fr.iut.model.SpotType</class>
+        <class>fr.iut.model.Supplier</class>
+        <class>fr.iut.model.SupplierHasProduct</class>
+        <class>fr.iut.model.Task</class>
+        <class>fr.iut.model.User</class>
+        <class>fr.iut.model.UserHasAuthorization</class>
+        <class>fr.iut.model.PurchasesOnReservation</class>
+        <class>fr.iut.model.ReservedOrOccupiedSpots</class>
         <properties>
             <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/CampingSimulator"/>
             <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
-            <property name="hibernate.connection.username" value="camping"/>
-            <property name="hibernate.connection.password" value="camping"/>
-            <property name="hibernate.archive.autodetection" value="class"/>
-            <property name="hibernate.show_sql" value="true"/>
-            <property name="hibernate.format_sql" value="true"/>
-            <property name="hbm2ddl.auto" value="update"/>
         </properties>
     </persistence-unit>
 </persistence>
