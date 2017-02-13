@@ -10,10 +10,10 @@ import javax.persistence.*;
 @IdClass(SupplierHasProductPK.class)
 public class SupplierHasProduct {
     private double buyPrice;
-    private int supplierId;
-    private int productId;
     private Supplier supplierBySupplierId;
     private Product productByProductId;
+    private int supplierId;
+    private int productId;
 
     @Basic
     @Column(name = "buy_price", nullable = false, precision = 0)
@@ -25,26 +25,6 @@ public class SupplierHasProduct {
         this.buyPrice = buyPrice;
     }
 
-    @Id
-    @Column(name = "Supplier_id", nullable = false)
-    public int getSupplierId() {
-        return supplierId;
-    }
-
-    public void setSupplierId(int supplierId) {
-        this.supplierId = supplierId;
-    }
-
-    @Id
-    @Column(name = "Product_id", nullable = false)
-    public int getProductId() {
-        return productId;
-    }
-
-    public void setProductId(int productId) {
-        this.productId = productId;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -53,21 +33,14 @@ public class SupplierHasProduct {
         SupplierHasProduct that = (SupplierHasProduct) o;
 
         if (Double.compare(that.buyPrice, buyPrice) != 0) return false;
-        if (supplierId != that.supplierId) return false;
-        if (productId != that.productId) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result;
-        long temp;
-        temp = Double.doubleToLongBits(buyPrice);
-        result = (int) (temp ^ (temp >>> 32));
-        result = 31 * result + supplierId;
-        result = 31 * result + productId;
-        return result;
+        long temp = Double.doubleToLongBits(buyPrice);
+        return (int) (temp ^ (temp >>> 32));
     }
 
     @ManyToOne
@@ -88,5 +61,25 @@ public class SupplierHasProduct {
 
     public void setProductByProductId(Product productByProductId) {
         this.productByProductId = productByProductId;
+    }
+
+    @Id
+    @Column(name = "Supplier_id", nullable = false)
+    public int getSupplierId() {
+        return supplierId;
+    }
+
+    public void setSupplierId(int supplierId) {
+        this.supplierId = supplierId;
+    }
+
+    @Id
+    @Column(name = "Product_id", nullable = false)
+    public int getProductId() {
+        return productId;
+    }
+
+    public void setProductId(int productId) {
+        this.productId = productId;
     }
 }

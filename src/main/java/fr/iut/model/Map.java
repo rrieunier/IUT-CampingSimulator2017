@@ -3,6 +3,7 @@ package fr.iut.model;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.Arrays;
 
 /**
@@ -11,6 +12,7 @@ import java.util.Arrays;
 @Entity
 public class Map {
     private byte[] image;
+    private int id;
 
     @Basic
     @Column(name = "image", nullable = false)
@@ -22,6 +24,16 @@ public class Map {
         this.image = image;
     }
 
+    @Id
+    @Column(name = "id", nullable = false)
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -29,6 +41,7 @@ public class Map {
 
         Map map = (Map) o;
 
+        if (id != map.id) return false;
         if (!Arrays.equals(image, map.image)) return false;
 
         return true;
@@ -36,6 +49,8 @@ public class Map {
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(image);
+        int result = Arrays.hashCode(image);
+        result = 31 * result + id;
+        return result;
     }
 }

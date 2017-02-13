@@ -12,8 +12,6 @@ public class Task {
     private Timestamp starttime;
     private Timestamp endtime;
     private String label;
-    private int employeeId;
-    private Integer locationId;
     private Employee employeeByEmployeeId;
     private Location locationByLocationId;
 
@@ -57,26 +55,6 @@ public class Task {
         this.label = label;
     }
 
-    @Basic
-    @Column(name = "Employee_id", nullable = false)
-    public int getEmployeeId() {
-        return employeeId;
-    }
-
-    public void setEmployeeId(int employeeId) {
-        this.employeeId = employeeId;
-    }
-
-    @Basic
-    @Column(name = "Location_id", nullable = true)
-    public Integer getLocationId() {
-        return locationId;
-    }
-
-    public void setLocationId(Integer locationId) {
-        this.locationId = locationId;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -85,11 +63,9 @@ public class Task {
         Task task = (Task) o;
 
         if (idTask != task.idTask) return false;
-        if (employeeId != task.employeeId) return false;
         if (starttime != null ? !starttime.equals(task.starttime) : task.starttime != null) return false;
         if (endtime != null ? !endtime.equals(task.endtime) : task.endtime != null) return false;
         if (label != null ? !label.equals(task.label) : task.label != null) return false;
-        if (locationId != null ? !locationId.equals(task.locationId) : task.locationId != null) return false;
 
         return true;
     }
@@ -100,8 +76,6 @@ public class Task {
         result = 31 * result + (starttime != null ? starttime.hashCode() : 0);
         result = 31 * result + (endtime != null ? endtime.hashCode() : 0);
         result = 31 * result + (label != null ? label.hashCode() : 0);
-        result = 31 * result + employeeId;
-        result = 31 * result + (locationId != null ? locationId.hashCode() : 0);
         return result;
     }
 

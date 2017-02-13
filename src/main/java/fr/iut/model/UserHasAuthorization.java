@@ -9,10 +9,30 @@ import javax.persistence.*;
 @Table(name = "User_has_Authorization", schema = "CampingSimulator", catalog = "")
 @IdClass(UserHasAuthorizationPK.class)
 public class UserHasAuthorization {
-    private int authorizationId;
-    private int userId;
     private Authorization authorizationByAuthorizationId;
     private User userByUserId;
+    private int authorizationId;
+    private int userId;
+
+    @ManyToOne
+    @JoinColumn(name = "Authorization_id", referencedColumnName = "id", nullable = false)
+    public Authorization getAuthorizationByAuthorizationId() {
+        return authorizationByAuthorizationId;
+    }
+
+    public void setAuthorizationByAuthorizationId(Authorization authorizationByAuthorizationId) {
+        this.authorizationByAuthorizationId = authorizationByAuthorizationId;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "User_id", referencedColumnName = "id", nullable = false)
+    public User getUserByUserId() {
+        return userByUserId;
+    }
+
+    public void setUserByUserId(User userByUserId) {
+        this.userByUserId = userByUserId;
+    }
 
     @Id
     @Column(name = "Authorization_id", nullable = false)
@@ -52,25 +72,5 @@ public class UserHasAuthorization {
         int result = authorizationId;
         result = 31 * result + userId;
         return result;
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "Authorization_id", referencedColumnName = "id", nullable = false)
-    public Authorization getAuthorizationByAuthorizationId() {
-        return authorizationByAuthorizationId;
-    }
-
-    public void setAuthorizationByAuthorizationId(Authorization authorizationByAuthorizationId) {
-        this.authorizationByAuthorizationId = authorizationByAuthorizationId;
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "User_id", referencedColumnName = "id", nullable = false)
-    public User getUserByUserId() {
-        return userByUserId;
-    }
-
-    public void setUserByUserId(User userByUserId) {
-        this.userByUserId = userByUserId;
     }
 }

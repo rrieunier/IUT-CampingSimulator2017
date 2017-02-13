@@ -9,10 +9,30 @@ import javax.persistence.*;
 @Table(name = "Client_has_Problem", schema = "CampingSimulator", catalog = "")
 @IdClass(ClientHasProblemPK.class)
 public class ClientHasProblem {
-    private int clientId;
-    private int problemId;
     private Client clientByClientId;
     private Problem problemByProblemId;
+    private int clientId;
+    private int problemId;
+
+    @ManyToOne
+    @JoinColumn(name = "Client_id", referencedColumnName = "id", nullable = false)
+    public Client getClientByClientId() {
+        return clientByClientId;
+    }
+
+    public void setClientByClientId(Client clientByClientId) {
+        this.clientByClientId = clientByClientId;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "Problem_id", referencedColumnName = "id", nullable = false)
+    public Problem getProblemByProblemId() {
+        return problemByProblemId;
+    }
+
+    public void setProblemByProblemId(Problem problemByProblemId) {
+        this.problemByProblemId = problemByProblemId;
+    }
 
     @Id
     @Column(name = "Client_id", nullable = false)
@@ -52,25 +72,5 @@ public class ClientHasProblem {
         int result = clientId;
         result = 31 * result + problemId;
         return result;
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "Client_id", referencedColumnName = "id", nullable = false)
-    public Client getClientByClientId() {
-        return clientByClientId;
-    }
-
-    public void setClientByClientId(Client clientByClientId) {
-        this.clientByClientId = clientByClientId;
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "Problem_id", referencedColumnName = "id", nullable = false)
-    public Problem getProblemByProblemId() {
-        return problemByProblemId;
-    }
-
-    public void setProblemByProblemId(Problem problemByProblemId) {
-        this.problemByProblemId = problemByProblemId;
     }
 }

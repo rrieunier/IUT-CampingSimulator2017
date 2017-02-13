@@ -11,8 +11,6 @@ public class Restocking {
     private int quantity;
     private Timestamp datetime;
     private int id;
-    private int supplierId;
-    private int productId;
     private Supplier supplierBySupplierId;
     private Product productByProductId;
 
@@ -46,26 +44,6 @@ public class Restocking {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "Supplier_id", nullable = false)
-    public int getSupplierId() {
-        return supplierId;
-    }
-
-    public void setSupplierId(int supplierId) {
-        this.supplierId = supplierId;
-    }
-
-    @Basic
-    @Column(name = "Product_id", nullable = false)
-    public int getProductId() {
-        return productId;
-    }
-
-    public void setProductId(int productId) {
-        this.productId = productId;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -75,8 +53,6 @@ public class Restocking {
 
         if (quantity != that.quantity) return false;
         if (id != that.id) return false;
-        if (supplierId != that.supplierId) return false;
-        if (productId != that.productId) return false;
         if (datetime != null ? !datetime.equals(that.datetime) : that.datetime != null) return false;
 
         return true;
@@ -87,8 +63,6 @@ public class Restocking {
         int result = quantity;
         result = 31 * result + (datetime != null ? datetime.hashCode() : 0);
         result = 31 * result + id;
-        result = 31 * result + supplierId;
-        result = 31 * result + productId;
         return result;
     }
 

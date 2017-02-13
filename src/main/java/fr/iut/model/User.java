@@ -11,8 +11,7 @@ public class User {
     private String login;
     private String password;
     private int id;
-    private Integer employeeId;
-    private Log logByLogin;
+    private Collection<Log> logsById;
     private Employee employeeByEmployeeId;
     private Collection<UserHasAuthorization> userHasAuthorizationsById;
 
@@ -46,16 +45,6 @@ public class User {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "Employee_id", nullable = true)
-    public Integer getEmployeeId() {
-        return employeeId;
-    }
-
-    public void setEmployeeId(Integer employeeId) {
-        this.employeeId = employeeId;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -66,7 +55,6 @@ public class User {
         if (id != user.id) return false;
         if (login != null ? !login.equals(user.login) : user.login != null) return false;
         if (password != null ? !password.equals(user.password) : user.password != null) return false;
-        if (employeeId != null ? !employeeId.equals(user.employeeId) : user.employeeId != null) return false;
 
         return true;
     }
@@ -76,18 +64,16 @@ public class User {
         int result = login != null ? login.hashCode() : 0;
         result = 31 * result + (password != null ? password.hashCode() : 0);
         result = 31 * result + id;
-        result = 31 * result + (employeeId != null ? employeeId.hashCode() : 0);
         return result;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "login", referencedColumnName = "user", nullable = false)
-    public Log getLogByLogin() {
-        return logByLogin;
+    @OneToMany(mappedBy = "userByUserId")
+    public Collection<Log> getLogsById() {
+        return logsById;
     }
 
-    public void setLogByLogin(Log logByLogin) {
-        this.logByLogin = logByLogin;
+    public void setLogsById(Collection<Log> logsById) {
+        this.logsById = logsById;
     }
 
     @ManyToOne

@@ -14,7 +14,6 @@ public class Spot {
     private boolean electricity;
     private boolean shadow;
     private int id;
-    private int spotTypeId;
     private Collection<Reservation> reservationsById;
     private Location locationById;
     private SpotType spotTypeBySpotTypeId;
@@ -79,16 +78,6 @@ public class Spot {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "SpotType_id", nullable = false)
-    public int getSpotTypeId() {
-        return spotTypeId;
-    }
-
-    public void setSpotTypeId(int spotTypeId) {
-        this.spotTypeId = spotTypeId;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -102,7 +91,6 @@ public class Spot {
         if (electricity != spot.electricity) return false;
         if (shadow != spot.shadow) return false;
         if (id != spot.id) return false;
-        if (spotTypeId != spot.spotTypeId) return false;
 
         return true;
     }
@@ -118,7 +106,6 @@ public class Spot {
         result = 31 * result + (electricity ? 1 : 0);
         result = 31 * result + (shadow ? 1 : 0);
         result = 31 * result + id;
-        result = 31 * result + spotTypeId;
         return result;
     }
 

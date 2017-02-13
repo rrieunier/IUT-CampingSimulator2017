@@ -14,8 +14,6 @@ public class Reservation {
     private Timestamp reservationDate;
     private int personCount;
     private int id;
-    private int spotId;
-    private int clientId;
     private Spot spotBySpotId;
     private Client clientByClientId;
 
@@ -79,26 +77,6 @@ public class Reservation {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "Spot_id", nullable = false)
-    public int getSpotId() {
-        return spotId;
-    }
-
-    public void setSpotId(int spotId) {
-        this.spotId = spotId;
-    }
-
-    @Basic
-    @Column(name = "Client_id", nullable = false)
-    public int getClientId() {
-        return clientId;
-    }
-
-    public void setClientId(int clientId) {
-        this.clientId = clientId;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -108,8 +86,6 @@ public class Reservation {
 
         if (personCount != that.personCount) return false;
         if (id != that.id) return false;
-        if (spotId != that.spotId) return false;
-        if (clientId != that.clientId) return false;
         if (clientComment != null ? !clientComment.equals(that.clientComment) : that.clientComment != null)
             return false;
         if (starttime != null ? !starttime.equals(that.starttime) : that.starttime != null) return false;
@@ -128,8 +104,6 @@ public class Reservation {
         result = 31 * result + (reservationDate != null ? reservationDate.hashCode() : 0);
         result = 31 * result + personCount;
         result = 31 * result + id;
-        result = 31 * result + spotId;
-        result = 31 * result + clientId;
         return result;
     }
 
