@@ -34,7 +34,7 @@ import java.util.Optional;
 public class MapCreatorView extends Scene {
 
     private final static int MAP_VIEWPORT_WIDTH = (int)(App.SCREEN_W*3/4);
-    private final static int MAP_VIEWPORT_HEIGHT = (int)(App.SCREEN_H*2/3);
+    private final static int MAP_VIEWPORT_HEIGHT = (int)(App.SCREEN_H/2);
     private App app;
     private ScrollPane mapViewPort;
     private ArrayList<LocationEntity> locations = new ArrayList<>();
@@ -129,13 +129,21 @@ public class MapCreatorView extends Scene {
                             Optional<Map<String, String>> edit_result = new LocationDialog(bigIcon, location).showAndWait();
 
                             edit_result.ifPresent(mapEditResult -> {
-                                location.setName(mapResult.get("name"));
-                                location.setPointX(map_coords.getMinX());
-                                location.setPointY(map_coords.getMinY());
-                                spot.setCapacity(Integer.parseInt(mapResult.get("capacity")));
-                                spot.setElectricity(Boolean.parseBoolean(mapResult.get("elec")));
-                                spot.setWater(Boolean.parseBoolean(mapResult.get("water")));
-                                spot.setShadow(Boolean.parseBoolean(mapResult.get("shadow")));
+
+                                if(mapEditResult.containsKey("delete")) {
+                                    mapPane.getChildren().remove(imageView);
+                                    locations.remove(location);
+                                }
+
+                                else {
+                                    location.setName(mapEditResult.get("name"));
+                                    location.setPointX(map_coords.getMinX());
+                                    location.setPointY(map_coords.getMinY());
+                                    spot.setCapacity(Integer.parseInt(mapEditResult.get("capacity")));
+                                    spot.setElectricity(Boolean.parseBoolean(mapEditResult.get("elec")));
+                                    spot.setWater(Boolean.parseBoolean(mapEditResult.get("water")));
+                                    spot.setShadow(Boolean.parseBoolean(mapEditResult.get("shadow")));
+                                }
                             });
                         });
 
@@ -278,7 +286,7 @@ public class MapCreatorView extends Scene {
             }
         });
 
-        VBox.setMargin(items, new Insets(10, App.SCREEN_W/4, 20, App.SCREEN_W/4));
+        VBox.setMargin(items, new Insets(10, App.SCREEN_W/5, 20, App.SCREEN_W/5));
         VBox.setMargin(mapViewPort, new Insets(20, 0, 20, 0));
         verticalWrap.getChildren().addAll(header, mapViewPort, items, buttonsBox);
 
