@@ -30,7 +30,7 @@ public class App extends Application {
         stage = primaryStage;
         primaryStage.setTitle("Camping Simulator 2017");
         Scene scene = new ConnectionView(this);
-        //scene = new MainView(this, "TestUser"); //TODO : remove
+        scene = new MainView(this, "TestUser"); //TODO : remove
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
 
