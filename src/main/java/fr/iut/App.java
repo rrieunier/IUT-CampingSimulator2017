@@ -79,6 +79,8 @@ public class App extends Application {
 
     public void logout() {
         stage.setScene(new ConnectionView(this));
+        stage.setWidth(ConnectionView.LOGIN_WIDTH);
+        stage.setHeight(ConnectionView.LOGIN_HEIGHT);
         stage.centerOnScreen();
     }
 }
