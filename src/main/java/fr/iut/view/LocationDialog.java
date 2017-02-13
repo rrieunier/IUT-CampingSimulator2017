@@ -34,8 +34,14 @@ public class LocationDialog extends Dialog<Map<String, String>> {
         setGraphic(imageView);
 
         ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
-        Button deleteButton = new Button("Supprimer");
-        getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
+        getDialogPane().getButtonTypes().add(okButtonType);
+
+        ButtonType deleteButtonType = new ButtonType("Supprimer", ButtonBar.ButtonData.FINISH);
+
+        if(location != null)
+            getDialogPane().getButtonTypes().add(deleteButtonType);
+
+        getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
 
         GridPane grid = new GridPane();
         grid.setHgap(10);
@@ -86,16 +92,24 @@ public class LocationDialog extends Dialog<Map<String, String>> {
         Platform.runLater(name::requestFocus);
 
         setResultConverter(dialogButton -> {
+
+            Map<String, String> map = null;
+
             if (dialogButton == okButtonType) {
-                Map<String, String> map = new HashMap<>(5);
+                map = new HashMap<>(5);
                 map.put("name", name.getText());
                 map.put("capacity", capacity.getValue().toString());
                 map.put("water", Boolean.toString(water.isSelected()));
                 map.put("elec", Boolean.toString(elec.isSelected()));
                 map.put("shadow", Boolean.toString(shadow.isSelected()));
-                return map;
             }
-            return null;
+
+            else if(dialogButton == deleteButtonType) {
+                map = new HashMap<>(1);
+                map.put("delete", "delete");
+            }
+
+            return map;
         });
     }
 }
