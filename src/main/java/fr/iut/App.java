@@ -1,13 +1,15 @@
 package fr.iut;
 
 import fr.iut.view.ConnectionView;
-import fr.iut.view.PermissionsView;
+import fr.iut.view.MainView;
+import fr.iut.view.MapCreatorView;
 import fr.iut.view.ProductManagerView;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.awt.*;
+import java.io.File;
 import java.util.ArrayList;
 
 public class App extends Application {
@@ -28,7 +30,7 @@ public class App extends Application {
         stage = primaryStage;
         primaryStage.setTitle("Camping Simulator 2017");
         Scene scene = new ConnectionView(this);
-
+        //scene = new MainView(this, "TestUser"); //TODO : remove
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
 
@@ -43,20 +45,13 @@ public class App extends Application {
 
     public void start(String username) {
 
-        stage.setScene(new ProductManagerView(this));
-        stage.setResizable(true);
-        stage.setMaximized(true);
-        stage.centerOnScreen();
-
-        /*
-        File mapFile = new File("map.png");
-        File delimiters = new File("map_components.xml");
         boolean mapIsAlreadyCreated = false;
 
         if(username.equals("dev")) //TODO : remove
             mapIsAlreadyCreated = true;
 
         //TODO : query DB
+
         Scene sceneToDisplay;
 
         if(mapIsAlreadyCreated)
@@ -69,7 +64,6 @@ public class App extends Application {
         getStage().setWidth(App.SCREEN_W);
         getStage().setHeight(App.SCREEN_H);
         stage.centerOnScreen();
-        */
     }
 
     public Stage getStage() {

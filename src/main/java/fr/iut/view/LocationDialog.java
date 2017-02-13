@@ -1,5 +1,7 @@
 package fr.iut.view;
 
+import fr.iut.model.LocationEntity;
+import fr.iut.model.SpotEntity;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -20,13 +22,19 @@ public class LocationDialog extends Dialog<Map<String, String>> {
         this(imageView, null);
     }
 
-    public LocationDialog(ImageView imageView, Location location) {
+    public LocationDialog(ImageView imageView, LocationEntity location) {
+
+        SpotEntity spot = null;
+
+        if(location != null)
+            spot = location.getSpot();
 
         setTitle("Création d'emplacement");
         setHeaderText("Renseignez les informations concernant cet emplacement.");
         setGraphic(imageView);
 
         ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+        Button deleteButton = new Button("Supprimer");
         getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
 
         GridPane grid = new GridPane();
@@ -43,18 +51,18 @@ public class LocationDialog extends Dialog<Map<String, String>> {
         Spinner<Integer> capacity = new Spinner<>();
         SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 99, 0);
 
-        if(location != null)
-            valueFactory.setValue(location.getCapacity());
+        if(spot != null)
+            valueFactory.setValue(spot.getCapacity());
 
         capacity.setValueFactory(valueFactory);
         CheckBox water = new CheckBox("Point d'eau");
         CheckBox elec = new CheckBox("Electricité");
         CheckBox shadow = new CheckBox("Ombre");
 
-        if(location != null) {
-            water.setSelected(location.hasWater());
-            elec.setSelected(location.hasElectricity());
-            shadow.setSelected(location.hasShadow());
+        if(spot != null) {
+            water.setSelected(spot.isWater());
+            elec.setSelected(spot.isElectricity());
+            shadow.setSelected(spot.isShadow());
         }
 
         grid.add(new Label("Nom:"), 0, 0);

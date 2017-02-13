@@ -1,6 +1,8 @@
 package fr.iut.view;
 
 import fr.iut.App;
+import fr.iut.model.LocationEntity;
+import fr.iut.model.SpotEntity;
 import javafx.application.Platform;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
@@ -35,7 +37,7 @@ public class MapCreatorView extends Scene {
     private final static int MAP_VIEWPORT_HEIGHT = (int)(App.SCREEN_H*2/3);
     private App app;
     private ScrollPane mapViewPort;
-    private ArrayList<Location> locations = new ArrayList<>();
+    private ArrayList<SpotEntity> locations = new ArrayList<>();
 
     private StackPane mapPane;
     private File mapFile = null;
@@ -111,26 +113,33 @@ public class MapCreatorView extends Scene {
                         imageView.setTranslateY(map_coords.getMinY());
                         mapPane.getChildren().add(imageView);
 
-                        Location location = new Location(mapResult.get("name"), Integer.parseInt(mapResult.get("capacity")));
-                        location.setPositionOnMap(map_coords.getMinX(), map_coords.getMinY());
-                        location.setHasElectricity(Boolean.parseBoolean(mapResult.get("elec")));
-                        location.setHasWater(Boolean.parseBoolean(mapResult.get("water")));
-                        location.setHasShadow(Boolean.parseBoolean(mapResult.get("shadow")));
+                        LocationEntity location = new LocationEntity();
+                        SpotEntity spot = new SpotEntity();
+                        location.setSpot(spot);
+
+                        location.setName(mapResult.get("name"));
+                        location.setPointX(map_coords.getMinX());
+                        location.setPointY(map_coords.getMinY());
+                        spot.setCapacity(Integer.parseInt(mapResult.get("capacity")));
+                        spot.setElectricity(Boolean.parseBoolean(mapResult.get("elec")));
+                        spot.setWater(Boolean.parseBoolean(mapResult.get("water")));
+                        spot.setShadow(Boolean.parseBoolean(mapResult.get("shadow")));
 
                         imageView.setOnMouseClicked(mouseEvent1 -> {
                             Optional<Map<String, String>> edit_result = new LocationDialog(bigIcon, location).showAndWait();
 
                             edit_result.ifPresent(mapEditResult -> {
-                                location.setName(mapEditResult.get("name"));
-                                location.setCapacity(Integer.parseInt(mapEditResult.get("capacity")));
-                                location.setPositionOnMap(map_coords.getMinX(), map_coords.getMinY());
-                                location.setHasElectricity(Boolean.parseBoolean(mapEditResult.get("elec")));
-                                location.setHasWater(Boolean.parseBoolean(mapEditResult.get("water")));
-                                location.setHasShadow(Boolean.parseBoolean(mapEditResult.get("shadow")));
+                                location.setName(mapResult.get("name"));
+                                location.setPointX(map_coords.getMinX());
+                                location.setPointY(map_coords.getMinY());
+                                spot.setCapacity(Integer.parseInt(mapResult.get("capacity")));
+                                spot.setElectricity(Boolean.parseBoolean(mapResult.get("elec")));
+                                spot.setWater(Boolean.parseBoolean(mapResult.get("water")));
+                                spot.setShadow(Boolean.parseBoolean(mapResult.get("shadow")));
                             });
                         });
 
-                        locations.add(location);
+                        locations.add(spot);
                     });
                 }
 
@@ -225,8 +234,11 @@ public class MapCreatorView extends Scene {
         });
 
         buttonFinish.setOnMouseClicked(mouseEvent -> {
+            System.out.println("Saving map & points in database");
+            /*
             for(Location location : locations)
                 location.store();
+                */
 
             app.start("dev");
         });
