@@ -7,6 +7,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.SubScene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
@@ -34,7 +35,7 @@ public class ProductManagerView extends SubScene {
 
         VBox wrapper = new VBox();
         wrapper.setMaxSize(PRODUCT_MANAGER_W, PRODUCT_MANAGER_H);
-        wrapper.setBorder(new Border(new BorderStroke(Color.WHITESMOKE, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(5))));
+        wrapper.setBorder(new Border(new BorderStroke(Color.TRANSPARENT, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(5))));
         wrapper.setPadding(new Insets(20));
         wrapper.setLayoutY(33);
 
@@ -95,8 +96,22 @@ public class ProductManagerView extends SubScene {
             grid.setMargin(value, new Insets(0 ,30, 0, 30));
         }
 
+        HBox buttons = new HBox();
+        buttons.setSpacing(PRODUCT_MANAGER_W / 8);
+        for(int i = 0 ; i < 2 ; i++) {
+            Button button = new Button();
+            if (i == 0)
+                button.setText("Réaprovisionner");
+            else
+                button.setText("Modifier");
+            button.setPrefWidth(PRODUCT_MANAGER_W / 6);
+            button.getStylesheets().add(new File("res/style.css").toURI().toString());
+            button.getStyleClass().add("record-sales");
+            buttons.getChildren().add(button);
+        }
 
-        details.getChildren().addAll(details_header, grid);
+        details.getChildren().addAll(details_header, grid, buttons);
+        details.setMargin(buttons, new Insets(PRODUCT_MANAGER_H / 15 ,0, 0, PRODUCT_MANAGER_W / 9));
 
         for (String s : controller.getProductsList()) { //a modifier après la génération des entités
             StackPane pane = new StackPane();

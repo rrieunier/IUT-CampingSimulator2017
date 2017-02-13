@@ -50,9 +50,7 @@ public class ConnectionView extends Scene {
 
         VBox wrapper = new VBox();
 
-        StackPane header = new StackPane();
-        Rectangle title_back = new Rectangle(); // rectangle de fond du titre
-        Text title = new Text("Connexion");
+        HeaderView header = new HeaderView("Connexion");
 
         VBox fields = new VBox();
         TextField password_shown = new TextField(); // affiché quand "afficher le mdp" est coché
@@ -61,12 +59,6 @@ public class ConnectionView extends Scene {
 
         Button confirm = new Button("Valider");
 
-        title_back.setWidth(LOGIN_WIDTH);
-        title_back.setHeight(LOGIN_HEIGHT / 6);
-        title_back.setFill(Color.rgb(55, 77, 114));
-        title.setFill(Color.WHITESMOKE);
-        title.setFont(Font.font("DejaVu Sans", 30));
-        header.getChildren().addAll(title_back, title);
 
         login_field.setMaxWidth(LOGIN_WIDTH / 1.1);
         login_field.setMinHeight(LOGIN_HEIGHT / 8);
@@ -98,7 +90,7 @@ public class ConnectionView extends Scene {
         password_shown.setStyle("-fx-font-weight: bold;" +
                 "-fx-font-size: 17px");
         password_shown.setLayoutX(LOGIN_WIDTH / 21.7);
-        password_shown.setLayoutY(LOGIN_HEIGHT / 2.26);
+        password_shown.setLayoutY(LOGIN_HEIGHT / 2.41);
         password_shown.setVisible(false);
         password_field.textProperty().bindBidirectional(password_shown.textProperty());
 
@@ -138,6 +130,7 @@ public class ConnectionView extends Scene {
 
         wrapper.setSpacing(LOGIN_HEIGHT / 10);
         wrapper.setAlignment(Pos.CENTER);
+        wrapper.setPrefWidth(LOGIN_WIDTH);
         wrapper.getChildren().addAll(header, fields, radio_buttons);
 
         components.getChildren().addAll(wrapper, confirm, password_shown);
