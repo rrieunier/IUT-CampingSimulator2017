@@ -35,9 +35,9 @@ public class MainView extends Scene {
         components.setStyle("-fx-background-color: rgb(12, 27, 51);");
         RowConstraints row1 = new RowConstraints();
         RowConstraints row2 = new RowConstraints();
-        row1.setPercentHeight(87);
-        row2.setPercentHeight(13);
-        row2.setValignment(VPos.TOP);
+        row1.setPercentHeight(90);
+        row2.setPercentHeight(10);
+        row2.setValignment(VPos.BOTTOM);
         components.getRowConstraints().addAll(row1, row2);
 
         TabPane tabPane = new TabPane();
@@ -69,6 +69,8 @@ public class MainView extends Scene {
         decoButton.getStyleClass().add("record-sales");
         decoButton.setMinWidth(welcome_text.getLayoutBounds().getWidth());
 
+        decoButton.setOnAction(actionEvent -> app.logout());
+
         VBox.setMargin(welcome_text, new Insets(0, 0, 0, 30));
         VBox.setMargin(decoButton, new Insets(0, 0, 0, 30));
 
@@ -78,7 +80,6 @@ public class MainView extends Scene {
     }
 
     private void buildManagmentTab(Tab tab) {
-        //TODO : Faire des boutons plutot que des onglets ca sera plus simple...
         tab.setText("Gestion");
 
         StackPane container = new StackPane();
@@ -137,11 +138,12 @@ public class MainView extends Scene {
 
     private void buildMapTab(Tab tab) {
         tab.setText("Carte");
+
         GridPane container = new GridPane();
-//        container.setMinSize(App.SCREEN_W, App.SCREEN_H);
         container.setStyle("-fx-background-color: rgb(12, 27, 51);");
 
 
+        //TODO : ajouter la carte au GridPane
 
         tab.setContent(container);
     }
