@@ -5,7 +5,7 @@ import javax.persistence.Id;
 import java.io.Serializable;
 
 /**
- * Created by Sydpy on 2/12/17.
+ * Created by Sydpy on 2/13/17.
  */
 public class LocationHasProblemEntityPK implements Serializable {
     private int locationId;

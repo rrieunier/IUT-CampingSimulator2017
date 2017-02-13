@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 
 /**
- * Created by Sydpy on 2/12/17.
+ * Created by Sydpy on 2/13/17.
  */
 @Entity
 @Table(name = "Reservation", schema = "CampingSimulator", catalog = "")

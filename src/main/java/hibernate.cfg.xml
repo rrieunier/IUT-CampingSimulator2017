@@ -6,8 +6,8 @@
     <session-factory>
         <property name="connection.url">jdbc:mysql://localhost:3306/CampingSimulator</property>
         <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
-        <mapping class="fr.iut.model.AuthorizationEntity"/>
         <mapping resource="fr/iut/model/mapping.xml"/>
+        <mapping class="fr.iut.model.AuthorizationEntity"/>
         <mapping class="fr.iut.model.ClientEntity"/>
         <mapping class="fr.iut.model.ClientHasProblemEntity"/>
         <mapping class="fr.iut.model.EmployeeEntity"/>
@@ -28,8 +28,8 @@
         <mapping class="fr.iut.model.UserEntity"/>
         <mapping class="fr.iut.model.UserHasAuthorizationEntity"/>
         <mapping class="fr.iut.model.PurchasesOnReservationEntity"/>
-        <property name="connection.username">camping</property>
-        <property name="connection.password">camping</property>
+        <!-- <property name="connection.username"/> -->
+        <!-- <property name="connection.password"/> -->
 
         <!-- DB schema will be updated if needed -->
         <!-- <property name="hbm2ddl.auto">update</property> -->

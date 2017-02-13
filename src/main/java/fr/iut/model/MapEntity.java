@@ -7,7 +7,7 @@ import javax.persistence.Table;
 import java.util.Arrays;
 
 /**
- * Created by Sydpy on 2/12/17.
+ * Created by Sydpy on 2/13/17.
  */
 @Entity
 @Table(name = "Map", schema = "CampingSimulator", catalog = "")

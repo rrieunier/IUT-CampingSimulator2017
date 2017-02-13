@@ -3,16 +3,16 @@ package fr.iut.model;
 import javax.persistence.*;
 
 /**
- * Created by Sydpy on 2/12/17.
+ * Created by Sydpy on 2/13/17.
  */
 @Entity
 @Table(name = "Spot", schema = "CampingSimulator", catalog = "")
 public class SpotEntity {
     private double pricePerDay;
     private int capacity;
-    private byte water;
-    private byte electricity;
-    private byte shadow;
+    private boolean water;
+    private boolean electricity;
+    private boolean shadow;
     private int id;
     private int spotTypeId;
     private LocationEntity location;
@@ -39,31 +39,31 @@ public class SpotEntity {
 
     @Basic
     @Column(name = "water", nullable = false)
-    public byte getWater() {
+    public boolean isWater() {
         return water;
     }
 
-    public void setWater(byte water) {
+    public void setWater(boolean water) {
         this.water = water;
     }
 
     @Basic
     @Column(name = "electricity", nullable = false)
-    public byte getElectricity() {
+    public boolean isElectricity() {
         return electricity;
     }
 
-    public void setElectricity(byte electricity) {
+    public void setElectricity(boolean electricity) {
         this.electricity = electricity;
     }
 
     @Basic
     @Column(name = "shadow", nullable = false)
-    public byte getShadow() {
+    public boolean isShadow() {
         return shadow;
     }
 
-    public void setShadow(byte shadow) {
+    public void setShadow(boolean shadow) {
         this.shadow = shadow;
     }
 
@@ -112,15 +112,15 @@ public class SpotEntity {
         temp = Double.doubleToLongBits(pricePerDay);
         result = (int) (temp ^ (temp >>> 32));
         result = 31 * result + capacity;
-        result = 31 * result + (int) water;
-        result = 31 * result + (int) electricity;
-        result = 31 * result + (int) shadow;
+        result = 31 * result + (water ? 1 : 0);
+        result = 31 * result + (electricity ? 1 : 0);
+        result = 31 * result + (shadow ? 1 : 0);
         result = 31 * result + id;
         result = 31 * result + spotTypeId;
         return result;
     }
 
-    @OneToOne
+    @OneToOne(mappedBy = "spot")
     public LocationEntity getLocation() {
         return location;
     }

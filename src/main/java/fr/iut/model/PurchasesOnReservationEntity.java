@@ -6,7 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
- * Created by Sydpy on 2/12/17.
+ * Created by Sydpy on 2/13/17.
  */
 @Entity
 @Table(name = "PurchasesOnReservation", schema = "CampingSimulator", catalog = "")

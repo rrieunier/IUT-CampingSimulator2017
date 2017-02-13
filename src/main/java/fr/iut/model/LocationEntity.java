@@ -3,7 +3,7 @@ package fr.iut.model;
 import javax.persistence.*;
 
 /**
- * Created by Sydpy on 2/12/17.
+ * Created by Sydpy on 2/13/17.
  */
 @Entity
 @Table(name = "Location", schema = "CampingSimulator", catalog = "")
@@ -78,7 +78,7 @@ public class LocationEntity {
         return result;
     }
 
-    @OneToOne(mappedBy = "location")
+    @OneToOne
     public SpotEntity getSpot() {
         return spot;
     }
