@@ -1,15 +1,16 @@
 package fr.iut.model;
 
 import javax.persistence.*;
+import java.util.Collection;
 
 /**
  * Created by Sydpy on 2/13/17.
  */
 @Entity
-@Table(name = "Authorization", schema = "CampingSimulator", catalog = "")
-public class AuthorizationEntity {
+public class Authorization {
     private String label;
     private int id;
+    private Collection<UserHasAuthorization> userHasAuthorizationsById;
 
     @Basic
     @Column(name = "label", nullable = true, length = 45)
@@ -36,7 +37,7 @@ public class AuthorizationEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        AuthorizationEntity that = (AuthorizationEntity) o;
+        Authorization that = (Authorization) o;
 
         if (id != that.id) return false;
         if (label != null ? !label.equals(that.label) : that.label != null) return false;
@@ -49,5 +50,14 @@ public class AuthorizationEntity {
         int result = label != null ? label.hashCode() : 0;
         result = 31 * result + id;
         return result;
+    }
+
+    @OneToMany(mappedBy = "authorizationByAuthorizationId")
+    public Collection<UserHasAuthorization> getUserHasAuthorizationsById() {
+        return userHasAuthorizationsById;
+    }
+
+    public void setUserHasAuthorizationsById(Collection<UserHasAuthorization> userHasAuthorizationsById) {
+        this.userHasAuthorizationsById = userHasAuthorizationsById;
     }
 }

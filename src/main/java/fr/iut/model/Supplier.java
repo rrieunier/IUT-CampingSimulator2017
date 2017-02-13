@@ -1,18 +1,20 @@
 package fr.iut.model;
 
 import javax.persistence.*;
+import java.util.Collection;
 
 /**
  * Created by Sydpy on 2/13/17.
  */
 @Entity
-@Table(name = "Supplier", schema = "CampingSimulator", catalog = "")
-public class SupplierEntity {
+public class Supplier {
     private String name;
     private String phone;
     private String email;
     private String website;
     private int id;
+    private Collection<Restocking> restockingsById;
+    private Collection<SupplierHasProduct> supplierHasProductsById;
 
     @Basic
     @Column(name = "name", nullable = false, length = 45)
@@ -69,13 +71,13 @@ public class SupplierEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        SupplierEntity that = (SupplierEntity) o;
+        Supplier supplier = (Supplier) o;
 
-        if (id != that.id) return false;
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (phone != null ? !phone.equals(that.phone) : that.phone != null) return false;
-        if (email != null ? !email.equals(that.email) : that.email != null) return false;
-        if (website != null ? !website.equals(that.website) : that.website != null) return false;
+        if (id != supplier.id) return false;
+        if (name != null ? !name.equals(supplier.name) : supplier.name != null) return false;
+        if (phone != null ? !phone.equals(supplier.phone) : supplier.phone != null) return false;
+        if (email != null ? !email.equals(supplier.email) : supplier.email != null) return false;
+        if (website != null ? !website.equals(supplier.website) : supplier.website != null) return false;
 
         return true;
     }
@@ -88,5 +90,23 @@ public class SupplierEntity {
         result = 31 * result + (website != null ? website.hashCode() : 0);
         result = 31 * result + id;
         return result;
+    }
+
+    @OneToMany(mappedBy = "supplierBySupplierId")
+    public Collection<Restocking> getRestockingsById() {
+        return restockingsById;
+    }
+
+    public void setRestockingsById(Collection<Restocking> restockingsById) {
+        this.restockingsById = restockingsById;
+    }
+
+    @OneToMany(mappedBy = "supplierBySupplierId")
+    public Collection<SupplierHasProduct> getSupplierHasProductsById() {
+        return supplierHasProductsById;
+    }
+
+    public void setSupplierHasProductsById(Collection<SupplierHasProduct> supplierHasProductsById) {
+        this.supplierHasProductsById = supplierHasProductsById;
     }
 }

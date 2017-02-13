@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * Created by Sydpy on 2/13/17.
  */
-public class SupplierHasProductEntityPK implements Serializable {
+public class SupplierHasProductPK implements Serializable {
     private int supplierId;
     private int productId;
 
@@ -36,7 +36,7 @@ public class SupplierHasProductEntityPK implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        SupplierHasProductEntityPK that = (SupplierHasProductEntityPK) o;
+        SupplierHasProductPK that = (SupplierHasProductPK) o;
 
         if (supplierId != that.supplierId) return false;
         if (productId != that.productId) return false;

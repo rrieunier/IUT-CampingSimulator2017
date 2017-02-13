@@ -1,8 +1,8 @@
 package fr.iut.view;
 
 import fr.iut.App;
-import fr.iut.model.LocationEntity;
-import fr.iut.model.SpotEntity;
+import fr.iut.model.Location;
+import fr.iut.model.Spot;
 import javafx.application.Platform;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
@@ -37,7 +37,7 @@ public class MapCreatorView extends Scene {
     private final static int MAP_VIEWPORT_HEIGHT = (int)(App.SCREEN_H/2);
     private App app;
     private ScrollPane mapViewPort;
-    private ArrayList<LocationEntity> locations = new ArrayList<>();
+    private ArrayList<Location> locations = new ArrayList<>();
 
     private StackPane mapPane;
     private File mapFile = null;
@@ -113,9 +113,9 @@ public class MapCreatorView extends Scene {
                         imageView.setTranslateY(map_coords.getMinY());
                         mapPane.getChildren().add(imageView);
 
-                        LocationEntity location = new LocationEntity();
-                        SpotEntity spot = new SpotEntity();
-                        location.setSpot(spot);
+                        Location location = new Location();
+                        Spot spot = new Spot();
+                        location.setSpotById(spot);
 
                         location.setName(mapResult.get("name"));
                         location.setPointX(map_coords.getMinX());

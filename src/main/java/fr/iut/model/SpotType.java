@@ -1,15 +1,16 @@
 package fr.iut.model;
 
 import javax.persistence.*;
+import java.util.Collection;
 
 /**
  * Created by Sydpy on 2/13/17.
  */
 @Entity
-@Table(name = "SpotType", schema = "CampingSimulator", catalog = "")
-public class SpotTypeEntity {
+public class SpotType {
     private String label;
     private int id;
+    private Collection<Spot> spotsById;
 
     @Basic
     @Column(name = "label", nullable = false, length = 45)
@@ -36,10 +37,10 @@ public class SpotTypeEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        SpotTypeEntity that = (SpotTypeEntity) o;
+        SpotType spotType = (SpotType) o;
 
-        if (id != that.id) return false;
-        if (label != null ? !label.equals(that.label) : that.label != null) return false;
+        if (id != spotType.id) return false;
+        if (label != null ? !label.equals(spotType.label) : spotType.label != null) return false;
 
         return true;
     }
@@ -49,5 +50,14 @@ public class SpotTypeEntity {
         int result = label != null ? label.hashCode() : 0;
         result = 31 * result + id;
         return result;
+    }
+
+    @OneToMany(mappedBy = "spotTypeBySpotTypeId")
+    public Collection<Spot> getSpotsById() {
+        return spotsById;
+    }
+
+    public void setSpotsById(Collection<Spot> spotsById) {
+        this.spotsById = spotsById;
     }
 }

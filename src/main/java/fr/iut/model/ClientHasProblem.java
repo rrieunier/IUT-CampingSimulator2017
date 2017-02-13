@@ -7,10 +7,12 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "Client_has_Problem", schema = "CampingSimulator", catalog = "")
-@IdClass(ClientHasProblemEntityPK.class)
-public class ClientHasProblemEntity {
+@IdClass(ClientHasProblemPK.class)
+public class ClientHasProblem {
     private int clientId;
     private int problemId;
+    private Client clientByClientId;
+    private Problem problemByProblemId;
 
     @Id
     @Column(name = "Client_id", nullable = false)
@@ -37,7 +39,7 @@ public class ClientHasProblemEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        ClientHasProblemEntity that = (ClientHasProblemEntity) o;
+        ClientHasProblem that = (ClientHasProblem) o;
 
         if (clientId != that.clientId) return false;
         if (problemId != that.problemId) return false;
@@ -50,5 +52,25 @@ public class ClientHasProblemEntity {
         int result = clientId;
         result = 31 * result + problemId;
         return result;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "Client_id", referencedColumnName = "id", nullable = false)
+    public Client getClientByClientId() {
+        return clientByClientId;
+    }
+
+    public void setClientByClientId(Client clientByClientId) {
+        this.clientByClientId = clientByClientId;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "Problem_id", referencedColumnName = "id", nullable = false)
+    public Problem getProblemByProblemId() {
+        return problemByProblemId;
+    }
+
+    public void setProblemByProblemId(Problem problemByProblemId) {
+        this.problemByProblemId = problemByProblemId;
     }
 }

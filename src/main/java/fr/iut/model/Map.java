@@ -3,15 +3,13 @@ package fr.iut.model;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Table;
 import java.util.Arrays;
 
 /**
  * Created by Sydpy on 2/13/17.
  */
 @Entity
-@Table(name = "Map", schema = "CampingSimulator", catalog = "")
-public class MapEntity {
+public class Map {
     private byte[] image;
 
     @Basic
@@ -29,9 +27,9 @@ public class MapEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        MapEntity mapEntity = (MapEntity) o;
+        Map map = (Map) o;
 
-        if (!Arrays.equals(image, mapEntity.image)) return false;
+        if (!Arrays.equals(image, map.image)) return false;
 
         return true;
     }

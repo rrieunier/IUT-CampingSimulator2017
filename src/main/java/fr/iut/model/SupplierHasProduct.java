@@ -7,11 +7,13 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "Supplier_has_Product", schema = "CampingSimulator", catalog = "")
-@IdClass(SupplierHasProductEntityPK.class)
-public class SupplierHasProductEntity {
+@IdClass(SupplierHasProductPK.class)
+public class SupplierHasProduct {
     private double buyPrice;
     private int supplierId;
     private int productId;
+    private Supplier supplierBySupplierId;
+    private Product productByProductId;
 
     @Basic
     @Column(name = "buy_price", nullable = false, precision = 0)
@@ -48,7 +50,7 @@ public class SupplierHasProductEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        SupplierHasProductEntity that = (SupplierHasProductEntity) o;
+        SupplierHasProduct that = (SupplierHasProduct) o;
 
         if (Double.compare(that.buyPrice, buyPrice) != 0) return false;
         if (supplierId != that.supplierId) return false;
@@ -66,5 +68,25 @@ public class SupplierHasProductEntity {
         result = 31 * result + supplierId;
         result = 31 * result + productId;
         return result;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "Supplier_id", referencedColumnName = "id", nullable = false)
+    public Supplier getSupplierBySupplierId() {
+        return supplierBySupplierId;
+    }
+
+    public void setSupplierBySupplierId(Supplier supplierBySupplierId) {
+        this.supplierBySupplierId = supplierBySupplierId;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "Product_id", referencedColumnName = "id", nullable = false)
+    public Product getProductByProductId() {
+        return productByProductId;
+    }
+
+    public void setProductByProductId(Product productByProductId) {
+        this.productByProductId = productByProductId;
     }
 }

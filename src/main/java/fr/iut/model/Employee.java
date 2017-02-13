@@ -1,19 +1,21 @@
 package fr.iut.model;
 
 import javax.persistence.*;
+import java.util.Collection;
 
 /**
  * Created by Sydpy on 2/13/17.
  */
 @Entity
-@Table(name = "Employee", schema = "CampingSimulator", catalog = "")
-public class EmployeeEntity {
+public class Employee {
     private String lastName;
     private String firstName;
     private String phone;
     private String email;
     private String completeAddress;
     private int id;
+    private Collection<Task> tasksById;
+    private Collection<User> usersById;
 
     @Basic
     @Column(name = "last_name", nullable = false, length = 45)
@@ -80,14 +82,14 @@ public class EmployeeEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        EmployeeEntity that = (EmployeeEntity) o;
+        Employee employee = (Employee) o;
 
-        if (id != that.id) return false;
-        if (lastName != null ? !lastName.equals(that.lastName) : that.lastName != null) return false;
-        if (firstName != null ? !firstName.equals(that.firstName) : that.firstName != null) return false;
-        if (phone != null ? !phone.equals(that.phone) : that.phone != null) return false;
-        if (email != null ? !email.equals(that.email) : that.email != null) return false;
-        if (completeAddress != null ? !completeAddress.equals(that.completeAddress) : that.completeAddress != null)
+        if (id != employee.id) return false;
+        if (lastName != null ? !lastName.equals(employee.lastName) : employee.lastName != null) return false;
+        if (firstName != null ? !firstName.equals(employee.firstName) : employee.firstName != null) return false;
+        if (phone != null ? !phone.equals(employee.phone) : employee.phone != null) return false;
+        if (email != null ? !email.equals(employee.email) : employee.email != null) return false;
+        if (completeAddress != null ? !completeAddress.equals(employee.completeAddress) : employee.completeAddress != null)
             return false;
 
         return true;
@@ -102,5 +104,23 @@ public class EmployeeEntity {
         result = 31 * result + (completeAddress != null ? completeAddress.hashCode() : 0);
         result = 31 * result + id;
         return result;
+    }
+
+    @OneToMany(mappedBy = "employeeByEmployeeId")
+    public Collection<Task> getTasksById() {
+        return tasksById;
+    }
+
+    public void setTasksById(Collection<Task> tasksById) {
+        this.tasksById = tasksById;
+    }
+
+    @OneToMany(mappedBy = "employeeByEmployeeId")
+    public Collection<User> getUsersById() {
+        return usersById;
+    }
+
+    public void setUsersById(Collection<User> usersById) {
+        this.usersById = usersById;
     }
 }

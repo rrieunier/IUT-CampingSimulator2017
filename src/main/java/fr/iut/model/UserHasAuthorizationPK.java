@@ -1,19 +1,18 @@
 package fr.iut.model;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Id;
+import java.io.Serializable;
 
 /**
  * Created by Sydpy on 2/13/17.
  */
-@Entity
-@Table(name = "User_has_Authorization", schema = "CampingSimulator", catalog = "")
-@IdClass(UserHasAuthorizationEntityPK.class)
-public class UserHasAuthorizationEntity {
+public class UserHasAuthorizationPK implements Serializable {
     private int authorizationId;
     private int userId;
 
-    @Id
     @Column(name = "Authorization_id", nullable = false)
+    @Id
     public int getAuthorizationId() {
         return authorizationId;
     }
@@ -22,8 +21,8 @@ public class UserHasAuthorizationEntity {
         this.authorizationId = authorizationId;
     }
 
-    @Id
     @Column(name = "User_id", nullable = false)
+    @Id
     public int getUserId() {
         return userId;
     }
@@ -37,7 +36,7 @@ public class UserHasAuthorizationEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        UserHasAuthorizationEntity that = (UserHasAuthorizationEntity) o;
+        UserHasAuthorizationPK that = (UserHasAuthorizationPK) o;
 
         if (authorizationId != that.authorizationId) return false;
         if (userId != that.userId) return false;

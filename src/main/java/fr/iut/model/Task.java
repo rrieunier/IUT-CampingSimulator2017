@@ -7,14 +7,15 @@ import java.sql.Timestamp;
  * Created by Sydpy on 2/13/17.
  */
 @Entity
-@Table(name = "Task", schema = "CampingSimulator", catalog = "")
-public class TaskEntity {
+public class Task {
     private int idTask;
     private Timestamp starttime;
     private Timestamp endtime;
     private String label;
     private int employeeId;
     private Integer locationId;
+    private Employee employeeByEmployeeId;
+    private Location locationByLocationId;
 
     @Id
     @Column(name = "idTask", nullable = false)
@@ -81,14 +82,14 @@ public class TaskEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        TaskEntity that = (TaskEntity) o;
+        Task task = (Task) o;
 
-        if (idTask != that.idTask) return false;
-        if (employeeId != that.employeeId) return false;
-        if (starttime != null ? !starttime.equals(that.starttime) : that.starttime != null) return false;
-        if (endtime != null ? !endtime.equals(that.endtime) : that.endtime != null) return false;
-        if (label != null ? !label.equals(that.label) : that.label != null) return false;
-        if (locationId != null ? !locationId.equals(that.locationId) : that.locationId != null) return false;
+        if (idTask != task.idTask) return false;
+        if (employeeId != task.employeeId) return false;
+        if (starttime != null ? !starttime.equals(task.starttime) : task.starttime != null) return false;
+        if (endtime != null ? !endtime.equals(task.endtime) : task.endtime != null) return false;
+        if (label != null ? !label.equals(task.label) : task.label != null) return false;
+        if (locationId != null ? !locationId.equals(task.locationId) : task.locationId != null) return false;
 
         return true;
     }
@@ -102,5 +103,25 @@ public class TaskEntity {
         result = 31 * result + employeeId;
         result = 31 * result + (locationId != null ? locationId.hashCode() : 0);
         return result;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "Employee_id", referencedColumnName = "id", nullable = false)
+    public Employee getEmployeeByEmployeeId() {
+        return employeeByEmployeeId;
+    }
+
+    public void setEmployeeByEmployeeId(Employee employeeByEmployeeId) {
+        this.employeeByEmployeeId = employeeByEmployeeId;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "Location_id", referencedColumnName = "id")
+    public Location getLocationByLocationId() {
+        return locationByLocationId;
+    }
+
+    public void setLocationByLocationId(Location locationByLocationId) {
+        this.locationByLocationId = locationByLocationId;
     }
 }

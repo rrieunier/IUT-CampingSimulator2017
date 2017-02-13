@@ -1,17 +1,20 @@
 package fr.iut.model;
 
 import javax.persistence.*;
+import java.util.Collection;
 
 /**
  * Created by Sydpy on 2/13/17.
  */
 @Entity
-@Table(name = "User", schema = "CampingSimulator", catalog = "")
-public class UserEntity {
+public class User {
     private String login;
     private String password;
     private int id;
     private Integer employeeId;
+    private Log logByLogin;
+    private Employee employeeByEmployeeId;
+    private Collection<UserHasAuthorization> userHasAuthorizationsById;
 
     @Basic
     @Column(name = "login", nullable = false, length = 20)
@@ -58,12 +61,12 @@ public class UserEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        UserEntity that = (UserEntity) o;
+        User user = (User) o;
 
-        if (id != that.id) return false;
-        if (login != null ? !login.equals(that.login) : that.login != null) return false;
-        if (password != null ? !password.equals(that.password) : that.password != null) return false;
-        if (employeeId != null ? !employeeId.equals(that.employeeId) : that.employeeId != null) return false;
+        if (id != user.id) return false;
+        if (login != null ? !login.equals(user.login) : user.login != null) return false;
+        if (password != null ? !password.equals(user.password) : user.password != null) return false;
+        if (employeeId != null ? !employeeId.equals(user.employeeId) : user.employeeId != null) return false;
 
         return true;
     }
@@ -75,5 +78,34 @@ public class UserEntity {
         result = 31 * result + id;
         result = 31 * result + (employeeId != null ? employeeId.hashCode() : 0);
         return result;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "login", referencedColumnName = "user", nullable = false)
+    public Log getLogByLogin() {
+        return logByLogin;
+    }
+
+    public void setLogByLogin(Log logByLogin) {
+        this.logByLogin = logByLogin;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "Employee_id", referencedColumnName = "id")
+    public Employee getEmployeeByEmployeeId() {
+        return employeeByEmployeeId;
+    }
+
+    public void setEmployeeByEmployeeId(Employee employeeByEmployeeId) {
+        this.employeeByEmployeeId = employeeByEmployeeId;
+    }
+
+    @OneToMany(mappedBy = "userByUserId")
+    public Collection<UserHasAuthorization> getUserHasAuthorizationsById() {
+        return userHasAuthorizationsById;
+    }
+
+    public void setUserHasAuthorizationsById(Collection<UserHasAuthorization> userHasAuthorizationsById) {
+        this.userHasAuthorizationsById = userHasAuthorizationsById;
     }
 }

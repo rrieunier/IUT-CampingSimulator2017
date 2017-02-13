@@ -7,13 +7,14 @@ import java.sql.Timestamp;
  * Created by Sydpy on 2/13/17.
  */
 @Entity
-@Table(name = "Restocking", schema = "CampingSimulator", catalog = "")
-public class RestockingEntity {
+public class Restocking {
     private int quantity;
     private Timestamp datetime;
     private int id;
     private int supplierId;
     private int productId;
+    private Supplier supplierBySupplierId;
+    private Product productByProductId;
 
     @Basic
     @Column(name = "quantity", nullable = false)
@@ -70,7 +71,7 @@ public class RestockingEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        RestockingEntity that = (RestockingEntity) o;
+        Restocking that = (Restocking) o;
 
         if (quantity != that.quantity) return false;
         if (id != that.id) return false;
@@ -89,5 +90,25 @@ public class RestockingEntity {
         result = 31 * result + supplierId;
         result = 31 * result + productId;
         return result;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "Supplier_id", referencedColumnName = "id", nullable = false)
+    public Supplier getSupplierBySupplierId() {
+        return supplierBySupplierId;
+    }
+
+    public void setSupplierBySupplierId(Supplier supplierBySupplierId) {
+        this.supplierBySupplierId = supplierBySupplierId;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "Product_id", referencedColumnName = "id", nullable = false)
+    public Product getProductByProductId() {
+        return productByProductId;
+    }
+
+    public void setProductByProductId(Product productByProductId) {
+        this.productByProductId = productByProductId;
     }
 }

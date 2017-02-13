@@ -1,18 +1,21 @@
 package fr.iut.model;
 
 import javax.persistence.*;
+import java.util.Collection;
 
 /**
  * Created by Sydpy on 2/13/17.
  */
 @Entity
-@Table(name = "Client", schema = "CampingSimulator", catalog = "")
-public class ClientEntity {
+public class Client {
     private String lastName;
     private String firstName;
     private String phone;
     private String email;
     private int id;
+    private Collection<ClientHasProblem> clientHasProblemsById;
+    private Collection<Purchase> purchasesById;
+    private Collection<Reservation> reservationsById;
 
     @Basic
     @Column(name = "last_name", nullable = false, length = 45)
@@ -69,13 +72,13 @@ public class ClientEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        ClientEntity that = (ClientEntity) o;
+        Client client = (Client) o;
 
-        if (id != that.id) return false;
-        if (lastName != null ? !lastName.equals(that.lastName) : that.lastName != null) return false;
-        if (firstName != null ? !firstName.equals(that.firstName) : that.firstName != null) return false;
-        if (phone != null ? !phone.equals(that.phone) : that.phone != null) return false;
-        if (email != null ? !email.equals(that.email) : that.email != null) return false;
+        if (id != client.id) return false;
+        if (lastName != null ? !lastName.equals(client.lastName) : client.lastName != null) return false;
+        if (firstName != null ? !firstName.equals(client.firstName) : client.firstName != null) return false;
+        if (phone != null ? !phone.equals(client.phone) : client.phone != null) return false;
+        if (email != null ? !email.equals(client.email) : client.email != null) return false;
 
         return true;
     }
@@ -88,5 +91,32 @@ public class ClientEntity {
         result = 31 * result + (email != null ? email.hashCode() : 0);
         result = 31 * result + id;
         return result;
+    }
+
+    @OneToMany(mappedBy = "clientByClientId")
+    public Collection<ClientHasProblem> getClientHasProblemsById() {
+        return clientHasProblemsById;
+    }
+
+    public void setClientHasProblemsById(Collection<ClientHasProblem> clientHasProblemsById) {
+        this.clientHasProblemsById = clientHasProblemsById;
+    }
+
+    @OneToMany(mappedBy = "clientByClientId")
+    public Collection<Purchase> getPurchasesById() {
+        return purchasesById;
+    }
+
+    public void setPurchasesById(Collection<Purchase> purchasesById) {
+        this.purchasesById = purchasesById;
+    }
+
+    @OneToMany(mappedBy = "clientByClientId")
+    public Collection<Reservation> getReservationsById() {
+        return reservationsById;
+    }
+
+    public void setReservationsById(Collection<Reservation> reservationsById) {
+        this.reservationsById = reservationsById;
     }
 }

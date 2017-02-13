@@ -1,29 +1,28 @@
 package fr.iut.model;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Id;
+import java.io.Serializable;
 
 /**
  * Created by Sydpy on 2/13/17.
  */
-@Entity
-@Table(name = "Location_has_Problem", schema = "CampingSimulator", catalog = "")
-@IdClass(LocationHasProblemEntityPK.class)
-public class LocationHasProblemEntity {
-    private int locationId;
+public class ClientHasProblemPK implements Serializable {
+    private int clientId;
     private int problemId;
 
+    @Column(name = "Client_id", nullable = false)
     @Id
-    @Column(name = "Location_id", nullable = false)
-    public int getLocationId() {
-        return locationId;
+    public int getClientId() {
+        return clientId;
     }
 
-    public void setLocationId(int locationId) {
-        this.locationId = locationId;
+    public void setClientId(int clientId) {
+        this.clientId = clientId;
     }
 
-    @Id
     @Column(name = "Problem_id", nullable = false)
+    @Id
     public int getProblemId() {
         return problemId;
     }
@@ -37,9 +36,9 @@ public class LocationHasProblemEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        LocationHasProblemEntity that = (LocationHasProblemEntity) o;
+        ClientHasProblemPK that = (ClientHasProblemPK) o;
 
-        if (locationId != that.locationId) return false;
+        if (clientId != that.clientId) return false;
         if (problemId != that.problemId) return false;
 
         return true;
@@ -47,7 +46,7 @@ public class LocationHasProblemEntity {
 
     @Override
     public int hashCode() {
-        int result = locationId;
+        int result = clientId;
         result = 31 * result + problemId;
         return result;
     }

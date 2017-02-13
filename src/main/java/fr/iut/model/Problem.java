@@ -2,18 +2,20 @@ package fr.iut.model;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Collection;
 
 /**
  * Created by Sydpy on 2/13/17.
  */
 @Entity
-@Table(name = "Problem", schema = "CampingSimulator", catalog = "")
-public class ProblemEntity {
+public class Problem {
     private Timestamp appearanceDatetime;
     private String label;
     private Timestamp solutionDatetime;
     private String state;
     private int id;
+    private Collection<ClientHasProblem> clientHasProblemsById;
+    private Collection<LocationHasProblem> locationHasProblemsById;
 
     @Basic
     @Column(name = "appearance_datetime", nullable = false)
@@ -70,15 +72,15 @@ public class ProblemEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        ProblemEntity that = (ProblemEntity) o;
+        Problem problem = (Problem) o;
 
-        if (id != that.id) return false;
-        if (appearanceDatetime != null ? !appearanceDatetime.equals(that.appearanceDatetime) : that.appearanceDatetime != null)
+        if (id != problem.id) return false;
+        if (appearanceDatetime != null ? !appearanceDatetime.equals(problem.appearanceDatetime) : problem.appearanceDatetime != null)
             return false;
-        if (label != null ? !label.equals(that.label) : that.label != null) return false;
-        if (solutionDatetime != null ? !solutionDatetime.equals(that.solutionDatetime) : that.solutionDatetime != null)
+        if (label != null ? !label.equals(problem.label) : problem.label != null) return false;
+        if (solutionDatetime != null ? !solutionDatetime.equals(problem.solutionDatetime) : problem.solutionDatetime != null)
             return false;
-        if (state != null ? !state.equals(that.state) : that.state != null) return false;
+        if (state != null ? !state.equals(problem.state) : problem.state != null) return false;
 
         return true;
     }
@@ -91,5 +93,23 @@ public class ProblemEntity {
         result = 31 * result + (state != null ? state.hashCode() : 0);
         result = 31 * result + id;
         return result;
+    }
+
+    @OneToMany(mappedBy = "problemByProblemId")
+    public Collection<ClientHasProblem> getClientHasProblemsById() {
+        return clientHasProblemsById;
+    }
+
+    public void setClientHasProblemsById(Collection<ClientHasProblem> clientHasProblemsById) {
+        this.clientHasProblemsById = clientHasProblemsById;
+    }
+
+    @OneToMany(mappedBy = "problemByProblemId")
+    public Collection<LocationHasProblem> getLocationHasProblemsById() {
+        return locationHasProblemsById;
+    }
+
+    public void setLocationHasProblemsById(Collection<LocationHasProblem> locationHasProblemsById) {
+        this.locationHasProblemsById = locationHasProblemsById;
     }
 }

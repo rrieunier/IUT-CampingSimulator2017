@@ -1,13 +1,13 @@
 package fr.iut.model;
 
 import javax.persistence.*;
+import java.util.Collection;
 
 /**
  * Created by Sydpy on 2/13/17.
  */
 @Entity
-@Table(name = "Spot", schema = "CampingSimulator", catalog = "")
-public class SpotEntity {
+public class Spot {
     private double pricePerDay;
     private int capacity;
     private boolean water;
@@ -15,7 +15,9 @@ public class SpotEntity {
     private boolean shadow;
     private int id;
     private int spotTypeId;
-    private LocationEntity location;
+    private Collection<Reservation> reservationsById;
+    private Location locationById;
+    private SpotType spotTypeBySpotTypeId;
 
     @Basic
     @Column(name = "price_per_day", nullable = false, precision = 0)
@@ -92,15 +94,15 @@ public class SpotEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        SpotEntity that = (SpotEntity) o;
+        Spot spot = (Spot) o;
 
-        if (Double.compare(that.pricePerDay, pricePerDay) != 0) return false;
-        if (capacity != that.capacity) return false;
-        if (water != that.water) return false;
-        if (electricity != that.electricity) return false;
-        if (shadow != that.shadow) return false;
-        if (id != that.id) return false;
-        if (spotTypeId != that.spotTypeId) return false;
+        if (Double.compare(spot.pricePerDay, pricePerDay) != 0) return false;
+        if (capacity != spot.capacity) return false;
+        if (water != spot.water) return false;
+        if (electricity != spot.electricity) return false;
+        if (shadow != spot.shadow) return false;
+        if (id != spot.id) return false;
+        if (spotTypeId != spot.spotTypeId) return false;
 
         return true;
     }
@@ -120,12 +122,32 @@ public class SpotEntity {
         return result;
     }
 
-    @OneToOne(mappedBy = "spot")
-    public LocationEntity getLocation() {
-        return location;
+    @OneToMany(mappedBy = "spotBySpotId")
+    public Collection<Reservation> getReservationsById() {
+        return reservationsById;
     }
 
-    public void setLocation(LocationEntity location) {
-        this.location = location;
+    public void setReservationsById(Collection<Reservation> reservationsById) {
+        this.reservationsById = reservationsById;
+    }
+
+    @OneToOne
+    @JoinColumn(name = "id", referencedColumnName = "id", nullable = false)
+    public Location getLocationById() {
+        return locationById;
+    }
+
+    public void setLocationById(Location locationById) {
+        this.locationById = locationById;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "SpotType_id", referencedColumnName = "id", nullable = false)
+    public SpotType getSpotTypeBySpotTypeId() {
+        return spotTypeBySpotTypeId;
+    }
+
+    public void setSpotTypeBySpotTypeId(SpotType spotTypeBySpotTypeId) {
+        this.spotTypeBySpotTypeId = spotTypeBySpotTypeId;
     }
 }

@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * Created by Sydpy on 2/13/17.
  */
-public class LocationHasProblemEntityPK implements Serializable {
+public class LocationHasProblemPK implements Serializable {
     private int locationId;
     private int problemId;
 
@@ -36,7 +36,7 @@ public class LocationHasProblemEntityPK implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        LocationHasProblemEntityPK that = (LocationHasProblemEntityPK) o;
+        LocationHasProblemPK that = (LocationHasProblemPK) o;
 
         if (locationId != that.locationId) return false;
         if (problemId != that.problemId) return false;

@@ -1,17 +1,20 @@
 package fr.iut.model;
 
 import javax.persistence.*;
+import java.util.Collection;
 
 /**
  * Created by Sydpy on 2/13/17.
  */
 @Entity
-@Table(name = "Product", schema = "CampingSimulator", catalog = "")
-public class ProductEntity {
+public class Product {
     private int stock;
     private double sellPrice;
     private String label;
     private int id;
+    private Collection<Purchase> purchasesById;
+    private Collection<Restocking> restockingsById;
+    private Collection<SupplierHasProduct> supplierHasProductsById;
 
     @Basic
     @Column(name = "stock", nullable = false)
@@ -58,12 +61,12 @@ public class ProductEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        ProductEntity that = (ProductEntity) o;
+        Product product = (Product) o;
 
-        if (stock != that.stock) return false;
-        if (Double.compare(that.sellPrice, sellPrice) != 0) return false;
-        if (id != that.id) return false;
-        if (label != null ? !label.equals(that.label) : that.label != null) return false;
+        if (stock != product.stock) return false;
+        if (Double.compare(product.sellPrice, sellPrice) != 0) return false;
+        if (id != product.id) return false;
+        if (label != null ? !label.equals(product.label) : product.label != null) return false;
 
         return true;
     }
@@ -78,5 +81,32 @@ public class ProductEntity {
         result = 31 * result + (label != null ? label.hashCode() : 0);
         result = 31 * result + id;
         return result;
+    }
+
+    @OneToMany(mappedBy = "productByProductId")
+    public Collection<Purchase> getPurchasesById() {
+        return purchasesById;
+    }
+
+    public void setPurchasesById(Collection<Purchase> purchasesById) {
+        this.purchasesById = purchasesById;
+    }
+
+    @OneToMany(mappedBy = "productByProductId")
+    public Collection<Restocking> getRestockingsById() {
+        return restockingsById;
+    }
+
+    public void setRestockingsById(Collection<Restocking> restockingsById) {
+        this.restockingsById = restockingsById;
+    }
+
+    @OneToMany(mappedBy = "productByProductId")
+    public Collection<SupplierHasProduct> getSupplierHasProductsById() {
+        return supplierHasProductsById;
+    }
+
+    public void setSupplierHasProductsById(Collection<SupplierHasProduct> supplierHasProductsById) {
+        this.supplierHasProductsById = supplierHasProductsById;
     }
 }

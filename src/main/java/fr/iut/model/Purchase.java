@@ -7,13 +7,14 @@ import java.sql.Timestamp;
  * Created by Sydpy on 2/13/17.
  */
 @Entity
-@Table(name = "Purchase", schema = "CampingSimulator", catalog = "")
-public class PurchaseEntity {
+public class Purchase {
     private Timestamp datetime;
     private int quantity;
     private int id;
     private int productId;
     private int clientId;
+    private Product productByProductId;
+    private Client clientByClientId;
 
     @Basic
     @Column(name = "datetime", nullable = false)
@@ -70,13 +71,13 @@ public class PurchaseEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        PurchaseEntity that = (PurchaseEntity) o;
+        Purchase purchase = (Purchase) o;
 
-        if (quantity != that.quantity) return false;
-        if (id != that.id) return false;
-        if (productId != that.productId) return false;
-        if (clientId != that.clientId) return false;
-        if (datetime != null ? !datetime.equals(that.datetime) : that.datetime != null) return false;
+        if (quantity != purchase.quantity) return false;
+        if (id != purchase.id) return false;
+        if (productId != purchase.productId) return false;
+        if (clientId != purchase.clientId) return false;
+        if (datetime != null ? !datetime.equals(purchase.datetime) : purchase.datetime != null) return false;
 
         return true;
     }
@@ -89,5 +90,25 @@ public class PurchaseEntity {
         result = 31 * result + productId;
         result = 31 * result + clientId;
         return result;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "Product_id", referencedColumnName = "id", nullable = false)
+    public Product getProductByProductId() {
+        return productByProductId;
+    }
+
+    public void setProductByProductId(Product productByProductId) {
+        this.productByProductId = productByProductId;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "Client_id", referencedColumnName = "id", nullable = false)
+    public Client getClientByClientId() {
+        return clientByClientId;
+    }
+
+    public void setClientByClientId(Client clientByClientId) {
+        this.clientByClientId = clientByClientId;
     }
 }

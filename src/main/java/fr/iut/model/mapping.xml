@@ -1,311 +1,464 @@
-<?xml version='1.0' encoding='utf-8'?>
-<!DOCTYPE hibernate-mapping PUBLIC
-    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<hibernate-mapping>
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+        version="2.0">
 
-    <class name="fr.iut.model.AuthorizationEntity" table="Authorization" schema="CampingSimulator">
-        <id name="id">
-            <column name="id" sql-type="int(11)"/>
-        </id>
-        <property name="label">
-            <column name="label" sql-type="varchar(45)" length="45" not-null="true"/>
-        </property>
-    </class>
-    <class name="fr.iut.model.ClientEntity" table="Client" schema="CampingSimulator">
-        <id name="id">
-            <column name="id" sql-type="int(11)"/>
-        </id>
-        <property name="lastName">
-            <column name="last_name" sql-type="varchar(45)" length="45"/>
-        </property>
-        <property name="firstName">
-            <column name="first_name" sql-type="varchar(45)" length="45"/>
-        </property>
-        <property name="phone">
-            <column name="phone" sql-type="varchar(11)" length="11" not-null="true"/>
-        </property>
-        <property name="email">
-            <column name="email" sql-type="varchar(45)" length="45" not-null="true"/>
-        </property>
-    </class>
-    <class name="fr.iut.model.ClientHasProblemEntity" table="Client_has_Problem" schema="CampingSimulator">
-        <composite-id mapped="true" class="fr.iut.model.ClientHasProblemEntityPK">
-            <key-property name="clientId">
-                <column name="Client_id" sql-type="int(11)"/>
-            </key-property>
-            <key-property name="problemId">
-                <column name="Problem_id" sql-type="int(11)"/>
-            </key-property>
-        </composite-id>
-    </class>
-    <class name="fr.iut.model.EmployeeEntity" table="Employee" schema="CampingSimulator">
-        <id name="id">
-            <column name="id" sql-type="int(11)"/>
-        </id>
-        <property name="lastName">
-            <column name="last_name" sql-type="varchar(45)" length="45"/>
-        </property>
-        <property name="firstName">
-            <column name="first_name" sql-type="varchar(45)" length="45"/>
-        </property>
-        <property name="phone">
-            <column name="phone" sql-type="varchar(11)" length="11" not-null="true"/>
-        </property>
-        <property name="email">
-            <column name="email" sql-type="varchar(45)" length="45" not-null="true"/>
-        </property>
-        <property name="completeAddress">
-            <column name="complete_address" sql-type="varchar(150)" length="150" not-null="true"/>
-        </property>
-    </class>
-    <class name="fr.iut.model.LocationEntity" table="Location" schema="CampingSimulator">
-        <id name="id">
-            <column name="id" sql-type="int(11)"/>
-        </id>
-        <property name="name">
-            <column name="name" sql-type="varchar(45)" length="45"/>
-        </property>
-        <property name="pointX">
-            <column name="point_x" sql-type="double" precision="-1" not-null="true"/>
-        </property>
-        <property name="pointY">
-            <column name="point_y" sql-type="double" precision="-1" not-null="true"/>
-        </property>
-        <one-to-one name="spot" class="fr.iut.model.SpotEntity"/>
-    </class>
-    <class name="fr.iut.model.LocationHasProblemEntity" table="Location_has_Problem" schema="CampingSimulator">
-        <composite-id mapped="true" class="fr.iut.model.LocationHasProblemEntityPK">
-            <key-property name="locationId">
-                <column name="Location_id" sql-type="int(11)"/>
-            </key-property>
-            <key-property name="problemId">
-                <column name="Problem_id" sql-type="int(11)"/>
-            </key-property>
-        </composite-id>
-    </class>
-    <class name="fr.iut.model.LogEntity" table="Log" schema="CampingSimulator">
-        <id name="id">
-            <column name="id" sql-type="int(11)"/>
-        </id>
-        <property name="datetime">
-            <column name="datetime" sql-type="datetime"/>
-        </property>
-        <property name="action">
-            <column name="action" sql-type="varchar(150)" length="150"/>
-        </property>
-        <property name="user">
-            <column name="user" sql-type="varchar(20)" length="20"/>
-        </property>
-    </class>
-    <class name="fr.iut.model.MapEntity" table="Map" schema="CampingSimulator">
-        <property name="image">
-            <column name="image" sql-type="mediumblob"/>
-        </property>
-    </class>
-    <class name="fr.iut.model.ProblemEntity" table="Problem" schema="CampingSimulator">
-        <id name="id">
-            <column name="id" sql-type="int(11)"/>
-        </id>
-        <property name="appearanceDatetime">
-            <column name="appearance_datetime" sql-type="datetime"/>
-        </property>
-        <property name="label">
-            <column name="label" sql-type="varchar(45)" length="45"/>
-        </property>
-        <property name="solutionDatetime">
-            <column name="solution_datetime" sql-type="datetime" not-null="true"/>
-        </property>
-        <property name="state">
-            <column name="state" sql-type="varchar(45)" length="45"/>
-        </property>
-    </class>
-    <class name="fr.iut.model.ProductEntity" table="Product" schema="CampingSimulator">
-        <id name="id">
-            <column name="id" sql-type="int(11)"/>
-        </id>
-        <property name="stock">
-            <column name="stock" sql-type="int(11)"/>
-        </property>
-        <property name="sellPrice">
-            <column name="sell_price" sql-type="float" precision="-1"/>
-        </property>
-        <property name="label">
-            <column name="label" sql-type="varchar(45)" length="45"/>
-        </property>
-    </class>
-    <class name="fr.iut.model.PurchaseEntity" table="Purchase" schema="CampingSimulator">
-        <id name="id">
-            <column name="id" sql-type="int(11)"/>
-        </id>
-        <property name="datetime">
-            <column name="datetime" sql-type="datetime"/>
-        </property>
-        <property name="quantity">
-            <column name="quantity" sql-type="int(11)"/>
-        </property>
-        <property name="productId">
-            <column name="Product_id" sql-type="int(11)"/>
-        </property>
-        <property name="clientId">
-            <column name="Client_id" sql-type="int(11)"/>
-        </property>
-    </class>
-    <class name="fr.iut.model.ReservationEntity" table="Reservation" schema="CampingSimulator">
-        <id name="id">
-            <column name="id" sql-type="int(11)"/>
-        </id>
-        <property name="clientComment">
-            <column name="client_comment" sql-type="varchar(250)" length="250" not-null="true"/>
-        </property>
-        <property name="starttime">
-            <column name="starttime" sql-type="datetime"/>
-        </property>
-        <property name="endtime">
-            <column name="endtime" sql-type="datetime"/>
-        </property>
-        <property name="reservationDate">
-            <column name="reservation_date" sql-type="datetime"/>
-        </property>
-        <property name="personCount">
-            <column name="person_count" sql-type="int(11)"/>
-        </property>
-        <property name="spotId">
-            <column name="Spot_id" sql-type="int(11)"/>
-        </property>
-        <property name="clientId">
-            <column name="Client_id" sql-type="int(11)"/>
-        </property>
-    </class>
-    <class name="fr.iut.model.RestockingEntity" table="Restocking" schema="CampingSimulator">
-        <id name="id">
-            <column name="id" sql-type="int(11)"/>
-        </id>
-        <property name="quantity">
-            <column name="quantity" sql-type="int(11)"/>
-        </property>
-        <property name="datetime">
-            <column name="datetime" sql-type="datetime"/>
-        </property>
-        <property name="supplierId">
-            <column name="Supplier_id" sql-type="int(11)"/>
-        </property>
-        <property name="productId">
-            <column name="Product_id" sql-type="int(11)"/>
-        </property>
-    </class>
-    <class name="fr.iut.model.SpotEntity" table="Spot" schema="CampingSimulator">
-        <id name="id">
-            <column name="id" sql-type="int(11)"/>
-        </id>
-        <property name="pricePerDay">
-            <column name="price_per_day" sql-type="float" precision="-1"/>
-        </property>
-        <property name="capacity">
-            <column name="capacity" sql-type="int(11)"/>
-        </property>
-        <property name="water">
-            <column name="water" sql-type="tinyint(1)"/>
-        </property>
-        <property name="electricity">
-            <column name="electricity" sql-type="tinyint(1)"/>
-        </property>
-        <property name="shadow">
-            <column name="shadow" sql-type="tinyint(1)"/>
-        </property>
-        <property name="spotTypeId">
-            <column name="SpotType_id" sql-type="int(11)"/>
-        </property>
-        <one-to-one name="location" class="fr.iut.model.LocationEntity"/>
-    </class>
-    <class name="fr.iut.model.SpotTypeEntity" table="SpotType" schema="CampingSimulator">
-        <id name="id">
-            <column name="id" sql-type="int(11)"/>
-        </id>
-        <property name="label">
-            <column name="label" sql-type="varchar(45)" length="45"/>
-        </property>
-    </class>
-    <class name="fr.iut.model.SupplierEntity" table="Supplier" schema="CampingSimulator">
-        <id name="id">
-            <column name="id" sql-type="int(11)"/>
-        </id>
-        <property name="name">
-            <column name="name" sql-type="varchar(45)" length="45"/>
-        </property>
-        <property name="phone">
-            <column name="phone" sql-type="varchar(11)" length="11" not-null="true"/>
-        </property>
-        <property name="email">
-            <column name="email" sql-type="varchar(45)" length="45" not-null="true"/>
-        </property>
-        <property name="website">
-            <column name="website" sql-type="varchar(45)" length="45" not-null="true"/>
-        </property>
-    </class>
-    <class name="fr.iut.model.SupplierHasProductEntity" table="Supplier_has_Product" schema="CampingSimulator">
-        <composite-id mapped="true" class="fr.iut.model.SupplierHasProductEntityPK">
-            <key-property name="supplierId">
-                <column name="Supplier_id" sql-type="int(11)"/>
-            </key-property>
-            <key-property name="productId">
-                <column name="Product_id" sql-type="int(11)"/>
-            </key-property>
-        </composite-id>
-        <property name="buyPrice">
-            <column name="buy_price" sql-type="float" precision="-1"/>
-        </property>
-    </class>
-    <class name="fr.iut.model.TaskEntity" table="Task" schema="CampingSimulator">
-        <id name="idTask">
-            <column name="idTask" sql-type="int(11)"/>
-        </id>
-        <property name="starttime">
-            <column name="starttime" sql-type="datetime"/>
-        </property>
-        <property name="endtime">
-            <column name="endtime" sql-type="datetime"/>
-        </property>
-        <property name="label">
-            <column name="label" sql-type="varchar(50)" length="50"/>
-        </property>
-        <property name="employeeId">
-            <column name="Employee_id" sql-type="int(11)"/>
-        </property>
-        <property name="locationId">
-            <column name="Location_id" sql-type="int(11)" not-null="true"/>
-        </property>
-    </class>
-    <class name="fr.iut.model.UserEntity" table="User" schema="CampingSimulator">
-        <id name="id">
-            <column name="id" sql-type="int(11)"/>
-        </id>
-        <property name="login">
-            <column name="login" sql-type="varchar(20)" length="20"/>
-        </property>
-        <property name="password">
-            <column name="password" sql-type="mediumtext"/>
-        </property>
-        <property name="employeeId">
-            <column name="Employee_id" sql-type="int(11)" not-null="true"/>
-        </property>
-    </class>
-    <class name="fr.iut.model.UserHasAuthorizationEntity" table="User_has_Authorization" schema="CampingSimulator">
-        <composite-id mapped="true" class="fr.iut.model.UserHasAuthorizationEntityPK">
-            <key-property name="authorizationId">
-                <column name="Authorization_id" sql-type="int(11)"/>
-            </key-property>
-            <key-property name="userId">
-                <column name="User_id" sql-type="int(11)"/>
-            </key-property>
-        </composite-id>
-    </class>
-    <class name="fr.iut.model.PurchasesOnReservationEntity" table="PurchasesOnReservation" schema="CampingSimulator">
-        <property name="reservationId">
-            <column name="Reservation_id" sql-type="int(11)"/>
-        </property>
-        <property name="purchaseId">
-            <column name="Purchase_id" sql-type="int(11)"/>
-        </property>
-    </class>
-</hibernate-mapping>
+    <entity class="fr.iut.model.Authorization">
+        <table name="Authorization" schema="CampingSimulator" catalog=""/>
+        <attributes>
+            <id name="id">
+                <column name="id" precision="11"/>
+            </id>
+            <basic name="label">
+                <column name="label" nullable="false" length="45"/>
+            </basic>
+            <one-to-many name="userHasAuthorizationsById" mapped-by="authorizationByAuthorizationId"
+                         target-entity="fr.iut.model.UserHasAuthorization"/>
+        </attributes>
+    </entity>
+    <entity class="fr.iut.model.Client">
+        <table name="Client" schema="CampingSimulator" catalog=""/>
+        <attributes>
+            <id name="id">
+                <column name="id" precision="11"/>
+            </id>
+            <basic name="lastName">
+                <column name="last_name" length="45"/>
+            </basic>
+            <basic name="firstName">
+                <column name="first_name" length="45"/>
+            </basic>
+            <basic name="phone">
+                <column name="phone" nullable="false" length="11"/>
+            </basic>
+            <basic name="email">
+                <column name="email" nullable="false" length="45"/>
+            </basic>
+            <one-to-many name="clientHasProblemsById" mapped-by="clientByClientId"
+                         target-entity="fr.iut.model.ClientHasProblem"/>
+            <one-to-many name="purchasesById" mapped-by="clientByClientId" target-entity="fr.iut.model.Purchase"/>
+            <one-to-many name="reservationsById" mapped-by="clientByClientId" target-entity="fr.iut.model.Reservation"/>
+        </attributes>
+    </entity>
+    <entity class="fr.iut.model.ClientHasProblem">
+        <table name="Client_has_Problem" schema="CampingSimulator" catalog=""/>
+        <id-class class="fr.iut.model.ClientHasProblemPK"/>
+        <attributes>
+            <id name="clientId">
+                <column name="Client_id" precision="11"/>
+            </id>
+            <id name="problemId">
+                <column name="Problem_id" precision="11"/>
+            </id>
+            <many-to-one name="clientByClientId" optional="true" target-entity="fr.iut.model.Client">
+                <join-column name="Client_id" referenced-column-name="id"/>
+            </many-to-one>
+            <many-to-one name="problemByProblemId" optional="true" target-entity="fr.iut.model.Problem">
+                <join-column name="Problem_id" referenced-column-name="id"/>
+            </many-to-one>
+        </attributes>
+    </entity>
+    <entity class="fr.iut.model.Employee">
+        <table name="Employee" schema="CampingSimulator" catalog=""/>
+        <attributes>
+            <id name="id">
+                <column name="id" precision="11"/>
+            </id>
+            <basic name="lastName">
+                <column name="last_name" length="45"/>
+            </basic>
+            <basic name="firstName">
+                <column name="first_name" length="45"/>
+            </basic>
+            <basic name="phone">
+                <column name="phone" nullable="false" length="11"/>
+            </basic>
+            <basic name="email">
+                <column name="email" nullable="false" length="45"/>
+            </basic>
+            <basic name="completeAddress">
+                <column name="complete_address" nullable="false" length="150"/>
+            </basic>
+            <one-to-many name="tasksById" mapped-by="employeeByEmployeeId" target-entity="fr.iut.model.Task"/>
+            <one-to-many name="usersById" mapped-by="employeeByEmployeeId" target-entity="fr.iut.model.User"/>
+        </attributes>
+    </entity>
+    <entity class="fr.iut.model.Location">
+        <table name="Location" schema="CampingSimulator" catalog=""/>
+        <attributes>
+            <id name="id">
+                <column name="id" precision="11"/>
+            </id>
+            <basic name="name">
+                <column name="name" length="45"/>
+            </basic>
+            <basic name="pointX">
+                <column name="point_x" nullable="false" precision="-1"/>
+            </basic>
+            <basic name="pointY">
+                <column name="point_y" nullable="false" precision="-1"/>
+            </basic>
+            <one-to-many name="locationHasProblemsById" mapped-by="locationByLocationId"
+                         target-entity="fr.iut.model.LocationHasProblem"/>
+            <one-to-many name="tasksById" mapped-by="locationByLocationId" target-entity="fr.iut.model.Task"/>
+            <one-to-one name="spotById" optional="true" mapped-by="locationById" target-entity="fr.iut.model.Spot"/>
+        </attributes>
+    </entity>
+    <entity class="fr.iut.model.LocationHasProblem">
+        <table name="Location_has_Problem" schema="CampingSimulator" catalog=""/>
+        <id-class class="fr.iut.model.LocationHasProblemPK"/>
+        <attributes>
+            <id name="locationId">
+                <column name="Location_id" precision="11"/>
+            </id>
+            <id name="problemId">
+                <column name="Problem_id" precision="11"/>
+            </id>
+            <many-to-one name="locationByLocationId" optional="true" target-entity="fr.iut.model.Location">
+                <join-column name="Location_id" referenced-column-name="id"/>
+            </many-to-one>
+            <many-to-one name="problemByProblemId" optional="true" target-entity="fr.iut.model.Problem">
+                <join-column name="Problem_id" referenced-column-name="id"/>
+            </many-to-one>
+        </attributes>
+    </entity>
+    <entity class="fr.iut.model.Log">
+        <table name="Log" schema="CampingSimulator" catalog=""/>
+        <attributes>
+            <id name="id">
+                <column name="id" precision="11"/>
+            </id>
+            <basic name="datetime">
+                <column name="datetime" precision="-1"/>
+            </basic>
+            <basic name="action">
+                <column name="action" length="150"/>
+            </basic>
+            <basic name="user">
+                <column name="user" length="20"/>
+            </basic>
+            <one-to-many name="users" mapped-by="logByLogin" target-entity="fr.iut.model.User"/>
+        </attributes>
+    </entity>
+    <entity class="fr.iut.model.Map">
+        <table name="Map" schema="CampingSimulator" catalog=""/>
+        <attributes>
+            <basic name="image">
+                <column name="image" precision="-1"/>
+            </basic>
+        </attributes>
+    </entity>
+    <entity class="fr.iut.model.Problem">
+        <table name="Problem" schema="CampingSimulator" catalog=""/>
+        <attributes>
+            <id name="id">
+                <column name="id" precision="11"/>
+            </id>
+            <basic name="appearanceDatetime">
+                <column name="appearance_datetime" precision="-1"/>
+            </basic>
+            <basic name="label">
+                <column name="label" length="45"/>
+            </basic>
+            <basic name="solutionDatetime">
+                <column name="solution_datetime" nullable="false" precision="-1"/>
+            </basic>
+            <basic name="state">
+                <column name="state" length="45"/>
+            </basic>
+            <one-to-many name="clientHasProblemsById" mapped-by="problemByProblemId"
+                         target-entity="fr.iut.model.ClientHasProblem"/>
+            <one-to-many name="locationHasProblemsById" mapped-by="problemByProblemId"
+                         target-entity="fr.iut.model.LocationHasProblem"/>
+        </attributes>
+    </entity>
+    <entity class="fr.iut.model.Product">
+        <table name="Product" schema="CampingSimulator" catalog=""/>
+        <attributes>
+            <id name="id">
+                <column name="id" precision="11"/>
+            </id>
+            <basic name="stock">
+                <column name="stock" precision="11"/>
+            </basic>
+            <basic name="sellPrice">
+                <column name="sell_price" precision="-1"/>
+            </basic>
+            <basic name="label">
+                <column name="label" length="45"/>
+            </basic>
+            <one-to-many name="purchasesById" mapped-by="productByProductId" target-entity="fr.iut.model.Purchase"/>
+            <one-to-many name="restockingsById" mapped-by="productByProductId" target-entity="fr.iut.model.Restocking"/>
+            <one-to-many name="supplierHasProductsById" mapped-by="productByProductId"
+                         target-entity="fr.iut.model.SupplierHasProduct"/>
+        </attributes>
+    </entity>
+    <entity class="fr.iut.model.Purchase">
+        <table name="Purchase" schema="CampingSimulator" catalog=""/>
+        <attributes>
+            <id name="id">
+                <column name="id" precision="11"/>
+            </id>
+            <basic name="datetime">
+                <column name="datetime" precision="-1"/>
+            </basic>
+            <basic name="quantity">
+                <column name="quantity" precision="11"/>
+            </basic>
+            <basic name="productId">
+                <column name="Product_id" precision="11"/>
+            </basic>
+            <basic name="clientId">
+                <column name="Client_id" precision="11"/>
+            </basic>
+            <many-to-one name="productByProductId" optional="true" target-entity="fr.iut.model.Product">
+                <join-column name="Product_id" referenced-column-name="id"/>
+            </many-to-one>
+            <many-to-one name="clientByClientId" optional="true" target-entity="fr.iut.model.Client">
+                <join-column name="Client_id" referenced-column-name="id"/>
+            </many-to-one>
+        </attributes>
+    </entity>
+    <entity class="fr.iut.model.Reservation">
+        <table name="Reservation" schema="CampingSimulator" catalog=""/>
+        <attributes>
+            <id name="id">
+                <column name="id" precision="11"/>
+            </id>
+            <basic name="clientComment">
+                <column name="client_comment" nullable="false" length="250"/>
+            </basic>
+            <basic name="starttime">
+                <column name="starttime" precision="-1"/>
+            </basic>
+            <basic name="endtime">
+                <column name="endtime" precision="-1"/>
+            </basic>
+            <basic name="reservationDate">
+                <column name="reservation_date" precision="-1"/>
+            </basic>
+            <basic name="personCount">
+                <column name="person_count" precision="11"/>
+            </basic>
+            <basic name="spotId">
+                <column name="Spot_id" precision="11"/>
+            </basic>
+            <basic name="clientId">
+                <column name="Client_id" precision="11"/>
+            </basic>
+            <many-to-one name="spotBySpotId" optional="true" target-entity="fr.iut.model.Spot">
+                <join-column name="Spot_id" referenced-column-name="id"/>
+            </many-to-one>
+            <many-to-one name="clientByClientId" optional="true" target-entity="fr.iut.model.Client">
+                <join-column name="Client_id" referenced-column-name="id"/>
+            </many-to-one>
+        </attributes>
+    </entity>
+    <entity class="fr.iut.model.Restocking">
+        <table name="Restocking" schema="CampingSimulator" catalog=""/>
+        <attributes>
+            <id name="id">
+                <column name="id" precision="11"/>
+            </id>
+            <basic name="quantity">
+                <column name="quantity" precision="11"/>
+            </basic>
+            <basic name="datetime">
+                <column name="datetime" precision="-1"/>
+            </basic>
+            <basic name="supplierId">
+                <column name="Supplier_id" precision="11"/>
+            </basic>
+            <basic name="productId">
+                <column name="Product_id" precision="11"/>
+            </basic>
+            <many-to-one name="supplierBySupplierId" optional="true" target-entity="fr.iut.model.Supplier">
+                <join-column name="Supplier_id" referenced-column-name="id"/>
+            </many-to-one>
+            <many-to-one name="productByProductId" optional="true" target-entity="fr.iut.model.Product">
+                <join-column name="Product_id" referenced-column-name="id"/>
+            </many-to-one>
+        </attributes>
+    </entity>
+    <entity class="fr.iut.model.Spot">
+        <table name="Spot" schema="CampingSimulator" catalog=""/>
+        <attributes>
+            <id name="id">
+                <column name="id" precision="11"/>
+            </id>
+            <basic name="pricePerDay">
+                <column name="price_per_day" precision="-1"/>
+            </basic>
+            <basic name="capacity">
+                <column name="capacity" precision="11"/>
+            </basic>
+            <basic name="water">
+                <column name="water" precision="1"/>
+            </basic>
+            <basic name="electricity">
+                <column name="electricity" precision="1"/>
+            </basic>
+            <basic name="shadow">
+                <column name="shadow" precision="1"/>
+            </basic>
+            <basic name="spotTypeId">
+                <column name="SpotType_id" precision="11"/>
+            </basic>
+            <many-to-one name="spotTypeBySpotTypeId" optional="true" target-entity="fr.iut.model.SpotType">
+                <join-column name="SpotType_id" referenced-column-name="id"/>
+            </many-to-one>
+            <one-to-many name="reservationsById" mapped-by="spotBySpotId" target-entity="fr.iut.model.Reservation"/>
+            <one-to-one name="locationById" optional="true" target-entity="fr.iut.model.Location">
+                <join-column name="id" referenced-column-name="id"/>
+            </one-to-one>
+        </attributes>
+    </entity>
+    <entity class="fr.iut.model.SpotType">
+        <table name="SpotType" schema="CampingSimulator" catalog=""/>
+        <attributes>
+            <id name="id">
+                <column name="id" precision="11"/>
+            </id>
+            <basic name="label">
+                <column name="label" length="45"/>
+            </basic>
+            <one-to-many name="spotsById" mapped-by="spotTypeBySpotTypeId" target-entity="fr.iut.model.Spot"/>
+        </attributes>
+    </entity>
+    <entity class="fr.iut.model.Supplier">
+        <table name="Supplier" schema="CampingSimulator" catalog=""/>
+        <attributes>
+            <id name="id">
+                <column name="id" precision="11"/>
+            </id>
+            <basic name="name">
+                <column name="name" length="45"/>
+            </basic>
+            <basic name="phone">
+                <column name="phone" nullable="false" length="11"/>
+            </basic>
+            <basic name="email">
+                <column name="email" nullable="false" length="45"/>
+            </basic>
+            <basic name="website">
+                <column name="website" nullable="false" length="45"/>
+            </basic>
+            <one-to-many name="restockingsById" mapped-by="supplierBySupplierId"
+                         target-entity="fr.iut.model.Restocking"/>
+            <one-to-many name="supplierHasProductsById" mapped-by="supplierBySupplierId"
+                         target-entity="fr.iut.model.SupplierHasProduct"/>
+        </attributes>
+    </entity>
+    <entity class="fr.iut.model.SupplierHasProduct">
+        <table name="Supplier_has_Product" schema="CampingSimulator" catalog=""/>
+        <id-class class="fr.iut.model.SupplierHasProductPK"/>
+        <attributes>
+            <id name="supplierId">
+                <column name="Supplier_id" precision="11"/>
+            </id>
+            <id name="productId">
+                <column name="Product_id" precision="11"/>
+            </id>
+            <basic name="buyPrice">
+                <column name="buy_price" precision="-1"/>
+            </basic>
+            <many-to-one name="supplierBySupplierId" optional="true" target-entity="fr.iut.model.Supplier">
+                <join-column name="Supplier_id" referenced-column-name="id"/>
+            </many-to-one>
+            <many-to-one name="productByProductId" optional="true" target-entity="fr.iut.model.Product">
+                <join-column name="Product_id" referenced-column-name="id"/>
+            </many-to-one>
+        </attributes>
+    </entity>
+    <entity class="fr.iut.model.Task">
+        <table name="Task" schema="CampingSimulator" catalog=""/>
+        <attributes>
+            <id name="idTask">
+                <column name="idTask" precision="11"/>
+            </id>
+            <basic name="starttime">
+                <column name="starttime" precision="-1"/>
+            </basic>
+            <basic name="endtime">
+                <column name="endtime" precision="-1"/>
+            </basic>
+            <basic name="label">
+                <column name="label" length="50"/>
+            </basic>
+            <basic name="employeeId">
+                <column name="Employee_id" precision="11"/>
+            </basic>
+            <basic name="locationId">
+                <column name="Location_id" nullable="false" precision="11"/>
+            </basic>
+            <many-to-one name="employeeByEmployeeId" optional="true" target-entity="fr.iut.model.Employee">
+                <join-column name="Employee_id" referenced-column-name="id"/>
+            </many-to-one>
+            <many-to-one name="locationByLocationId" optional="true" target-entity="fr.iut.model.Location">
+                <join-column name="Location_id" nullable="false" referenced-column-name="id"/>
+            </many-to-one>
+        </attributes>
+    </entity>
+    <entity class="fr.iut.model.User">
+        <table name="User" schema="CampingSimulator" catalog=""/>
+        <attributes>
+            <id name="id">
+                <column name="id" precision="11"/>
+            </id>
+            <basic name="login">
+                <column name="login" length="20"/>
+            </basic>
+            <basic name="password">
+                <column name="password"/>
+            </basic>
+            <basic name="employeeId">
+                <column name="Employee_id" nullable="false" precision="11"/>
+            </basic>
+            <many-to-one name="logByLogin" optional="true" target-entity="fr.iut.model.Log">
+                <join-column name="login" referenced-column-name="user"/>
+            </many-to-one>
+            <many-to-one name="employeeByEmployeeId" optional="true" target-entity="fr.iut.model.Employee">
+                <join-column name="Employee_id" nullable="false" referenced-column-name="id"/>
+            </many-to-one>
+            <one-to-many name="userHasAuthorizationsById" mapped-by="userByUserId"
+                         target-entity="fr.iut.model.UserHasAuthorization"/>
+        </attributes>
+    </entity>
+    <entity class="fr.iut.model.UserHasAuthorization">
+        <table name="User_has_Authorization" schema="CampingSimulator" catalog=""/>
+        <id-class class="fr.iut.model.UserHasAuthorizationPK"/>
+        <attributes>
+            <id name="authorizationId">
+                <column name="Authorization_id" precision="11"/>
+            </id>
+            <id name="userId">
+                <column name="User_id" precision="11"/>
+            </id>
+            <many-to-one name="authorizationByAuthorizationId" optional="true"
+                         target-entity="fr.iut.model.Authorization">
+                <join-column name="Authorization_id" referenced-column-name="id"/>
+            </many-to-one>
+            <many-to-one name="userByUserId" optional="true" target-entity="fr.iut.model.User">
+                <join-column name="User_id" referenced-column-name="id"/>
+            </many-to-one>
+        </attributes>
+    </entity>
+    <entity class="fr.iut.model.PurchasesOnReservation">
+        <table name="PurchasesOnReservation" schema="CampingSimulator" catalog=""/>
+        <attributes>
+            <basic name="reservationId">
+                <column name="Reservation_id" precision="11"/>
+            </basic>
+            <basic name="purchaseId">
+                <column name="Purchase_id" precision="11"/>
+            </basic>
+        </attributes>
+    </entity>
+    <entity class="fr.iut.model.ReservedOrOccupiedSpots">
+        <table name="ReservedOrOccupiedSpots" schema="CampingSimulator" catalog=""/>
+        <attributes>
+            <basic name="id">
+                <column name="id" precision="11"/>
+            </basic>
+        </attributes>
+    </entity>
+</entity-mappings>

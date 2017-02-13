@@ -1,18 +1,20 @@
 package fr.iut.model;
 
 import javax.persistence.*;
+import java.util.Collection;
 
 /**
  * Created by Sydpy on 2/13/17.
  */
 @Entity
-@Table(name = "Location", schema = "CampingSimulator", catalog = "")
-public class LocationEntity {
+public class Location {
     private String name;
     private Double pointX;
     private Double pointY;
     private int id;
-    private SpotEntity spot;
+    private Collection<LocationHasProblem> locationHasProblemsById;
+    private Spot spotById;
+    private Collection<Task> tasksById;
 
     @Basic
     @Column(name = "name", nullable = false, length = 45)
@@ -59,12 +61,12 @@ public class LocationEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        LocationEntity that = (LocationEntity) o;
+        Location location = (Location) o;
 
-        if (id != that.id) return false;
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (pointX != null ? !pointX.equals(that.pointX) : that.pointX != null) return false;
-        if (pointY != null ? !pointY.equals(that.pointY) : that.pointY != null) return false;
+        if (id != location.id) return false;
+        if (name != null ? !name.equals(location.name) : location.name != null) return false;
+        if (pointX != null ? !pointX.equals(location.pointX) : location.pointX != null) return false;
+        if (pointY != null ? !pointY.equals(location.pointY) : location.pointY != null) return false;
 
         return true;
     }
@@ -78,12 +80,30 @@ public class LocationEntity {
         return result;
     }
 
-    @OneToOne
-    public SpotEntity getSpot() {
-        return spot;
+    @OneToMany(mappedBy = "locationByLocationId")
+    public Collection<LocationHasProblem> getLocationHasProblemsById() {
+        return locationHasProblemsById;
     }
 
-    public void setSpot(SpotEntity spot) {
-        this.spot = spot;
+    public void setLocationHasProblemsById(Collection<LocationHasProblem> locationHasProblemsById) {
+        this.locationHasProblemsById = locationHasProblemsById;
+    }
+
+    @OneToOne(mappedBy = "locationById")
+    public Spot getSpotById() {
+        return spotById;
+    }
+
+    public void setSpotById(Spot spotById) {
+        this.spotById = spotById;
+    }
+
+    @OneToMany(mappedBy = "locationByLocationId")
+    public Collection<Task> getTasksById() {
+        return tasksById;
+    }
+
+    public void setTasksById(Collection<Task> tasksById) {
+        this.tasksById = tasksById;
     }
 }

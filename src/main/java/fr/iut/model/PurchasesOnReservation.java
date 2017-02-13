@@ -3,14 +3,12 @@ package fr.iut.model;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Table;
 
 /**
  * Created by Sydpy on 2/13/17.
  */
 @Entity
-@Table(name = "PurchasesOnReservation", schema = "CampingSimulator", catalog = "")
-public class PurchasesOnReservationEntity {
+public class PurchasesOnReservation {
     private int reservationId;
     private int purchaseId;
 
@@ -39,7 +37,7 @@ public class PurchasesOnReservationEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        PurchasesOnReservationEntity that = (PurchasesOnReservationEntity) o;
+        PurchasesOnReservation that = (PurchasesOnReservation) o;
 
         if (reservationId != that.reservationId) return false;
         if (purchaseId != that.purchaseId) return false;

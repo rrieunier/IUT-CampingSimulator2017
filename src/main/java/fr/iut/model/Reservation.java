@@ -7,8 +7,7 @@ import java.sql.Timestamp;
  * Created by Sydpy on 2/13/17.
  */
 @Entity
-@Table(name = "Reservation", schema = "CampingSimulator", catalog = "")
-public class ReservationEntity {
+public class Reservation {
     private String clientComment;
     private Timestamp starttime;
     private Timestamp endtime;
@@ -17,6 +16,8 @@ public class ReservationEntity {
     private int id;
     private int spotId;
     private int clientId;
+    private Spot spotBySpotId;
+    private Client clientByClientId;
 
     @Basic
     @Column(name = "client_comment", nullable = true, length = 250)
@@ -103,7 +104,7 @@ public class ReservationEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        ReservationEntity that = (ReservationEntity) o;
+        Reservation that = (Reservation) o;
 
         if (personCount != that.personCount) return false;
         if (id != that.id) return false;
@@ -130,5 +131,25 @@ public class ReservationEntity {
         result = 31 * result + spotId;
         result = 31 * result + clientId;
         return result;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "Spot_id", referencedColumnName = "id", nullable = false)
+    public Spot getSpotBySpotId() {
+        return spotBySpotId;
+    }
+
+    public void setSpotBySpotId(Spot spotBySpotId) {
+        this.spotBySpotId = spotBySpotId;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "Client_id", referencedColumnName = "id", nullable = false)
+    public Client getClientByClientId() {
+        return clientByClientId;
+    }
+
+    public void setClientByClientId(Client clientByClientId) {
+        this.clientByClientId = clientByClientId;
     }
 }
