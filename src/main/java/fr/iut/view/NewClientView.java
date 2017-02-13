@@ -21,80 +21,63 @@ import java.io.File;
 
 public class NewClientView extends Scene {
 
-
-    public static final double WINDOW_WIDTH = 500;
-    public static final double WINDOW_HEIGHT = 850;
-    private static final Color COLOR_BACKGROUND = Color.rgb(42, 42, 42);
-
-    private Group components;
-    private StackPane header = new StackPane();
-
-    private VBox fields = new VBox();
-
-    private Rectangle title_back = new Rectangle();
-    private Text title = new Text("Nouveau client");
-
-    private TextField last_name = new TextField();
-    private TextField first_name = new TextField();
-    private TextField address = new TextField();
-    private TextField phone = new TextField();
-
-    private Button confirm = new Button("Valider");
+    public static final double WINDOW_WIDTH = App.SCREEN_W/4.5;
+    public static final double WINDOW_HEIGHT = App.SCREEN_H/1.3;
 
     private App app;
 
-
-
     public NewClientView (App app){
-        super(new Group(), WINDOW_WIDTH, WINDOW_HEIGHT);
-        components = (Group) getRoot();
+        super(new VBox(), WINDOW_WIDTH, WINDOW_HEIGHT);
+        VBox wrapper = (VBox) getRoot();
         this.app = app;
 
-        setFill(COLOR_BACKGROUND);
+        wrapper.setMinHeight(WINDOW_HEIGHT);
+        wrapper.setStyle("-fx-background-color: rgb(12, 27, 51);");
+        wrapper.setAlignment(Pos.TOP_CENTER);
+        wrapper.setSpacing(WINDOW_HEIGHT/20);
 
-        title_back.setWidth(WINDOW_WIDTH);
-        title_back.setHeight(WINDOW_HEIGHT / 6);
-        title_back.setFill(Color.rgb(55, 77, 114));
-        title.setFill(Color.PINK);
-        title.setFont(Font.font("DejaVu Sans", 30));
-        header.getChildren().addAll(title_back, title);
+        HeaderView headerView = new HeaderView("Nouveau Client");
+        headerView.setMinWidth(WINDOW_WIDTH);
 
+        TextField last_name = new TextField();
+        last_name.setMaxWidth(WINDOW_WIDTH/1.1);
         last_name.setMinHeight(WINDOW_HEIGHT / 10);
-        last_name.setLayoutX(WINDOW_WIDTH/2);
         last_name.setPromptText("Nom");
         last_name.setStyle("-fx-font-weight: bold;" + "-fx-font-size: 17px;");
 
+        TextField first_name = new TextField();
         first_name.setMaxWidth(WINDOW_WIDTH / 1.1);
         first_name.setMinHeight(WINDOW_HEIGHT / 10);
         first_name.setPromptText("Prénom");
         first_name.setStyle("-fx-font-weight: bold;" + "-fx-font-size: 17px;");
 
+        TextField address = new TextField();
         address.setMaxWidth(WINDOW_WIDTH / 1.1);
         address.setMinHeight(WINDOW_HEIGHT / 10);
         address.setPromptText("Adresse");
         address.setStyle("-fx-font-weight: bold;" + "-fx-font-size: 17px;");
 
+        TextField phone = new TextField();
         phone.setMaxWidth(WINDOW_WIDTH / 1.1);
         phone.setMinHeight(WINDOW_HEIGHT / 10);
         phone.setPromptText("N° de téléphone");
         phone.setStyle("-fx-font-weight: bold;" + "-fx-font-size: 17px;");
 
+        VBox fields = new VBox();
         fields.getChildren().addAll(last_name, first_name, address, phone);
         fields.setSpacing(WINDOW_HEIGHT / 20);
         fields.setAlignment(Pos.CENTER);
         fields.setLayoutX(WINDOW_WIDTH/4);
         fields.setLayoutY(WINDOW_HEIGHT/5);
 
+        Button confirm = new Button("Valider");
         confirm.setMinSize(WINDOW_WIDTH / 4, WINDOW_HEIGHT / 10);
         confirm.setLayoutX((WINDOW_WIDTH - confirm.getMinWidth()) / 2);
         confirm.setLayoutY(WINDOW_HEIGHT - confirm.getMinHeight() - 5);
-        confirm.setText("Valider");
         confirm.getStylesheets().add(new File("res/style.css").toURI().toString());
         confirm.getStyleClass().add("record-sales");
 
-        components.getChildren().addAll(title_back, title, fields, confirm);
-
-
+        wrapper.getChildren().addAll(headerView, fields, confirm);
     }
 
 }
