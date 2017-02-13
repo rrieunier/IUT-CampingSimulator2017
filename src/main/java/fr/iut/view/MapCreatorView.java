@@ -37,7 +37,7 @@ public class MapCreatorView extends Scene {
     private final static int MAP_VIEWPORT_HEIGHT = (int)(App.SCREEN_H*2/3);
     private App app;
     private ScrollPane mapViewPort;
-    private ArrayList<SpotEntity> locations = new ArrayList<>();
+    private ArrayList<LocationEntity> locations = new ArrayList<>();
 
     private StackPane mapPane;
     private File mapFile = null;
@@ -139,7 +139,7 @@ public class MapCreatorView extends Scene {
                             });
                         });
 
-                        locations.add(spot);
+                        locations.add(location);
                     });
                 }
 
