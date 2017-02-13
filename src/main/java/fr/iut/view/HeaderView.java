@@ -15,7 +15,6 @@ public class HeaderView extends StackPane{
 
     private Text title;
 
-
     public HeaderView(String title){
 
         setPadding(new Insets(20));

@@ -10,6 +10,13 @@
     -fx-border-color: #ff6600;
 }
 
+.horizontalTabs .tab-header-area > .headers-region > .tab:selected {
+   -fx-padding: 20px;
+   -fx-background-color: rgb(12, 27, 51);
+   -fx-border-width: 3 3 3 3;
+   -fx-border-color: #ff6600;
+}
+
 .tab-pane > .tab-header-area > .headers-region >.tab:selected .focus-indicator{
     -fx-border-width: 0px;
 }
@@ -34,31 +41,32 @@
 
 .record-sales {
     -fx-padding: 8 15 15 15;
-    -fx-background-insets: 0,0 0 5 0, 0 0 6 0, 0 0 7 0;
+    -fx-background-insets: 0, 0 0 5 0, 0 0 6 0, 0 0 7 0;
     -fx-background-radius: 8;
-    -fx-background-color:
-        linear-gradient(from 0% 93% to 0% 100%, #a34313 0%, #903b12 100%),
-        #9d4024,
-        #d86e3a,
-        radial-gradient(center 50% 50%, radius 100%, #d86e3a, #c54e2c);
-    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.75) , 4,0,0,1 );
+    -fx-background-color: linear-gradient(from 0% 93% to 0% 100%, #a34313 0%, #903b12 100%),
+    #9d4024,
+    #d86e3a,
+    radial-gradient(center 50% 50%, radius 100%, #d86e3a, #c54e2c);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.75), 4, 0, 0, 1);
     -fx-font-weight: bold;
     -fx-font-size: 1.1em;
 }
+
 .record-sales:hover {
-    -fx-background-color:
-        linear-gradient(from 0% 93% to 0% 100%, #a34313 0%, #903b12 100%),
-        #9d4024,
-        #d86e3a,
-        radial-gradient(center 50% 50%, radius 100%, #ea7f4b, #c54e2c);
+    -fx-background-color: linear-gradient(from 0% 93% to 0% 100%, #a34313 0%, #903b12 100%),
+    #9d4024,
+    #d86e3a,
+    radial-gradient(center 50% 50%, radius 100%, #ea7f4b, #c54e2c);
 }
+
 .record-sales:pressed {
     -fx-padding: 10 15 13 15;
-    -fx-background-insets: 2 0 0 0,2 0 3 0, 2 0 4 0, 2 0 5 0;
+    -fx-background-insets: 2 0 0 0, 2 0 3 0, 2 0 4 0, 2 0 5 0;
 }
+
 .record-sales Text {
     -fx-fill: white;
-    -fx-effect: dropshadow( gaussian , #a30000 , 0,0,0,2 );
+    -fx-effect: dropshadow(gaussian, #a30000, 0, 0, 0, 2);
 }
 
 .buttonTab {
@@ -75,4 +83,29 @@
     -fx-border-color: #ff6600;
     -fx-text-fill: white;
     -fx-font-size: 17px;
+}
+
+.product-detail {
+    -fx-padding: 10;
+    -fx-border-style: solid inside;
+    -fx-border-width: 5;
+    -fx-border-insets: 10, 10, 20, 10;
+    -fx-border-radius: 5;
+    -fx-border-color: #903b12;
+}
+
+.stock-grid {
+    -fx-background-color: whitesmoke;
+    -fx-padding: 10;
+}
+
+.grid-stock-label {
+    -fx-font-weight: bold;
+    -fx-font-size: 20;
+}
+
+.grid-stock-field {
+    -fx-background-color: whitesmoke;
+    -fx-font-weight: bold;
+    -fx-font-size: 20;
 }

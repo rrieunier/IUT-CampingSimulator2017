@@ -1,13 +1,9 @@
 package fr.iut.view;
 
 import fr.iut.App;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import fr.iut.controller.HomeController;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.geometry.Side;
 import javafx.geometry.VPos;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.SubScene;
 import javafx.scene.control.*;
@@ -21,23 +17,23 @@ import java.io.File;
 /**
  * Created by shellcode on 2/6/17.
  */
-public class MainView extends Scene {
+public class HomeView extends Scene {
 
-    private App app;
+    private HomeController controller;
     private String username;
 
-    public MainView(App app, String username) {
+    public HomeView(HomeController controller, String username) {
         super(new GridPane(), App.SCREEN_W, App.SCREEN_H);
-        this.app = app;
+        this.controller = controller;
         this.username = username;
 
         GridPane components = (GridPane)getRoot();
         components.setStyle("-fx-background-color: rgb(12, 27, 51);");
         RowConstraints row1 = new RowConstraints();
         RowConstraints row2 = new RowConstraints();
-        row1.setPercentHeight(87);
-        row2.setPercentHeight(13);
-        row2.setValignment(VPos.TOP);
+        row1.setPercentHeight(90);
+        row2.setPercentHeight(10);
+        row2.setValignment(VPos.BOTTOM);
         components.getRowConstraints().addAll(row1, row2);
 
         TabPane tabPane = new TabPane();
@@ -69,16 +65,16 @@ public class MainView extends Scene {
         decoButton.getStyleClass().add("record-sales");
         decoButton.setMinWidth(welcome_text.getLayoutBounds().getWidth());
 
+        decoButton.setOnAction(actionEvent -> controller.finish());
+
         VBox.setMargin(welcome_text, new Insets(0, 0, 0, 30));
         VBox.setMargin(decoButton, new Insets(0, 0, 0, 30));
-
 
         vboxUser.getChildren().addAll(welcome_text, decoButton);
         components.addRow(1, vboxUser);
     }
 
     private void buildManagmentTab(Tab tab) {
-        //TODO : Faire des boutons plutot que des onglets ca sera plus simple...
         tab.setText("Gestion");
 
         StackPane container = new StackPane();
@@ -88,7 +84,7 @@ public class MainView extends Scene {
         verticalTabs.getStylesheets().add(new File("res/style.css").toURI().toString());
         verticalTabs.getStyleClass().add("horizontalTabs");
         verticalTabs.setSpacing(30);
-        BorderPane.setMargin(verticalTabs, new Insets(50, 0, 0, 30));
+        BorderPane.setMargin(verticalTabs, new Insets(50, 0, 0, 80));
 
         BorderPane borderPane = new BorderPane();
 
@@ -120,7 +116,7 @@ public class MainView extends Scene {
                     case 1: break;
                     case 2: break;
                     case 3: break;
-                    case 4: subScene = new ProductManagerView(app); break;
+                    case 4: subScene = new ProductManagerView(controller); break;
                     case 5: break;
                 }
 
@@ -137,11 +133,12 @@ public class MainView extends Scene {
 
     private void buildMapTab(Tab tab) {
         tab.setText("Carte");
+
         GridPane container = new GridPane();
-//        container.setMinSize(App.SCREEN_W, App.SCREEN_H);
         container.setStyle("-fx-background-color: rgb(12, 27, 51);");
 
 
+        //TODO : ajouter la carte au GridPane
 
         tab.setContent(container);
     }

@@ -1,6 +1,7 @@
 package fr.iut;
 
-/**
- * Created by Yannini on 03/02/2017.
- */
-public enum State {CLIENTS, INCIDENTS, EMPLOYEES, SUPPLIERS, STOCK, STATS}
+public enum State {
+    CONNECTION,
+    MAP_CREATOR,
+    HOME
+}
