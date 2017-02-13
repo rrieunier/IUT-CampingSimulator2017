@@ -62,12 +62,12 @@ CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Log` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `datetime` DATETIME NOT NULL DEFAULT NOW(),
   `action` VARCHAR(150) NOT NULL,
-  `user` VARCHAR(20) NOT NULL,
+  `User_id` INT NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_Log_User1_idx` (`user` ASC),
+  INDEX `fk_Log_User1_idx` (`User_id` ASC),
   CONSTRAINT `fk_Log_User1`
-    FOREIGN KEY (`user`)
-    REFERENCES `CampingSimulator`.`User` (`login`)
+    FOREIGN KEY (`User_id`)
+    REFERENCES `CampingSimulator`.`User` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -346,7 +346,10 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `CampingSimulator`.`Map` ;
 
 CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Map` (
-  `image` MEDIUMBLOB NOT NULL)
+  `image` MEDIUMBLOB NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC))
 ENGINE = InnoDB;
 
 
@@ -456,6 +459,19 @@ CREATE  OR REPLACE VIEW `ReservedOrOccupiedSpots` AS
 SELECT Spot.id FROM Spot
 INNER JOIN Reservation ON Spot.id = Reservation.Spot_id
 WHERE Reservation.endtime >= NOW();
+SET SQL_MODE = '';
+GRANT USAGE ON *.* TO camping;
+ DROP USER camping;
+SET SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+CREATE USER 'camping' IDENTIFIED BY 'camping';
+
+GRANT SELECT, INSERT, TRIGGER ON TABLE `CampingSimulator`.* TO 'camping';
+GRANT SELECT ON TABLE `CampingSimulator`.* TO 'camping';
+GRANT SELECT, INSERT, TRIGGER, UPDATE, DELETE ON TABLE `CampingSimulator`.* TO 'camping';
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 USE `CampingSimulator`;
 
 DELIMITER $$
@@ -515,16 +531,3 @@ END$$
 
 
 DELIMITER ;
-SET SQL_MODE = '';
-GRANT USAGE ON *.* TO camping;
- DROP USER camping;
-SET SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
-CREATE USER 'camping' IDENTIFIED BY 'camping';
-
-GRANT SELECT, INSERT, TRIGGER ON TABLE `CampingSimulator`.* TO 'camping';
-GRANT SELECT ON TABLE `CampingSimulator`.* TO 'camping';
-GRANT SELECT, INSERT, TRIGGER, UPDATE, DELETE ON TABLE `CampingSimulator`.* TO 'camping';
-
-SET SQL_MODE=@OLD_SQL_MODE;
-SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
-SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
