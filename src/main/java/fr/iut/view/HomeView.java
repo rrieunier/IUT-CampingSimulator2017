@@ -1,13 +1,9 @@
 package fr.iut.view;
 
 import fr.iut.App;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import fr.iut.controller.HomeController;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.geometry.Side;
 import javafx.geometry.VPos;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.SubScene;
 import javafx.scene.control.*;
@@ -21,14 +17,14 @@ import java.io.File;
 /**
  * Created by shellcode on 2/6/17.
  */
-public class MainView extends Scene {
+public class HomeView extends Scene {
 
-    private App app;
+    private HomeController controller;
     private String username;
 
-    public MainView(App app, String username) {
+    public HomeView(HomeController controller, String username) {
         super(new GridPane(), App.SCREEN_W, App.SCREEN_H);
-        this.app = app;
+        this.controller = controller;
         this.username = username;
 
         GridPane components = (GridPane)getRoot();
@@ -69,7 +65,7 @@ public class MainView extends Scene {
         decoButton.getStyleClass().add("record-sales");
         decoButton.setMinWidth(welcome_text.getLayoutBounds().getWidth());
 
-        decoButton.setOnAction(actionEvent -> app.logout());
+        decoButton.setOnAction(actionEvent -> controller.finish());
 
         VBox.setMargin(welcome_text, new Insets(0, 0, 0, 30));
         VBox.setMargin(decoButton, new Insets(0, 0, 0, 30));
@@ -120,7 +116,7 @@ public class MainView extends Scene {
                     case 1: break;
                     case 2: break;
                     case 3: break;
-                    case 4: subScene = new ProductManagerView(app); break;
+                    case 4: subScene = new ProductManagerView(controller); break;
                     case 5: break;
                 }
 

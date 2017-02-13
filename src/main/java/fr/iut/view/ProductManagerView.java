@@ -2,6 +2,7 @@ package fr.iut.view;
 
 
 import fr.iut.App;
+import fr.iut.controller.HomeController;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -21,11 +22,11 @@ public class ProductManagerView extends SubScene {
     public static double PRODUCT_MANAGER_W = App.SCREEN_W * 5/6;
     public static double PRODUCT_MANAGER_H = App.SCREEN_H * 7/9;
 
-    App app;
+    HomeController controller;
 
-    public ProductManagerView (App app) {
+    public ProductManagerView (HomeController controller) {
         super(new AnchorPane(), PRODUCT_MANAGER_W, PRODUCT_MANAGER_H);
-        this.app = app;
+        this.controller = controller;
 
         final StackPane[] lastClicked = {null};
 
@@ -97,7 +98,7 @@ public class ProductManagerView extends SubScene {
 
         details.getChildren().addAll(details_header, grid);
 
-        for (String s : app.getProductsList()) { //a modifier après la génération des entités
+        for (String s : controller.getProductsList()) { //a modifier après la génération des entités
             StackPane pane = new StackPane();
             pane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, new CornerRadii(5), new BorderWidths(5))));
             VBox product_wrapper = new VBox();

@@ -65,11 +65,9 @@ public class LocationDialog extends Dialog<Map<String, String>> {
         CheckBox shadow = new CheckBox("Ombre");
 
         if(spot != null) {
-            /*
             water.setSelected(spot.isWater());
             elec.setSelected(spot.isElectricity());
             shadow.setSelected(spot.isShadow());
-            */
         }
 
         grid.add(new Label("Nom:"), 0, 0);

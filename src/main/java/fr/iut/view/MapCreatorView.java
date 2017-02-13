@@ -1,6 +1,7 @@
 package fr.iut.view;
 
 import fr.iut.App;
+import fr.iut.controller.MapController;
 import fr.iut.model.Location;
 import fr.iut.model.Spot;
 import javafx.application.Platform;
@@ -34,8 +35,8 @@ import java.util.Optional;
 public class MapCreatorView extends Scene {
 
     private final static int MAP_VIEWPORT_WIDTH = (int)(App.SCREEN_W*3/4);
-    private final static int MAP_VIEWPORT_HEIGHT = (int)(App.SCREEN_H/2);
-    private App app;
+    private final static int MAP_VIEWPORT_HEIGHT = (int)(App.SCREEN_H / 2 + App.SCREEN_H / 10);
+    private MapController controller;
     private ScrollPane mapViewPort;
     private ArrayList<Location> locations = new ArrayList<>();
 
@@ -47,12 +48,11 @@ public class MapCreatorView extends Scene {
     private double mouseX ;
     private double mouseY ;
 
-    public MapCreatorView(App app, String username) {
+    public MapCreatorView(MapController controller) {
         super(new StackPane());
-        this.app = app;
+        this.controller = controller;
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Bienvenue " + username);
         alert.setHeaderText(null);
         alert.setContentText("Cette interface permet de créer la carte de votre camping, glissez/deposez les éléments dessus.");
 
@@ -244,13 +244,8 @@ public class MapCreatorView extends Scene {
         });
 
         buttonFinish.setOnMouseClicked(mouseEvent -> {
-            System.out.println("Saving map & points in database");
-            /*
-            for(Location location : locations)
-                location.store();
-                */
-
-            app.start("dev");
+            controller.store(mapFile, locations);
+            controller.finish();
         });
 
         mapPane.setOnMouseClicked(mouseEvent -> {
