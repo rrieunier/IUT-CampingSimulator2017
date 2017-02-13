@@ -1,5 +1,7 @@
 package fr.iut.view;
 
+import fr.iut.model.LocationEntity;
+import fr.iut.model.SpotEntity;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -20,14 +22,26 @@ public class LocationDialog extends Dialog<Map<String, String>> {
         this(imageView, null);
     }
 
-    public LocationDialog(ImageView imageView, Location location) {
+    public LocationDialog(ImageView imageView, LocationEntity location) {
+
+        SpotEntity spot = null;
+
+        if(location != null)
+            spot = location.getSpot();
 
         setTitle("Création d'emplacement");
         setHeaderText("Renseignez les informations concernant cet emplacement.");
         setGraphic(imageView);
 
         ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
-        getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
+        getDialogPane().getButtonTypes().add(okButtonType);
+
+        ButtonType deleteButtonType = new ButtonType("Supprimer", ButtonBar.ButtonData.FINISH);
+
+        if(location != null)
+            getDialogPane().getButtonTypes().add(deleteButtonType);
+
+        getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
 
         GridPane grid = new GridPane();
         grid.setHgap(10);
@@ -43,18 +57,18 @@ public class LocationDialog extends Dialog<Map<String, String>> {
         Spinner<Integer> capacity = new Spinner<>();
         SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 99, 0);
 
-        if(location != null)
-            valueFactory.setValue(location.getCapacity());
+        if(spot != null)
+            valueFactory.setValue(spot.getCapacity());
 
         capacity.setValueFactory(valueFactory);
         CheckBox water = new CheckBox("Point d'eau");
         CheckBox elec = new CheckBox("Electricité");
         CheckBox shadow = new CheckBox("Ombre");
 
-        if(location != null) {
-            water.setSelected(location.hasWater());
-            elec.setSelected(location.hasElectricity());
-            shadow.setSelected(location.hasShadow());
+        if(spot != null) {
+            water.setSelected(spot.isWater());
+            elec.setSelected(spot.isElectricity());
+            shadow.setSelected(spot.isShadow());
         }
 
         grid.add(new Label("Nom:"), 0, 0);
@@ -78,16 +92,24 @@ public class LocationDialog extends Dialog<Map<String, String>> {
         Platform.runLater(name::requestFocus);
 
         setResultConverter(dialogButton -> {
+
+            Map<String, String> map = null;
+
             if (dialogButton == okButtonType) {
-                Map<String, String> map = new HashMap<>(5);
+                map = new HashMap<>(5);
                 map.put("name", name.getText());
                 map.put("capacity", capacity.getValue().toString());
                 map.put("water", Boolean.toString(water.isSelected()));
                 map.put("elec", Boolean.toString(elec.isSelected()));
                 map.put("shadow", Boolean.toString(shadow.isSelected()));
-                return map;
             }
-            return null;
+
+            else if(dialogButton == deleteButtonType) {
+                map = new HashMap<>(1);
+                map.put("delete", "delete");
+            }
+
+            return map;
         });
     }
 }
