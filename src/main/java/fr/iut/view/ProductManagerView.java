@@ -84,7 +84,7 @@ public class ProductManagerView extends SubScene {
             label.getStylesheets().add(new File("res/style.css").toURI().toString());
             label.getStyleClass().add("grid-stock-label");
             grid.addRow(i, label);
-            grid.setMargin(label, new Insets(0 ,0, 0, 30));
+            GridPane.setMargin(label, new Insets(0 ,0, 0, 30));
         }
         for (int i = 0 ; i < labels.length ; i++) {
             TextField value  = new TextField("VALUE FROM DATABASE");
@@ -95,7 +95,7 @@ public class ProductManagerView extends SubScene {
             value.getStylesheets().add(new File("res/style.css").toURI().toString());
             value.getStyleClass().add("grid-stock-field");
             grid.add(value, 1, i);
-            grid.setMargin(value, new Insets(0 ,30, 0, 30));
+            GridPane.setMargin(value, new Insets(0 ,30, 0, 30));
         }
 
         HBox buttons = new HBox();
@@ -144,21 +144,21 @@ public class ProductManagerView extends SubScene {
             informations.getChildren().addAll(stock, price);
             product_wrapper.getChildren().addAll(name, informations);
             product_wrapper.setPadding(new Insets(0, 10, 10, 10));
-            product_wrapper.setMargin(name, new Insets(15, 0, 5, 0));
-            product_wrapper.setMargin(informations, new Insets(0, 0, 15, 0));
+            VBox.setMargin(name, new Insets(15, 0, 5, 0));
+            VBox.setMargin(informations, new Insets(0, 0, 15, 0));
 
             pane.getChildren().add(product_wrapper);
             if (products_box.getChildren().size() % 2 == 0)
-                pane.setStyle("-fx-background-color: #336699");
+                pane.setStyle("-fx-background-color: #336699;");
             else
-                pane.setStyle("-fx-background-color: #0F355C");
+                pane.setStyle("-fx-background-color: #0F355C;");
 
             pane.setOnMouseClicked(event -> {
                 if (lastClicked != null) {
                     if (products_box.getChildren().indexOf(lastClicked) % 2 == 0)
-                        lastClicked.setStyle("-fx-background-color: #336699");
+                        lastClicked.setStyle("-fx-background-color: #336699;");
                     else
-                        lastClicked.setStyle("-fx-background-color: #0F355C");
+                        lastClicked.setStyle("-fx-background-color: #0F355C;");
                 }
                 pane.setStyle("-fx-background-color: #ff6600;");
                 lastClicked = pane;
