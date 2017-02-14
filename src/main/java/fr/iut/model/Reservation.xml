@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+        version="2.0">
+
+    <entity class="fr.iut.model.Reservation">
+        <table name="Reservation" schema="CampingSimulator" catalog=""/>
+        <attributes>
+            <id name="id">
+                <column name="id" precision="11"/>
+            </id>
+            <basic name="clientComment">
+                <column name="client_comment" nullable="false" length="250"/>
+            </basic>
+            <basic name="starttime">
+                <column name="starttime" precision="-1"/>
+            </basic>
+            <basic name="endtime">
+                <column name="endtime" precision="-1"/>
+            </basic>
+            <basic name="reservationDate">
+                <column name="reservation_date" precision="-1"/>
+            </basic>
+            <basic name="personCount">
+                <column name="person_count" precision="11"/>
+            </basic>
+            <basic name="spotId">
+                <column name="Spot_id" precision="11"/>
+            </basic>
+            <basic name="clientId">
+                <column name="Client_id" precision="11"/>
+            </basic>
+        </attributes>
+    </entity>
+</entity-mappings>

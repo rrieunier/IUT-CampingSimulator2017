@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+        version="2.0">
+
+    <entity class="fr.iut.model.LocationHasProblem">
+        <table name="Location_has_Problem" schema="CampingSimulator" catalog=""/>
+        <id-class class="fr.iut.model.LocationHasProblemPK"/>
+        <attributes>
+            <id name="locationId">
+                <column name="Location_id" precision="11"/>
+            </id>
+            <id name="problemId">
+                <column name="Problem_id" precision="11"/>
+            </id>
+        </attributes>
+    </entity>
+</entity-mappings>

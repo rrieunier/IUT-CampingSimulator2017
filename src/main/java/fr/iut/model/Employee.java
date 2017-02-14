@@ -1,10 +1,12 @@
 package fr.iut.model;
 
-import javax.persistence.*;
-import java.util.Collection;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 /**
- * Created by Sydpy on 2/13/17.
+ * Created by Sydpy on 2/14/17.
  */
 @Entity
 public class Employee {
@@ -14,8 +16,6 @@ public class Employee {
     private String email;
     private String completeAddress;
     private int id;
-    private Collection<Task> tasksById;
-    private Collection<User> usersById;
 
     @Basic
     @Column(name = "last_name", nullable = false, length = 45)
@@ -104,23 +104,5 @@ public class Employee {
         result = 31 * result + (completeAddress != null ? completeAddress.hashCode() : 0);
         result = 31 * result + id;
         return result;
-    }
-
-    @OneToMany(mappedBy = "employeeByEmployeeId")
-    public Collection<Task> getTasksById() {
-        return tasksById;
-    }
-
-    public void setTasksById(Collection<Task> tasksById) {
-        this.tasksById = tasksById;
-    }
-
-    @OneToMany(mappedBy = "employeeByEmployeeId")
-    public Collection<User> getUsersById() {
-        return usersById;
-    }
-
-    public void setUsersById(Collection<User> usersById) {
-        this.usersById = usersById;
     }
 }

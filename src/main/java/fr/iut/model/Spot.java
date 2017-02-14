@@ -1,22 +1,19 @@
 package fr.iut.model;
 
 import javax.persistence.*;
-import java.util.Collection;
 
 /**
- * Created by Sydpy on 2/13/17.
+ * Created by Sydpy on 2/14/17.
  */
 @Entity
-public class Spot {
+@PrimaryKeyJoinColumn(name = "id", referencedColumnName = "id")
+public class Spot extends Location{
     private double pricePerDay;
     private int capacity;
     private boolean water;
     private boolean electricity;
     private boolean shadow;
-    private int id;
-    private Collection<Reservation> reservationsById;
-    private Location locationById;
-    private SpotType spotTypeBySpotTypeId;
+    private int spotTypeId;
 
     @Basic
     @Column(name = "price_per_day", nullable = false, precision = 0)
@@ -68,20 +65,23 @@ public class Spot {
         this.shadow = shadow;
     }
 
-    @Id
-    @Column(name = "id", nullable = false)
-    public int getId() {
-        return id;
+    @Basic
+    @Column(name = "SpotType_id", nullable = false)
+    public int getSpotTypeId() {
+        return spotTypeId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setSpotTypeId(int spotTypeId) {
+        this.spotTypeId = spotTypeId;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
+        if(!super.equals(o))
+            return false;
 
         Spot spot = (Spot) o;
 
@@ -90,14 +90,14 @@ public class Spot {
         if (water != spot.water) return false;
         if (electricity != spot.electricity) return false;
         if (shadow != spot.shadow) return false;
-        if (id != spot.id) return false;
+        if (spotTypeId != spot.spotTypeId) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result;
+        int result = super.hashCode();
         long temp;
         temp = Double.doubleToLongBits(pricePerDay);
         result = (int) (temp ^ (temp >>> 32));
@@ -105,36 +105,7 @@ public class Spot {
         result = 31 * result + (water ? 1 : 0);
         result = 31 * result + (electricity ? 1 : 0);
         result = 31 * result + (shadow ? 1 : 0);
-        result = 31 * result + id;
+        result = 31 * result + spotTypeId;
         return result;
-    }
-
-    @OneToMany(mappedBy = "spotBySpotId")
-    public Collection<Reservation> getReservationsById() {
-        return reservationsById;
-    }
-
-    public void setReservationsById(Collection<Reservation> reservationsById) {
-        this.reservationsById = reservationsById;
-    }
-
-    @OneToOne
-    @JoinColumn(name = "id", referencedColumnName = "id", nullable = false)
-    public Location getLocationById() {
-        return locationById;
-    }
-
-    public void setLocationById(Location locationById) {
-        this.locationById = locationById;
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "SpotType_id", referencedColumnName = "id", nullable = false)
-    public SpotType getSpotTypeBySpotTypeId() {
-        return spotTypeBySpotTypeId;
-    }
-
-    public void setSpotTypeBySpotTypeId(SpotType spotTypeBySpotTypeId) {
-        this.spotTypeBySpotTypeId = spotTypeBySpotTypeId;
     }
 }

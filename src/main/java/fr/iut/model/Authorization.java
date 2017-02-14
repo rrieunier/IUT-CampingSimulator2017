@@ -1,16 +1,17 @@
 package fr.iut.model;
 
-import javax.persistence.*;
-import java.util.Collection;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 /**
- * Created by Sydpy on 2/13/17.
+ * Created by Sydpy on 2/14/17.
  */
 @Entity
 public class Authorization {
     private String label;
     private int id;
-    private Collection<UserHasAuthorization> userHasAuthorizationsById;
 
     @Basic
     @Column(name = "label", nullable = true, length = 45)
@@ -50,14 +51,5 @@ public class Authorization {
         int result = label != null ? label.hashCode() : 0;
         result = 31 * result + id;
         return result;
-    }
-
-    @OneToMany(mappedBy = "authorizationByAuthorizationId")
-    public Collection<UserHasAuthorization> getUserHasAuthorizationsById() {
-        return userHasAuthorizationsById;
-    }
-
-    public void setUserHasAuthorizationsById(Collection<UserHasAuthorization> userHasAuthorizationsById) {
-        this.userHasAuthorizationsById = userHasAuthorizationsById;
     }
 }

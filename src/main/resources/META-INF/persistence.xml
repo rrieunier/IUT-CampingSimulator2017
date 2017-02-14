@@ -3,6 +3,7 @@
 
     <persistence-unit name="camping-unit">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
         <class>fr.iut.model.Authorization</class>
         <class>fr.iut.model.Client</class>
         <class>fr.iut.model.ClientHasProblem</class>
@@ -25,6 +26,7 @@
         <class>fr.iut.model.UserHasAuthorization</class>
 
         <properties>
+            <property name="mappingResources" value="fr/iut/model/*.xml" />
             <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/CampingSimulator"/>
             <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
             <property name="hibernate.connection.username" value="camping"/>

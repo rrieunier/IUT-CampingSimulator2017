@@ -1,11 +1,13 @@
 package fr.iut.model;
 
-import javax.persistence.*;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.sql.Timestamp;
-import java.util.Collection;
 
 /**
- * Created by Sydpy on 2/13/17.
+ * Created by Sydpy on 2/14/17.
  */
 @Entity
 public class Problem {
@@ -14,8 +16,6 @@ public class Problem {
     private Timestamp solutionDatetime;
     private String state;
     private int id;
-    private Collection<ClientHasProblem> clientHasProblemsById;
-    private Collection<LocationHasProblem> locationHasProblemsById;
 
     @Basic
     @Column(name = "appearance_datetime", nullable = false)
@@ -93,23 +93,5 @@ public class Problem {
         result = 31 * result + (state != null ? state.hashCode() : 0);
         result = 31 * result + id;
         return result;
-    }
-
-    @OneToMany(mappedBy = "problemByProblemId")
-    public Collection<ClientHasProblem> getClientHasProblemsById() {
-        return clientHasProblemsById;
-    }
-
-    public void setClientHasProblemsById(Collection<ClientHasProblem> clientHasProblemsById) {
-        this.clientHasProblemsById = clientHasProblemsById;
-    }
-
-    @OneToMany(mappedBy = "problemByProblemId")
-    public Collection<LocationHasProblem> getLocationHasProblemsById() {
-        return locationHasProblemsById;
-    }
-
-    public void setLocationHasProblemsById(Collection<LocationHasProblem> locationHasProblemsById) {
-        this.locationHasProblemsById = locationHasProblemsById;
     }
 }

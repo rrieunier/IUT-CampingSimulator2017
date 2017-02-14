@@ -1,10 +1,12 @@
 package fr.iut.model;
 
-import javax.persistence.*;
-import java.util.Collection;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 /**
- * Created by Sydpy on 2/13/17.
+ * Created by Sydpy on 2/14/17.
  */
 @Entity
 public class Supplier {
@@ -13,8 +15,6 @@ public class Supplier {
     private String email;
     private String website;
     private int id;
-    private Collection<Restocking> restockingsById;
-    private Collection<SupplierHasProduct> supplierHasProductsById;
 
     @Basic
     @Column(name = "name", nullable = false, length = 45)
@@ -90,23 +90,5 @@ public class Supplier {
         result = 31 * result + (website != null ? website.hashCode() : 0);
         result = 31 * result + id;
         return result;
-    }
-
-    @OneToMany(mappedBy = "supplierBySupplierId")
-    public Collection<Restocking> getRestockingsById() {
-        return restockingsById;
-    }
-
-    public void setRestockingsById(Collection<Restocking> restockingsById) {
-        this.restockingsById = restockingsById;
-    }
-
-    @OneToMany(mappedBy = "supplierBySupplierId")
-    public Collection<SupplierHasProduct> getSupplierHasProductsById() {
-        return supplierHasProductsById;
-    }
-
-    public void setSupplierHasProductsById(Collection<SupplierHasProduct> supplierHasProductsById) {
-        this.supplierHasProductsById = supplierHasProductsById;
     }
 }

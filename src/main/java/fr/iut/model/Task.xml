@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+        version="2.0">
+
+    <entity class="fr.iut.model.Task">
+        <table name="Task" schema="CampingSimulator" catalog=""/>
+        <attributes>
+            <id name="idTask">
+                <column name="idTask" precision="11"/>
+            </id>
+            <basic name="starttime">
+                <column name="starttime" precision="-1"/>
+            </basic>
+            <basic name="endtime">
+                <column name="endtime" precision="-1"/>
+            </basic>
+            <basic name="label">
+                <column name="label" length="50"/>
+            </basic>
+            <basic name="employeeId">
+                <column name="Employee_id" precision="11"/>
+            </basic>
+            <basic name="locationId">
+                <column name="Location_id" nullable="false" precision="11"/>
+            </basic>
+        </attributes>
+    </entity>
+</entity-mappings>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+        version="2.0">
+
+    <entity class="fr.iut.model.Restocking">
+        <table name="Restocking" schema="CampingSimulator" catalog=""/>
+        <attributes>
+            <id name="id">
+                <column name="id" precision="11"/>
+            </id>
+            <basic name="quantity">
+                <column name="quantity" precision="11"/>
+            </basic>
+            <basic name="datetime">
+                <column name="datetime" precision="-1"/>
+            </basic>
+            <basic name="supplierId">
+                <column name="Supplier_id" precision="11"/>
+            </basic>
+            <basic name="productId">
+                <column name="Product_id" precision="11"/>
+            </basic>
+        </attributes>
+    </entity>
+</entity-mappings>

@@ -3,36 +3,14 @@ package fr.iut.model;
 import javax.persistence.*;
 
 /**
- * Created by Sydpy on 2/13/17.
+ * Created by Sydpy on 2/14/17.
  */
 @Entity
 @Table(name = "Location_has_Problem", schema = "CampingSimulator", catalog = "")
 @IdClass(LocationHasProblemPK.class)
 public class LocationHasProblem {
-    private Location locationByLocationId;
-    private Problem problemByProblemId;
     private int locationId;
     private int problemId;
-
-    @ManyToOne
-    @JoinColumn(name = "Location_id", referencedColumnName = "id", nullable = false)
-    public Location getLocationByLocationId() {
-        return locationByLocationId;
-    }
-
-    public void setLocationByLocationId(Location locationByLocationId) {
-        this.locationByLocationId = locationByLocationId;
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "Problem_id", referencedColumnName = "id", nullable = false)
-    public Problem getProblemByProblemId() {
-        return problemByProblemId;
-    }
-
-    public void setProblemByProblemId(Problem problemByProblemId) {
-        this.problemByProblemId = problemByProblemId;
-    }
 
     @Id
     @Column(name = "Location_id", nullable = false)

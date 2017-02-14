@@ -1,10 +1,12 @@
 package fr.iut.model;
 
-import javax.persistence.*;
-import java.util.Collection;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 /**
- * Created by Sydpy on 2/13/17.
+ * Created by Sydpy on 2/14/17.
  */
 @Entity
 public class Client {
@@ -13,9 +15,6 @@ public class Client {
     private String phone;
     private String email;
     private int id;
-    private Collection<ClientHasProblem> clientHasProblemsById;
-    private Collection<Purchase> purchasesById;
-    private Collection<Reservation> reservationsById;
 
     @Basic
     @Column(name = "last_name", nullable = false, length = 45)
@@ -91,32 +90,5 @@ public class Client {
         result = 31 * result + (email != null ? email.hashCode() : 0);
         result = 31 * result + id;
         return result;
-    }
-
-    @OneToMany(mappedBy = "clientByClientId")
-    public Collection<ClientHasProblem> getClientHasProblemsById() {
-        return clientHasProblemsById;
-    }
-
-    public void setClientHasProblemsById(Collection<ClientHasProblem> clientHasProblemsById) {
-        this.clientHasProblemsById = clientHasProblemsById;
-    }
-
-    @OneToMany(mappedBy = "clientByClientId")
-    public Collection<Purchase> getPurchasesById() {
-        return purchasesById;
-    }
-
-    public void setPurchasesById(Collection<Purchase> purchasesById) {
-        this.purchasesById = purchasesById;
-    }
-
-    @OneToMany(mappedBy = "clientByClientId")
-    public Collection<Reservation> getReservationsById() {
-        return reservationsById;
-    }
-
-    public void setReservationsById(Collection<Reservation> reservationsById) {
-        this.reservationsById = reservationsById;
     }
 }

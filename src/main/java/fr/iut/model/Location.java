@@ -1,20 +1,17 @@
 package fr.iut.model;
 
 import javax.persistence.*;
-import java.util.Collection;
 
 /**
- * Created by Sydpy on 2/13/17.
+ * Created by Sydpy on 2/14/17.
  */
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Location {
     private String name;
     private Double pointX;
     private Double pointY;
     private int id;
-    private Collection<LocationHasProblem> locationHasProblemsById;
-    private Spot spotById;
-    private Collection<Task> tasksById;
 
     @Basic
     @Column(name = "name", nullable = false, length = 45)
@@ -78,32 +75,5 @@ public class Location {
         result = 31 * result + (pointY != null ? pointY.hashCode() : 0);
         result = 31 * result + id;
         return result;
-    }
-
-    @OneToMany(mappedBy = "locationByLocationId")
-    public Collection<LocationHasProblem> getLocationHasProblemsById() {
-        return locationHasProblemsById;
-    }
-
-    public void setLocationHasProblemsById(Collection<LocationHasProblem> locationHasProblemsById) {
-        this.locationHasProblemsById = locationHasProblemsById;
-    }
-
-    @OneToOne(mappedBy = "locationById")
-    public Spot getSpotById() {
-        return spotById;
-    }
-
-    public void setSpotById(Spot spotById) {
-        this.spotById = spotById;
-    }
-
-    @OneToMany(mappedBy = "locationByLocationId")
-    public Collection<Task> getTasksById() {
-        return tasksById;
-    }
-
-    public void setTasksById(Collection<Task> tasksById) {
-        this.tasksById = tasksById;
     }
 }

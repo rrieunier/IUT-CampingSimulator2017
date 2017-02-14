@@ -1,10 +1,12 @@
 package fr.iut.model;
 
-import javax.persistence.*;
-import java.util.Collection;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 /**
- * Created by Sydpy on 2/13/17.
+ * Created by Sydpy on 2/14/17.
  */
 @Entity
 public class Product {
@@ -12,9 +14,6 @@ public class Product {
     private double sellPrice;
     private String label;
     private int id;
-    private Collection<Purchase> purchasesById;
-    private Collection<Restocking> restockingsById;
-    private Collection<SupplierHasProduct> supplierHasProductsById;
 
     @Basic
     @Column(name = "stock", nullable = false)
@@ -81,32 +80,5 @@ public class Product {
         result = 31 * result + (label != null ? label.hashCode() : 0);
         result = 31 * result + id;
         return result;
-    }
-
-    @OneToMany(mappedBy = "productByProductId")
-    public Collection<Purchase> getPurchasesById() {
-        return purchasesById;
-    }
-
-    public void setPurchasesById(Collection<Purchase> purchasesById) {
-        this.purchasesById = purchasesById;
-    }
-
-    @OneToMany(mappedBy = "productByProductId")
-    public Collection<Restocking> getRestockingsById() {
-        return restockingsById;
-    }
-
-    public void setRestockingsById(Collection<Restocking> restockingsById) {
-        this.restockingsById = restockingsById;
-    }
-
-    @OneToMany(mappedBy = "productByProductId")
-    public Collection<SupplierHasProduct> getSupplierHasProductsById() {
-        return supplierHasProductsById;
-    }
-
-    public void setSupplierHasProductsById(Collection<SupplierHasProduct> supplierHasProductsById) {
-        this.supplierHasProductsById = supplierHasProductsById;
     }
 }
