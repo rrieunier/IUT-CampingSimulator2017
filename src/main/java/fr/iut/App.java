@@ -70,8 +70,6 @@ public class App extends Application {
                 break;
         }
 
-        //stage.setMaximized(false);
-        //stage.setMaximized(true);
         stage.centerOnScreen();
     }
 }

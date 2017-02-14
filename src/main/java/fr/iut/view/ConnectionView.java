@@ -122,7 +122,7 @@ public class ConnectionView extends Scene {
         confirm.getStyleClass().add("record-sales");
         confirm.setOnMouseClicked(event -> connectionButtonAction(login_field.getText(), password_field.getText()));
 
-        this.setOnKeyPressed(event -> {
+        setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
                 connectionButtonAction(login_field.getText(), password_field.getText());
             }

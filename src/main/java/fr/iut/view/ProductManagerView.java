@@ -23,13 +23,14 @@ public class ProductManagerView extends SubScene {
     public static double PRODUCT_MANAGER_W = App.SCREEN_W * 5/6;
     public static double PRODUCT_MANAGER_H = App.SCREEN_H * 7/9;
 
-    HomeController controller;
+    private HomeController controller;
+
+    private StackPane lastClicked;
+    private VBox products_box;
 
     public ProductManagerView (HomeController controller) {
         super(new AnchorPane(), PRODUCT_MANAGER_W, PRODUCT_MANAGER_H);
         this.controller = controller;
-
-        final StackPane[] lastClicked = {null};
 
         AnchorPane components = (AnchorPane)getRoot();
 
@@ -46,7 +47,8 @@ public class ProductManagerView extends SubScene {
         HBox body = new HBox();
         body.setMinWidth(PRODUCT_MANAGER_W * 19/20);
 
-        VBox products_box = new VBox();
+        products_box = new VBox();
+        products_box.setSpacing(8);
         products_box.setPrefSize(PRODUCT_MANAGER_W / 4, PRODUCT_MANAGER_H * 8/10);
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
@@ -111,7 +113,19 @@ public class ProductManagerView extends SubScene {
         }
 
         details.getChildren().addAll(details_header, grid, buttons);
-        details.setMargin(buttons, new Insets(PRODUCT_MANAGER_H / 15 ,0, 0, PRODUCT_MANAGER_W / 9));
+        VBox.setMargin(buttons, new Insets(PRODUCT_MANAGER_H / 15 ,0, 0, PRODUCT_MANAGER_W / 9));
+
+        buildProductsList();
+
+        lastClicked = (StackPane) products_box.getChildren().get(0);
+        lastClicked.setStyle("-fx-background-color: #ff6600;");
+
+        body.getChildren().addAll(scrollPane, details);
+        wrapper.getChildren().addAll(header, body);
+        components.getChildren().add(wrapper);
+    }
+
+    private void buildProductsList() {
 
         for (String s : controller.getProductsList()) { //a modifier après la génération des entités
             StackPane pane = new StackPane();
@@ -139,29 +153,19 @@ public class ProductManagerView extends SubScene {
             else
                 pane.setStyle("-fx-background-color: #0F355C");
 
-            pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    if (lastClicked[0] != null) {
-                        if (products_box.getChildren().indexOf(lastClicked[0]) % 2 == 0)
-                            lastClicked[0].setStyle("-fx-background-color: #336699");
-                        else
-                            lastClicked[0].setStyle("-fx-background-color: #0F355C");
-                    }
-                    pane.setStyle("-fx-background-color: #903b12");
-                    lastClicked[0] = pane;
+            pane.setOnMouseClicked(event -> {
+                if (lastClicked != null) {
+                    if (products_box.getChildren().indexOf(lastClicked) % 2 == 0)
+                        lastClicked.setStyle("-fx-background-color: #336699");
+                    else
+                        lastClicked.setStyle("-fx-background-color: #0F355C");
                 }
+                pane.setStyle("-fx-background-color: #ff6600;");
+                lastClicked = pane;
             });
 
             products_box.getChildren().add(pane);
         }
-
-        lastClicked[0] = (StackPane) products_box.getChildren().get(0);
-        lastClicked[0].setStyle("-fx-background-color: #a34313");
-
-        body.getChildren().addAll(scrollPane, details);
-        wrapper.getChildren().addAll(header, body);
-        components.getChildren().add(wrapper);
     }
 
 }

@@ -26,7 +26,7 @@ public class ReductionsView extends Scene {
     public static final double REDUCTIONS_HEIGHT = App.SCREEN_H / 2;
     public static final double REDUCTIONS_WIDTH = App.SCREEN_W / 2;
 
-    private App app;
+    private App app; //TODO : il faut un controller, pas une instance de App
 
     public ReductionsView(App app){
         super(new VBox(), REDUCTIONS_WIDTH, REDUCTIONS_HEIGHT);

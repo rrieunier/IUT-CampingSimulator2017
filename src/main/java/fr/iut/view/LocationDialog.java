@@ -25,8 +25,8 @@ public class LocationDialog extends Dialog<Map<String, String>> {
 
         Spot spot = null;
 
-        if(location != null)
-            spot = location.getSpotById();
+        if(location instanceof Spot)
+            spot = (Spot)location;
 
         setTitle("Création d'emplacement");
         setHeaderText("Renseignez les informations concernant cet emplacement.");
