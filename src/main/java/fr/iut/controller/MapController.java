@@ -9,9 +9,7 @@ import javafx.scene.Scene;
 import java.io.File;
 import java.util.ArrayList;
 
-/**
- * Created by shellcode on 2/13/17.
- */
+
 public class MapController implements ControllerInterface {
 
     private App app;

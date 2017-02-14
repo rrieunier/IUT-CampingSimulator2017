@@ -2,14 +2,13 @@ package fr.iut.controller;
 
 import fr.iut.App;
 import fr.iut.State;
+import fr.iut.model.Product;
 import fr.iut.view.HomeView;
 import javafx.scene.Scene;
 
 import java.util.ArrayList;
 
-/**
- * Created by shellcode on 2/13/17.
- */
+
 public class HomeController implements ControllerInterface {
 
     private App app;
@@ -20,14 +19,20 @@ public class HomeController implements ControllerInterface {
         homeView = new HomeView(this, connectedUser);
     }
 
-    public ArrayList<String> getProductsList() {
-        ArrayList<String> products = new ArrayList<>();
+    public ArrayList<Product> getProductsList() {
+        ArrayList<Product> products = new ArrayList<>();
         for (int i = 0 ; i < 20 ; i++) {
-            products.add("Produit n°" + String.valueOf(i));
+            // findAll quand DAO ok
+            Product product = new Product();
+            product.setId(i);
+            product.setLabel("Produit n° " + i);
+            product.setSellPrice(i * 2);
+            product.setStock(i);
+            products.add(product);
         }
         return products;
     }
-
+    
     @Override
     public Scene getView() {
         return homeView;

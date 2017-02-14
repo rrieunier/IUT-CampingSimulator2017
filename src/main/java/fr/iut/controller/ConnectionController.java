@@ -5,9 +5,7 @@ import fr.iut.State;
 import fr.iut.view.ConnectionView;
 import javafx.scene.Scene;
 
-/**
- * Created by shellcode on 2/13/17.
- */
+
 public class ConnectionController implements ControllerInterface {
 
     private App app;
@@ -35,7 +33,8 @@ public class ConnectionController implements ControllerInterface {
 
     @Override
     public void finish() {
-        app.switchState(State.MAP_CREATOR);
+        //TODO : remetrre State.MAP_CREATOR
+        app.switchState(State.HOME);
     }
 
     public String getConnectedUser() {

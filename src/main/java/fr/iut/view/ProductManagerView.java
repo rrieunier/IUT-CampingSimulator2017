@@ -3,20 +3,20 @@ package fr.iut.view;
 
 import fr.iut.App;
 import fr.iut.controller.HomeController;
-import javafx.event.EventHandler;
+import fr.iut.model.Product;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.SubScene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class ProductManagerView extends SubScene {
 
@@ -25,8 +25,13 @@ public class ProductManagerView extends SubScene {
 
     private HomeController controller;
 
+    private ArrayList<Product> products_list;
     private StackPane lastClicked;
+    private Product lastClickedValue;
+
     private VBox products_box;
+    private VBox details = new VBox();
+    private GridPane grid = new GridPane();
 
     public ProductManagerView (HomeController controller) {
         super(new AnchorPane(), PRODUCT_MANAGER_W, PRODUCT_MANAGER_H);
@@ -56,47 +61,15 @@ public class ProductManagerView extends SubScene {
         scrollPane.setContent(products_box);
         scrollPane.setMinSize(products_box.getPrefWidth(), products_box.getPrefHeight());
 
-        VBox details = new VBox();
         details.getStylesheets().add(new File("res/style.css").toURI().toString());
         details.getStyleClass().add("product-detail");
         details.setPrefWidth(3 * PRODUCT_MANAGER_W / 4);
         details.setMaxHeight(17 * PRODUCT_MANAGER_H / 19);
 
         HeaderView details_header = new HeaderView("Détails du produit");
-        GridPane grid = new GridPane();
         grid.setGridLinesVisible(true);
         grid.getStylesheets().add(new File("res/style.css").toURI().toString());
         grid.getStyleClass().add("stock-grid");
-
-        String[] labels = {"Nom", "Lieu", "Responsable", "Quantité", "Quantité critique", "Livré le"};
-        for (int i = 0 ; i < 2 ; i++) {
-            ColumnConstraints constraint = new ColumnConstraints();
-            constraint.setPrefWidth(details.getPrefWidth() / 2);
-            grid.getColumnConstraints().add(constraint);
-        }
-        for (int i = 0 ; i < labels.length ; i++) {
-            RowConstraints constraint = new RowConstraints();
-            constraint.setPrefHeight(details.getMaxHeight() / 11);
-            grid.getRowConstraints().add(constraint);
-        }
-        for (int i = 0 ; i < labels.length ; i++) {
-            Label label  = new Label(labels[i] + ":");
-            label.getStylesheets().add(new File("res/style.css").toURI().toString());
-            label.getStyleClass().add("grid-stock-label");
-            grid.addRow(i, label);
-            GridPane.setMargin(label, new Insets(0 ,0, 0, 30));
-        }
-        for (int i = 0 ; i < labels.length ; i++) {
-            TextField value  = new TextField("VALUE FROM DATABASE");
-            value.setEditable(false);
-            value.setFocusTraversable(false);
-            value.setPrefHeight(details.getMaxHeight() / 12);
-            value.setAlignment(Pos.CENTER);
-            value.getStylesheets().add(new File("res/style.css").toURI().toString());
-            value.getStyleClass().add("grid-stock-field");
-            grid.add(value, 1, i);
-            GridPane.setMargin(value, new Insets(0 ,30, 0, 30));
-        }
 
         HBox buttons = new HBox();
         buttons.setSpacing(PRODUCT_MANAGER_W / 8);
@@ -119,35 +92,45 @@ public class ProductManagerView extends SubScene {
 
         lastClicked = (StackPane) products_box.getChildren().get(0);
         lastClicked.setStyle("-fx-background-color: #ff6600;");
+        lastClickedValue = products_list.get(0);
 
         body.getChildren().addAll(scrollPane, details);
         wrapper.getChildren().addAll(header, body);
         components.getChildren().add(wrapper);
+
+        buildDetails();
     }
 
     private void buildProductsList() {
 
-        for (String s : controller.getProductsList()) { //a modifier après la génération des entités
+        products_list = controller.getProductsList();
+
+        for (Product p : products_list) {
             StackPane pane = new StackPane();
-            pane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, new CornerRadii(5), new BorderWidths(5))));
             VBox product_wrapper = new VBox();
-            Text name = new Text(s);
-            name.setFill(Color.WHITESMOKE);
             HBox informations = new HBox();
-            Text stock = new Text("Restant: 0");
+
+            Text name = new Text(p.getLabel());
+            Text stock = new Text("Quantité: " + String.valueOf(p.getStock()));
+            Text price = new Text("Prix: " + String.valueOf(p.getSellPrice()));
+
+            pane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, new CornerRadii(5), new BorderWidths(5))));
+
+            name.setFill(Color.WHITESMOKE);
             stock.setFill(Color.WHITESMOKE);
-            Text price = new Text("Prix: 50€");
             price.setFill(Color.WHITESMOKE);
 
             informations.setSpacing(10);
             informations.setAlignment(Pos.CENTER);
             informations.getChildren().addAll(stock, price);
-            product_wrapper.getChildren().addAll(name, informations);
-            product_wrapper.setPadding(new Insets(0, 10, 10, 10));
+
             VBox.setMargin(name, new Insets(15, 0, 5, 0));
             VBox.setMargin(informations, new Insets(0, 0, 15, 0));
+            product_wrapper.getChildren().addAll(name, informations);
+            product_wrapper.setPadding(new Insets(0, 10, 10, 10));
 
             pane.getChildren().add(product_wrapper);
+
             if (products_box.getChildren().size() % 2 == 0)
                 pane.setStyle("-fx-background-color: #336699;");
             else
@@ -162,10 +145,62 @@ public class ProductManagerView extends SubScene {
                 }
                 pane.setStyle("-fx-background-color: #ff6600;");
                 lastClicked = pane;
+                lastClickedValue = products_list.get(products_box.getChildren().indexOf(pane));
+                actualiseDetails();
             });
 
             products_box.getChildren().add(pane);
         }
     }
 
+    private void buildDetails() {
+        String[] labels = {"Nom", "En stock", "Quantité critique", "Livré le"};
+        for (int i = 0 ; i < 2 ; i++) {
+            ColumnConstraints constraint = new ColumnConstraints();
+            constraint.setPrefWidth(details.getPrefWidth() / 2);
+            grid.getColumnConstraints().add(constraint);
+        }
+        for (int i = 0 ; i < labels.length ; i++) {
+            RowConstraints constraint = new RowConstraints();
+            constraint.setPrefHeight(details.getMaxHeight() / 8);
+            grid.getRowConstraints().add(constraint);
+        }
+        for (int i = 0 ; i < labels.length ; i++) {
+            Label label  = new Label(labels[i] + ":");
+            label.getStylesheets().add(new File("res/style.css").toURI().toString());
+            label.getStyleClass().add("grid-stock-label");
+            grid.addRow(i, label);
+            GridPane.setMargin(label, new Insets(0 ,0, 0, 30));
+        }
+        for (int i = 0 ; i < labels.length ; i++) {
+            Label label  = new Label(".");
+            label.getStylesheets().add(new File("res/style.css").toURI().toString());
+            label.getStyleClass().add("grid-stock-field");
+            grid.add(label, 1, i);
+            GridPane.setMargin(label, new Insets(0 ,0, 0, 30));
+        }
+
+        actualiseDetails();
+    }
+
+    private void actualiseDetails() {
+        for (Node node : grid.getChildren()) {
+            if (node instanceof Label && GridPane.getColumnIndex(node) == 1) {
+                switch (GridPane.getRowIndex(node)) {
+                    case 0:
+                        ((Label) node).setText(lastClickedValue.getLabel());
+                        break;
+                    case 1:
+                        ((Label) node).setText(String.valueOf(lastClickedValue.getStock()));
+                        break;
+                    case 2:
+                        ((Label) node).setText("TODO GET WITH DAO");
+                        break;
+                    case 3:
+                        ((Label) node).setText("TODO GET WITH DAO");
+                        break;
+                }
+            }
+        }
+    }
 }
