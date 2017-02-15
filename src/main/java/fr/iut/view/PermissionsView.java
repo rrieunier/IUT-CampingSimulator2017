@@ -1,39 +1,40 @@
 package fr.iut.view;
 
 import fr.iut.App;
-import javafx.event.EventHandler;
+import javafx.scene.control.*;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.RadioButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
-import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import javafx.util.Pair;
+import java.util.Map;
 
 /**
  * Created by theo on 08/02/17.
  */
-public class PermissionsView extends Scene {
+public class PermissionsView extends Dialog<Map<String, Pair<Boolean, Boolean>>> {
 
     public static final double PERMISSION_WIDTH = App.SCREEN_W / 2;
     public static final double PERMISSION_HEIGHT = App.SCREEN_H / 2;
 
-    private App app;
+    //private App app;
 
-    public PermissionsView(App app){
-        super(new VBox(), PERMISSION_WIDTH, PERMISSION_HEIGHT);
-        this.app = app;
+    public PermissionsView(){
+        //super(new VBox(), PERMISSION_WIDTH, PERMISSION_HEIGHT);
+        //this.app = app;
 
-        VBox wrapper = (VBox) getRoot();
+        VBox wrapper = new VBox();
+
+        setTitle("Permissions");
 
         GridPane gridPane = new GridPane();
         gridPane.setMinHeight(PERMISSION_HEIGHT);
         gridPane.setStyle("-fx-background-color: rgb(12, 27, 51);");
-        gridPane.setAlignment(Pos.TOP_CENTER);
+        gridPane.setAlignment(Pos.CENTER);
 
 
         for (int i = 0; i < 3; i++) {
@@ -44,13 +45,15 @@ public class PermissionsView extends Scene {
 
         for(int i = 0; i < 8; i++){
             RowConstraints row = new RowConstraints();
-            row.setPercentHeight(10);
+            row.setPercentHeight(20);
             gridPane.getRowConstraints().add(row);
         }
 
         HeaderView header = new HeaderView("Permissions");
         header.setMinWidth(PERMISSION_WIDTH);
         wrapper.getChildren().add(header);
+        //gridPane.add(header, 0,0);
+        //getDialogPane().setContent(header);
 
         String[] titles = {"Lecture", "Modification"};
         for(int i=0; i<titles.length; i++){
@@ -63,23 +66,19 @@ public class PermissionsView extends Scene {
         }
 
         String[] labels = {"Clients", "Incidents", "Salariés", "Fournisseurs", "Stocks", "Carte"};
+        ArrayList<PermissionsLine> permissionsLines = new ArrayList<>(labels.length);
+
         for(int i=0; i<labels.length; i++) {
-            Text text = new Text(labels[i]);
-            text.setStyle("-fx-font-weight: bold;" +
-                    "-fx-font-size: 17px");
-            text.setFill(Color.WHITESMOKE);
-            gridPane.add(text, 0, i+1);
-
-            RadioButton read_button = new RadioButton();
-            GridPane.setHalignment(read_button, HPos.CENTER);
-            gridPane.add(read_button, 1,i+1);
-
-            RadioButton edit_button = new RadioButton();
-            GridPane.setHalignment(edit_button, HPos.CENTER);
-            gridPane.add(edit_button, 2, i+1);
+            PermissionsLine permissionsLine = new PermissionsLine(labels[i], gridPane, i);
+            permissionsLines.add(permissionsLine);
         }
 
-        Button confirm = new Button("Valider");
+        ButtonType okButtonType = new ButtonType("Valider", ButtonBar.ButtonData.OK_DONE);
+        getDialogPane().getButtonTypes().add(okButtonType);
+        getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
+
+
+        /*Button confirm = new Button("Valider");
         confirm.getStylesheets().add(new File("res/style.css").toURI().toString());
         confirm.getStyleClass().add("record-sales");
         confirm.setMinSize(PERMISSION_WIDTH / 6, PERMISSION_HEIGHT / 10);
@@ -98,8 +97,23 @@ public class PermissionsView extends Scene {
             public void handle(MouseEvent event) {
             }
         });
-        gridPane.add(cancel, 2, labels.length+1);
+        gridPane.add(cancel, 2, labels.length+1);*/
 
         wrapper.getChildren().add(gridPane);
+        getDialogPane().setContent(wrapper);
+
+        setResultConverter((ButtonType dialogButton) -> {
+            Map<String, Pair<Boolean, Boolean>> map = null;
+
+            if (dialogButton == okButtonType) {
+                map = new HashMap<>(labels.length);
+                for (PermissionsLine permissionsLine : permissionsLines){
+                    Pair<Boolean, Boolean> pair = new Pair<>(permissionsLine.getReadButton().isSelected(), permissionsLine.getReadEdit().isSelected());
+                    map.put(permissionsLine.getText().toString(), pair);
+                }
+            }
+            return map;
+        });
     }
+
 }
