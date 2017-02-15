@@ -2,27 +2,23 @@ package fr.iut.view;
 
 import fr.iut.App;
 import fr.iut.controller.ConnectionController;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
+import javafx.util.Pair;
+import java.util.Map;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 
 public class ConnectionView extends Scene {
@@ -66,7 +62,7 @@ public class ConnectionView extends Scene {
         login_field.setStyle("-fx-font-weight: bold;" +
                             "-fx-font-size: 17px;");
 
-        if (Files.exists(Paths.get("login"))) { // si "remember me" était cohé à la dernière connection
+        if (Files.exists(Paths.get("login"))) { // si "remember me" était coché à la dernière connection
             remember.setSelected(true);
             try {
                 char username[] = new String(Files.readAllBytes(Paths.get("login"))).toCharArray();

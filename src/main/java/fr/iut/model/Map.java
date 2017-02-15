@@ -10,7 +10,7 @@ import java.util.Arrays;
  * Created by Sydpy on 2/14/17.
  */
 @Entity
-public class Map {
+public class Map<S, S1> {
     private byte[] image;
     private int id;
 
@@ -39,7 +39,7 @@ public class Map {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Map map = (Map) o;
+        Map<S, S1> map = (Map<S, S1>) o;
 
         if (id != map.id) return false;
         if (!Arrays.equals(image, map.image)) return false;
