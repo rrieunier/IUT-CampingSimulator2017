@@ -132,18 +132,6 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `CampingSimulator`.`SpotType`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `CampingSimulator`.`SpotType` ;
-
-CREATE TABLE IF NOT EXISTS `CampingSimulator`.`SpotType` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `label` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`id`))
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
 -- Table `CampingSimulator`.`Spot`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `CampingSimulator`.`Spot` ;
@@ -155,19 +143,12 @@ CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Spot` (
   `electricity` TINYINT(1) NOT NULL,
   `shadow` TINYINT(1) NOT NULL,
   `id` INT NOT NULL,
-  `SpotType_id` INT NOT NULL,
   INDEX `fk_Spot_Location1_idx` (`id` ASC),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC),
   PRIMARY KEY (`id`),
-  INDEX `fk_Spot_SpotType1_idx` (`SpotType_id` ASC),
   CONSTRAINT `fk_Spot_Location1`
     FOREIGN KEY (`id`)
     REFERENCES `CampingSimulator`.`Location` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Spot_SpotType1`
-    FOREIGN KEY (`SpotType_id`)
-    REFERENCES `CampingSimulator`.`SpotType` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -497,6 +478,19 @@ CREATE  OR REPLACE VIEW `ReservedOrOccupiedSpots` AS
 SELECT Spot.id FROM Spot
 INNER JOIN Reservation ON Spot.id = Reservation.Spot_id
 WHERE Reservation.endtime >= NOW();
+SET SQL_MODE = '';
+GRANT USAGE ON *.* TO camping;
+ DROP USER camping;
+SET SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+CREATE USER 'camping' IDENTIFIED BY 'camping';
+
+GRANT SELECT, INSERT, TRIGGER ON TABLE `CampingSimulator`.* TO 'camping';
+GRANT SELECT ON TABLE `CampingSimulator`.* TO 'camping';
+GRANT SELECT, INSERT, TRIGGER, UPDATE, DELETE ON TABLE `CampingSimulator`.* TO 'camping';
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 USE `CampingSimulator`;
 
 DELIMITER $$
@@ -655,16 +649,3 @@ END$$
 
 
 DELIMITER ;
-SET SQL_MODE = '';
-GRANT USAGE ON *.* TO camping;
- DROP USER camping;
-SET SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
-CREATE USER 'camping' IDENTIFIED BY 'camping';
-
-GRANT SELECT, INSERT, TRIGGER ON TABLE `CampingSimulator`.* TO 'camping';
-GRANT SELECT ON TABLE `CampingSimulator`.* TO 'camping';
-GRANT SELECT, INSERT, TRIGGER, UPDATE, DELETE ON TABLE `CampingSimulator`.* TO 'camping';
-
-SET SQL_MODE=@OLD_SQL_MODE;
-SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
-SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
