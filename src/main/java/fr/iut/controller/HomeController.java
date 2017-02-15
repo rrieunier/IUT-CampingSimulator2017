@@ -14,9 +14,12 @@ public class HomeController implements ControllerInterface {
     private App app;
     private HomeView homeView;
 
+    private StatisticsController statisticsController;
+
     public HomeController(App app, String connectedUser) {
         this.app = app;
         homeView = new HomeView(this, connectedUser);
+        statisticsController = new StatisticsController(app, this);
     }
 
     public ArrayList<Product> getProductsList() {
@@ -32,6 +35,7 @@ public class HomeController implements ControllerInterface {
         }
         return products;
     }
+
     
     @Override
     public Scene getView() {
@@ -41,5 +45,9 @@ public class HomeController implements ControllerInterface {
     @Override
     public void finish() {
         app.switchState(State.CONNECTION);
+    }
+
+    public StatisticsController getStatiscticsController() {
+        return statisticsController;
     }
 }

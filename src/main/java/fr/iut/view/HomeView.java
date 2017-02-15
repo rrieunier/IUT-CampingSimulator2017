@@ -117,7 +117,7 @@ public class HomeView extends Scene {
                     case 2: break;
                     case 3: break;
                     case 4: subScene = new ProductManagerView(controller); break;
-                    case 5: break;
+                    case 5: subScene = new StatisticsView(controller.getStatiscticsController()); break;
                 }
 
                 borderPane.setCenter(subScene);

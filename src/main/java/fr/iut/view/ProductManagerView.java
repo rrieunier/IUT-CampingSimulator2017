@@ -4,6 +4,7 @@ package fr.iut.view;
 import fr.iut.App;
 import fr.iut.controller.HomeController;
 import fr.iut.model.Product;
+import javafx.beans.NamedArg;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -22,7 +23,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 import java.io.File;
-import java.security.Key;
 import java.util.ArrayList;
 import java.util.Comparator;
 
@@ -41,17 +41,17 @@ public class ProductManagerView extends SubScene {
     private VBox details = new VBox();
     private GridPane grid = new GridPane();
 
-    public ProductManagerView(HomeController controller) {
+    public ProductManagerView(@NamedArg("controller") HomeController controller) {
         super(new AnchorPane(), PRODUCT_MANAGER_W, PRODUCT_MANAGER_H);
         this.controller = controller;
 
         AnchorPane components = (AnchorPane) getRoot();
 
         VBox wrapper = new VBox();
-        wrapper.setMaxSize(PRODUCT_MANAGER_W, PRODUCT_MANAGER_H);
+        wrapper.setPrefSize(PRODUCT_MANAGER_W, PRODUCT_MANAGER_H);
         wrapper.setBorder(new Border(new BorderStroke(Color.DARKGRAY, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(5))));
         wrapper.setPadding(new Insets(0));
-        wrapper.setLayoutY(33);
+        wrapper.setLayoutY(0);
 
         components.setStyle("-fx-background-color: rgb(12, 27, 51);");
 
@@ -73,7 +73,7 @@ public class ProductManagerView extends SubScene {
 
         products_box = new VBox();
         products_box.setSpacing(8);
-        products_box.setPrefSize(PRODUCT_MANAGER_W / 4, PRODUCT_MANAGER_H * 8 / 10);
+        products_box.setPrefSize(PRODUCT_MANAGER_W / 4, PRODUCT_MANAGER_H * 9 / 10);
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
@@ -107,7 +107,7 @@ public class ProductManagerView extends SubScene {
                 button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
-                        
+
                     }
                 });
             }
@@ -162,7 +162,9 @@ public class ProductManagerView extends SubScene {
         products_list = controller.getProductsList();
     }
 
-    private void buildProductsList(int sort_option, String search, boolean refresh) {
+    private void buildProductsList(@NamedArg("sort_option") int sort_option,
+                                   @NamedArg("search_value") String search,
+                                   @NamedArg("refresh") boolean refresh) {
 
         if (refresh)
             products_list = controller.getProductsList();
@@ -256,7 +258,7 @@ public class ProductManagerView extends SubScene {
         }
         for (int i = 0; i < labels.length; i++) {
             RowConstraints constraint = new RowConstraints();
-            constraint.setPrefHeight(details.getMaxHeight() / 8);
+            constraint.setPrefHeight(details.getMaxHeight() / 6);
             grid.getRowConstraints().add(constraint);
         }
         for (int i = 0; i < labels.length; i++) {
