@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+        version="2.0">
+
+    <entity class="fr.iut.model.UserHasNotification">
+        <table name="User_has_Notification" schema="CampingSimulator" catalog=""/>
+        <id-class class="fr.iut.model.UserHasNotificationPK"/>
+        <attributes>
+            <id name="userId">
+                <column name="User_id" precision="11"/>
+            </id>
+            <id name="notificationId">
+                <column name="Notification_id" precision="11"/>
+            </id>
+        </attributes>
+    </entity>
+</entity-mappings>
