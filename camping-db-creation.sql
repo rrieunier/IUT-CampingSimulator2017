@@ -198,6 +198,7 @@ CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Product` (
   `stock` INT NOT NULL DEFAULT 0,
   `sell_price` FLOAT NOT NULL,
   `label` VARCHAR(45) NOT NULL,
+  `critical_quantity` INT NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `label_UNIQUE` (`label` ASC))
 ENGINE = InnoDB;
@@ -333,10 +334,9 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `CampingSimulator`.`Authorization` ;
 
 CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Authorization` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `label` VARCHAR(45) NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `label_UNIQUE` (`label` ASC))
+  `label` VARCHAR(45) NOT NULL,
+  UNIQUE INDEX `label_UNIQUE` (`label` ASC),
+  PRIMARY KEY (`label`))
 ENGINE = InnoDB;
 
 
@@ -359,19 +359,19 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `CampingSimulator`.`User_has_Authorization` ;
 
 CREATE TABLE IF NOT EXISTS `CampingSimulator`.`User_has_Authorization` (
-  `Authorization_id` INT NOT NULL,
   `User_id` INT NOT NULL,
-  PRIMARY KEY (`Authorization_id`, `User_id`),
+  `Authorization_label` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`User_id`, `Authorization_label`),
   INDEX `fk_Authorization_has_User_User1_idx` (`User_id` ASC),
-  INDEX `fk_Authorization_has_User_Authorization1_idx` (`Authorization_id` ASC),
-  CONSTRAINT `fk_Authorization_has_User_Authorization1`
-    FOREIGN KEY (`Authorization_id`)
-    REFERENCES `CampingSimulator`.`Authorization` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+  INDEX `fk_User_has_Authorization_Authorization1_idx` (`Authorization_label` ASC),
   CONSTRAINT `fk_Authorization_has_User_User1`
     FOREIGN KEY (`User_id`)
     REFERENCES `CampingSimulator`.`User` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_User_has_Authorization_Authorization1`
+    FOREIGN KEY (`Authorization_label`)
+    REFERENCES `CampingSimulator`.`Authorization` (`label`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -424,6 +424,44 @@ CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Client_has_Problem` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
+
+-- -----------------------------------------------------
+-- Table `CampingSimulator`.`Notification`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `CampingSimulator`.`Notification` ;
+
+CREATE TABLE IF NOT EXISTS `CampingSimulator`.`Notification` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `title` VARCHAR(45) NOT NULL,
+  `content` VARCHAR(200) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `idNotification_UNIQUE` (`id` ASC))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `CampingSimulator`.`User_has_Notification`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `CampingSimulator`.`User_has_Notification` ;
+
+CREATE TABLE IF NOT EXISTS `CampingSimulator`.`User_has_Notification` (
+  `User_id` INT NOT NULL,
+  `Notification_id` INT NOT NULL,
+  PRIMARY KEY (`User_id`, `Notification_id`),
+  INDEX `fk_User_has_Notification_Notification1_idx` (`Notification_id` ASC),
+  INDEX `fk_User_has_Notification_User1_idx` (`User_id` ASC),
+  CONSTRAINT `fk_User_has_Notification_User1`
+    FOREIGN KEY (`User_id`)
+    REFERENCES `CampingSimulator`.`User` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_User_has_Notification_Notification1`
+    FOREIGN KEY (`Notification_id`)
+    REFERENCES `CampingSimulator`.`Notification` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
 USE `CampingSimulator` ;
 
 -- -----------------------------------------------------
@@ -459,19 +497,6 @@ CREATE  OR REPLACE VIEW `ReservedOrOccupiedSpots` AS
 SELECT Spot.id FROM Spot
 INNER JOIN Reservation ON Spot.id = Reservation.Spot_id
 WHERE Reservation.endtime >= NOW();
-SET SQL_MODE = '';
-GRANT USAGE ON *.* TO camping;
- DROP USER camping;
-SET SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
-CREATE USER 'camping' IDENTIFIED BY 'camping';
-
-GRANT SELECT, INSERT, TRIGGER ON TABLE `CampingSimulator`.* TO 'camping';
-GRANT SELECT ON TABLE `CampingSimulator`.* TO 'camping';
-GRANT SELECT, INSERT, TRIGGER, UPDATE, DELETE ON TABLE `CampingSimulator`.* TO 'camping';
-
-SET SQL_MODE=@OLD_SQL_MODE;
-SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
-SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 USE `CampingSimulator`;
 
 DELIMITER $$
@@ -497,6 +522,105 @@ BEGIN
 		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'ERREUR : Une tâche est déjà assignée pour ce créneau';
     END IF;
 END;$$
+
+
+USE `CampingSimulator`$$
+DROP TRIGGER IF EXISTS `CampingSimulator`.`Problem_AFTER_INSERT` $$
+USE `CampingSimulator`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `CampingSimulator`.`Problem_AFTER_INSERT` AFTER INSERT ON `Problem` FOR EACH ROW
+BEGIN
+DECLARE userid INT;
+    DECLARE notifid INT;
+	DECLARE msg VARCHAR(200);
+    DECLARE done INT DEFAULT FALSE;
+	DECLARE cur CURSOR FOR SELECT User_id FROM User_Has_Authorization WHERE Authorization_label = 'PROBLEM_MANAGEMENT';
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+			
+	SET msg = NEW.label;
+	INSERT INTO Notification(title,content) VALUES ('NOUVEAU PROBLEME', msg);
+		
+    SET notifid = LAST_INSERT_ID(); 
+		
+    OPEN cur;
+    read_loop: LOOP
+        
+		FETCH cur into userid;
+		IF done THEN
+			LEAVE read_loop;
+		END IF;
+			
+		INSERT INTO User_has_Notification(User_id, Notification_id) VALUES (userid, notifid);
+            
+	END LOOP;
+END$$
+
+
+USE `CampingSimulator`$$
+DROP TRIGGER IF EXISTS `CampingSimulator`.`Product_AFTER_UPDATE` $$
+USE `CampingSimulator`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `CampingSimulator`.`Product_AFTER_UPDATE` AFTER UPDATE ON `Product` FOR EACH ROW
+BEGIN
+	DECLARE userid INT;
+    DECLARE notifid INT;
+	DECLARE msg VARCHAR(200);
+    DECLARE done INT DEFAULT FALSE;
+	DECLARE cur CURSOR FOR SELECT User_id FROM User_Has_Authorization WHERE Authorization_label = 'PRODUCT_MANAGEMENT';
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+	
+    IF NEW.stock < NEW.critical_quantity THEN
+		
+		SET msg = CONCAT('Le produit "', NEW.label, '" a atteint la quantité critique');
+		INSERT INTO Notification(title,content) VALUES ('PRODUIT CRITIQUE', msg);
+		
+        SET notifid = LAST_INSERT_ID(); 
+		
+        OPEN cur;
+        read_loop: LOOP
+        
+			FETCH cur into userid;
+            IF done THEN
+				LEAVE read_loop;
+			END IF;
+			
+            INSERT INTO User_has_Notification(User_id, Notification_id) VALUES (userid, notifid);
+            
+        END LOOP;
+    END IF;
+END$$
+
+
+USE `CampingSimulator`$$
+DROP TRIGGER IF EXISTS `CampingSimulator`.`Product_AFTER_INSERT` $$
+USE `CampingSimulator`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `CampingSimulator`.`Product_AFTER_INSERT` AFTER INSERT ON `Product` FOR EACH ROW
+BEGIN
+DECLARE userid INT;
+    DECLARE notifid INT;
+	DECLARE msg VARCHAR(200);
+    DECLARE done INT DEFAULT FALSE;
+	DECLARE cur CURSOR FOR SELECT User_id FROM User_Has_Authorization WHERE Authorization_label = 'PRODUCT_MANAGEMENT';
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+	
+    IF NEW.stock < NEW.critical_quantity THEN
+		
+		SET msg = CONCAT('Le produit "', NEW.label, '" a atteint la quantité critique');
+		INSERT INTO Notification(title,content) VALUES ('PRODUIT CRITIQUE', msg);
+		
+        SET notifid = LAST_INSERT_ID(); 
+		
+        OPEN cur;
+        read_loop: LOOP
+        
+			FETCH cur into userid;
+            IF done THEN
+				LEAVE read_loop;
+			END IF;
+			
+            INSERT INTO User_has_Notification(User_id, Notification_id) VALUES (userid, notifid);
+            
+        END LOOP;
+    END IF;
+END$$
 
 
 USE `CampingSimulator`$$
@@ -531,3 +655,16 @@ END$$
 
 
 DELIMITER ;
+SET SQL_MODE = '';
+GRANT USAGE ON *.* TO camping;
+ DROP USER camping;
+SET SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+CREATE USER 'camping' IDENTIFIED BY 'camping';
+
+GRANT SELECT, INSERT, TRIGGER ON TABLE `CampingSimulator`.* TO 'camping';
+GRANT SELECT ON TABLE `CampingSimulator`.* TO 'camping';
+GRANT SELECT, INSERT, TRIGGER, UPDATE, DELETE ON TABLE `CampingSimulator`.* TO 'camping';
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
