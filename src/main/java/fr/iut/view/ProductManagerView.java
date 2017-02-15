@@ -16,6 +16,7 @@ import javafx.scene.SubScene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -48,8 +49,8 @@ public class ProductManagerView extends SubScene {
 
         VBox wrapper = new VBox();
         wrapper.setMaxSize(PRODUCT_MANAGER_W, PRODUCT_MANAGER_H);
-        wrapper.setBorder(new Border(new BorderStroke(Color.TRANSPARENT, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(5))));
-        wrapper.setPadding(new Insets(20));
+        wrapper.setBorder(new Border(new BorderStroke(Color.DARKGRAY, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(5))));
+        wrapper.setPadding(new Insets(0));
         wrapper.setLayoutY(33);
 
         components.setStyle("-fx-background-color: rgb(12, 27, 51);");
@@ -93,10 +94,23 @@ public class ProductManagerView extends SubScene {
         buttons.setSpacing(PRODUCT_MANAGER_W / 8);
         for (int i = 0; i < 2; i++) {
             Button button = new Button();
-            if (i == 0)
+            if (i == 0) {
                 button.setText("Gérer fournisseurs");
-            else
+                button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+
+                    }
+                });
+            } else {
                 button.setText("Réaprovisionner");
+                button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        
+                    }
+                });
+            }
             button.setPrefWidth(PRODUCT_MANAGER_W / 6);
             button.getStylesheets().add(new File("res/style.css").toURI().toString());
             button.getStyleClass().add("record-sales");
