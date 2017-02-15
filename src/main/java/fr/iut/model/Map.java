@@ -7,10 +7,10 @@ import javax.persistence.Id;
 import java.util.Arrays;
 
 /**
- * Created by Sydpy on 2/14/17.
+ * Created by Sydpy on 2/15/17.
  */
 @Entity
-public class Map<S, S1> {
+public class Map {
     private byte[] image;
     private int id;
 
@@ -39,7 +39,7 @@ public class Map<S, S1> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Map<S, S1> map = (Map<S, S1>) o;
+        Map map = (Map) o;
 
         if (id != map.id) return false;
         if (!Arrays.equals(image, map.image)) return false;

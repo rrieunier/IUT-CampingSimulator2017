@@ -5,7 +5,7 @@ import javax.persistence.Id;
 import java.io.Serializable;
 
 /**
- * Created by Sydpy on 2/14/17.
+ * Created by Sydpy on 2/15/17.
  */
 public class SupplierHasProductPK implements Serializable {
     private int supplierId;

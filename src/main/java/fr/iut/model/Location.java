@@ -1,9 +1,10 @@
 package fr.iut.model;
 
 import javax.persistence.*;
+import java.util.Collection;
 
 /**
- * Created by Sydpy on 2/14/17.
+ * Created by Sydpy on 2/15/17.
  */
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -12,6 +13,8 @@ public class Location {
     private Double pointX;
     private Double pointY;
     private int id;
+    private Spot spotById;
+    private Collection<Task> tasksById;
 
     @Basic
     @Column(name = "name", nullable = false, length = 45)
@@ -75,5 +78,23 @@ public class Location {
         result = 31 * result + (pointY != null ? pointY.hashCode() : 0);
         result = 31 * result + id;
         return result;
+    }
+
+    @OneToOne(mappedBy = "locationById")
+    public Spot getSpotById() {
+        return spotById;
+    }
+
+    public void setSpotById(Spot spotById) {
+        this.spotById = spotById;
+    }
+
+    @OneToMany(mappedBy = "locationByLocationId")
+    public Collection<Task> getTasksById() {
+        return tasksById;
+    }
+
+    public void setTasksById(Collection<Task> tasksById) {
+        this.tasksById = tasksById;
     }
 }

@@ -1,19 +1,21 @@
 package fr.iut.model;
 
 import javax.persistence.*;
+import java.util.Collection;
 
 /**
- * Created by Sydpy on 2/14/17.
+ * Created by Sydpy on 2/15/17.
  */
 @Entity
-@PrimaryKeyJoinColumn(name = "id", referencedColumnName = "id")
+@PrimaryKeyJoinColumn(name = "id")
 public class Spot extends Location{
     private double pricePerDay;
     private int capacity;
     private boolean water;
     private boolean electricity;
     private boolean shadow;
-    private int spotTypeId;
+    private Collection<Reservation> reservationsById;
+    private Location locationById;
 
     @Basic
     @Column(name = "price_per_day", nullable = false, precision = 0)
@@ -65,23 +67,10 @@ public class Spot extends Location{
         this.shadow = shadow;
     }
 
-    @Basic
-    @Column(name = "SpotType_id", nullable = false)
-    public int getSpotTypeId() {
-        return spotTypeId;
-    }
-
-    public void setSpotTypeId(int spotTypeId) {
-        this.spotTypeId = spotTypeId;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
-        if(!super.equals(o))
-            return false;
 
         Spot spot = (Spot) o;
 
@@ -90,14 +79,13 @@ public class Spot extends Location{
         if (water != spot.water) return false;
         if (electricity != spot.electricity) return false;
         if (shadow != spot.shadow) return false;
-        if (spotTypeId != spot.spotTypeId) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
+        int result;
         long temp;
         temp = Double.doubleToLongBits(pricePerDay);
         result = (int) (temp ^ (temp >>> 32));
@@ -105,7 +93,25 @@ public class Spot extends Location{
         result = 31 * result + (water ? 1 : 0);
         result = 31 * result + (electricity ? 1 : 0);
         result = 31 * result + (shadow ? 1 : 0);
-        result = 31 * result + spotTypeId;
         return result;
+    }
+
+    @OneToMany(mappedBy = "spotBySpotId")
+    public Collection<Reservation> getReservationsById() {
+        return reservationsById;
+    }
+
+    public void setReservationsById(Collection<Reservation> reservationsById) {
+        this.reservationsById = reservationsById;
+    }
+
+    @OneToOne
+    @JoinColumn(name = "id", referencedColumnName = "id", nullable = false)
+    public Location getLocationById() {
+        return locationById;
+    }
+
+    public void setLocationById(Location locationById) {
+        this.locationById = locationById;
     }
 }

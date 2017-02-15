@@ -1,20 +1,17 @@
 package fr.iut.model;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Timestamp;
 
 /**
- * Created by Sydpy on 2/14/17.
+ * Created by Sydpy on 2/15/17.
  */
 @Entity
 public class Log {
     private Timestamp datetime;
     private String action;
     private int id;
-    private int userId;
+    private User userByUserId;
 
     @Basic
     @Column(name = "datetime", nullable = false)
@@ -46,16 +43,6 @@ public class Log {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "User_id", nullable = false)
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -64,7 +51,6 @@ public class Log {
         Log log = (Log) o;
 
         if (id != log.id) return false;
-        if (userId != log.userId) return false;
         if (datetime != null ? !datetime.equals(log.datetime) : log.datetime != null) return false;
         if (action != null ? !action.equals(log.action) : log.action != null) return false;
 
@@ -76,7 +62,16 @@ public class Log {
         int result = datetime != null ? datetime.hashCode() : 0;
         result = 31 * result + (action != null ? action.hashCode() : 0);
         result = 31 * result + id;
-        result = 31 * result + userId;
         return result;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "User_id", referencedColumnName = "id", nullable = false)
+    public User getUserByUserId() {
+        return userByUserId;
+    }
+
+    public void setUserByUserId(User userByUserId) {
+        this.userByUserId = userByUserId;
     }
 }

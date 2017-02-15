@@ -3,7 +3,7 @@ package fr.iut.model;
 import javax.persistence.*;
 
 /**
- * Created by Sydpy on 2/14/17.
+ * Created by Sydpy on 2/15/17.
  */
 @Entity
 @Table(name = "Location_has_Problem", schema = "CampingSimulator", catalog = "")

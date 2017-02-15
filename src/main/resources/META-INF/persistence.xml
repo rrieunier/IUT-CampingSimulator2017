@@ -18,12 +18,13 @@
         <class>fr.iut.model.Reservation</class>
         <class>fr.iut.model.Restocking</class>
         <class>fr.iut.model.Spot</class>
-        <class>fr.iut.model.SpotType</class>
         <class>fr.iut.model.Supplier</class>
         <class>fr.iut.model.SupplierHasProduct</class>
         <class>fr.iut.model.Task</class>
         <class>fr.iut.model.User</class>
         <class>fr.iut.model.UserHasAuthorization</class>
+        <class>fr.iut.model.Notification</class>
+        <class>fr.iut.model.UserHasNotification</class>
 
         <properties>
             <property name="mappingResources" value="fr/iut/model/*.xml" />
@@ -31,6 +32,7 @@
             <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
             <property name="hibernate.connection.username" value="camping"/>
             <property name="hibernate.connection.password" value="camping"/>
+            <property name="hibernate." value=""/>
         </properties>
     </persistence-unit>
 </persistence>

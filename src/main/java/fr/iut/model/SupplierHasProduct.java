@@ -3,7 +3,7 @@ package fr.iut.model;
 import javax.persistence.*;
 
 /**
- * Created by Sydpy on 2/14/17.
+ * Created by Sydpy on 2/15/17.
  */
 @Entity
 @Table(name = "Supplier_has_Product", schema = "CampingSimulator", catalog = "")
@@ -12,7 +12,6 @@ public class SupplierHasProduct {
     private double buyPrice;
     private int supplierId;
     private int productId;
-
     @Basic
     @Column(name = "buy_price", nullable = false, precision = 0)
     public double getBuyPrice() {

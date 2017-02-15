@@ -3,24 +3,14 @@ package fr.iut.model;
 import javax.persistence.*;
 
 /**
- * Created by Sydpy on 2/14/17.
+ * Created by Sydpy on 2/15/17.
  */
 @Entity
 @Table(name = "User_has_Authorization", schema = "CampingSimulator", catalog = "")
 @IdClass(UserHasAuthorizationPK.class)
 public class UserHasAuthorization {
-    private int authorizationId;
     private int userId;
-
-    @Id
-    @Column(name = "Authorization_id", nullable = false)
-    public int getAuthorizationId() {
-        return authorizationId;
-    }
-
-    public void setAuthorizationId(int authorizationId) {
-        this.authorizationId = authorizationId;
-    }
+    private String authorizationLabel;
 
     @Id
     @Column(name = "User_id", nullable = false)
@@ -32,6 +22,16 @@ public class UserHasAuthorization {
         this.userId = userId;
     }
 
+    @Id
+    @Column(name = "Authorization_label", nullable = false, length = 45)
+    public String getAuthorizationLabel() {
+        return authorizationLabel;
+    }
+
+    public void setAuthorizationLabel(String authorizationLabel) {
+        this.authorizationLabel = authorizationLabel;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -39,16 +39,17 @@ public class UserHasAuthorization {
 
         UserHasAuthorization that = (UserHasAuthorization) o;
 
-        if (authorizationId != that.authorizationId) return false;
         if (userId != that.userId) return false;
+        if (authorizationLabel != null ? !authorizationLabel.equals(that.authorizationLabel) : that.authorizationLabel != null)
+            return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = authorizationId;
-        result = 31 * result + userId;
+        int result = userId;
+        result = 31 * result + (authorizationLabel != null ? authorizationLabel.hashCode() : 0);
         return result;
     }
 }
