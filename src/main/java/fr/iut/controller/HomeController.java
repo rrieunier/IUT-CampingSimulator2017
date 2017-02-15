@@ -13,6 +13,7 @@ public class HomeController implements ControllerInterface {
 
     private App app;
     private HomeView homeView;
+    private NotificationsController notificationsController = new NotificationsController(this);
 
     private StatisticsController statisticsController;
 
@@ -36,7 +37,6 @@ public class HomeController implements ControllerInterface {
         return products;
     }
 
-    
     @Override
     public Scene getView() {
         return homeView;
@@ -45,6 +45,10 @@ public class HomeController implements ControllerInterface {
     @Override
     public void finish() {
         app.switchState(State.CONNECTION);
+    }
+
+    public NotificationsController getNotificationsController() {
+        return notificationsController;
     }
 
     public StatisticsController getStatiscticsController() {

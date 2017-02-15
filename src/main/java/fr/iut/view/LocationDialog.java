@@ -35,7 +35,7 @@ public class LocationDialog extends Dialog<Map<String, String>> {
         ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
         getDialogPane().getButtonTypes().add(okButtonType);
 
-        ButtonType deleteButtonType = new ButtonType("Supprimer", ButtonBar.ButtonData.FINISH);
+        ButtonType deleteButtonType = new ButtonType("Supprimer");
 
         if(location != null)
             getDialogPane().getButtonTypes().add(deleteButtonType);
