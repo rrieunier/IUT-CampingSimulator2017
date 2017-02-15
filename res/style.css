@@ -39,7 +39,7 @@
     -fx-padding: 0.0em 0.0em -0.1em 0.0em;
 }
 
-.record-sales {
+.record-sales, .dialog-pane > .button-bar .button{
     -fx-padding: 8 15 15 15;
     -fx-background-insets: 0, 0 0 5 0, 0 0 6 0, 0 0 7 0;
     -fx-background-radius: 8;
@@ -52,21 +52,16 @@
     -fx-font-size: 1.1em;
 }
 
-.record-sales:hover {
+.record-sales:hover, .dialog-pane > .button-bar .button:hover{
     -fx-background-color: linear-gradient(from 0% 93% to 0% 100%, #a34313 0%, #903b12 100%),
     #9d4024,
     #d86e3a,
     radial-gradient(center 50% 50%, radius 100%, #ea7f4b, #c54e2c);
 }
 
-.record-sales:pressed {
+.record-sales:pressed, .dialog-pane > .button-bar .button:hover {
     -fx-padding: 10 15 13 15;
     -fx-background-insets: 2 0 0 0, 2 0 3 0, 2 0 4 0, 2 0 5 0;
-}
-
-.record-sales Text {
-    -fx-fill: white;
-    -fx-effect: dropshadow(gaussian, #a30000, 0, 0, 0, 2);
 }
 
 .buttonTab {
@@ -108,4 +103,9 @@
     -fx-background-color: whitesmoke;
     -fx-font-weight: bold;
     -fx-font-size: 20;
+}
+
+.dialog-pane {
+    -fx-padding: -11px -11px 10px -11px;
+    -fx-background-color: rgb(12, 27, 51);
 }
