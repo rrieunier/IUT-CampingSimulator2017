@@ -121,7 +121,7 @@ public class HomeView extends Scene {
                 }
 
                 borderPane.setCenter(subScene);
-                BorderPane.setMargin(subScene, new Insets(50, 0, 0, 0)); //TODO : maxime
+                //BorderPane.setMargin(subScene, new Insets(50, 0, 0, 0)); //TODO : maxime
             });
         }
 

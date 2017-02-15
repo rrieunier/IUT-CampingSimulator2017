@@ -26,44 +26,82 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
 
+/**
+ * the product manager screen
+ */
 public class ProductManagerView extends SubScene {
 
+    /**
+     * width of the ProductManager SubScene
+     */
     public static double PRODUCT_MANAGER_W = App.SCREEN_W * 5 / 6;
+    /**
+     * height of the ProductManager Subscene
+     */
     public static double PRODUCT_MANAGER_H = App.SCREEN_H * 7 / 9;
-
+    /**
+     * instance of the controller
+     */
     private HomeController controller;
-
+    /**
+     * local list of products
+     */
     private ArrayList<Product> products_list;
+    /**
+     * list of the product shown on the left list
+     */
+    private ArrayList<Product> shown_list = new ArrayList<>();
+    /**
+     * product (stackpane) currently selected
+     */
     private StackPane lastClicked;
+    /**
+     * object corespondance of the selected stackpane
+     */
     private Product lastClickedValue;
-
+    /**
+     * vbox list of products (stackpane)
+     */
     private VBox products_box;
+    /**
+     * details of the selected product
+     */
     private VBox details = new VBox();
+    /**
+     * grid containing attributes of the selected product
+     */
     private GridPane grid = new GridPane();
 
+    /**
+     * @param controller
+     */
     public ProductManagerView(@NamedArg("controller") HomeController controller) {
-        super(new AnchorPane(), PRODUCT_MANAGER_W, PRODUCT_MANAGER_H);
+        super(new VBox(), PRODUCT_MANAGER_W, PRODUCT_MANAGER_H);
         this.controller = controller;
 
-        AnchorPane components = (AnchorPane) getRoot();
-
-        VBox wrapper = new VBox();
-        wrapper.setPrefSize(PRODUCT_MANAGER_W, PRODUCT_MANAGER_H);
-        wrapper.setBorder(new Border(new BorderStroke(Color.DARKGRAY, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(5))));
+        VBox wrapper = (VBox) getRoot();
+        wrapper.setMaxSize(PRODUCT_MANAGER_W, PRODUCT_MANAGER_H);
+        wrapper.setBorder(new Border(new BorderStroke(Color.DARKGRAY, BorderStrokeStyle.SOLID, new CornerRadii(2), new BorderWidths(5))));
         wrapper.setPadding(new Insets(0));
         wrapper.setLayoutY(0);
 
-        components.setStyle("-fx-background-color: rgb(12, 27, 51);");
+        wrapper.setStyle("-fx-background-color: rgb(12, 27, 51);");
 
         HeaderView header = new HeaderView("Gestion des stocks");
 
         HBox sort_options = new HBox();
+        Button add_product = new Button("+");
+        add_product.setTooltip(new Tooltip("Ajouter un nouveau produit..."));
+        add_product.getStylesheets().add(new File("res/style.css").toURI().toString());
+        add_product.getStyleClass().add("record-sales");
         ObservableList<String> options =
                 FXCollections.observableArrayList("Nom (alphabétique)", "Nom (alphabétique inverse)", "Quantité (croissante)",
                         "Quantité (décroissante)", "Prix (croissant)", "Prix (décroissant)");
         ComboBox<String> sort_by = new ComboBox<>(options);
-        Label sort_by_label = new Label("Trier selon: ");
+        Label sort_by_label = new Label("Tri par: ");
         sort_by_label.setLabelFor(sort_by);
+
+        HBox search_bar = new HBox();
         TextField search_field = new TextField();
         Label search_label = new Label("Rechercher: ");
         search_label.setLabelFor(search_field);
@@ -72,8 +110,9 @@ public class ProductManagerView extends SubScene {
         body.setMinWidth(PRODUCT_MANAGER_W * 19 / 20);
 
         products_box = new VBox();
-        products_box.setSpacing(8);
-        products_box.setPrefSize(PRODUCT_MANAGER_W / 4, PRODUCT_MANAGER_H * 9 / 10);
+        products_box.setSpacing(0);
+        products_box.setPrefWidth(PRODUCT_MANAGER_W / 4);
+        VBox.setVgrow(products_box, Priority.ALWAYS);
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
@@ -124,7 +163,7 @@ public class ProductManagerView extends SubScene {
 
         lastClicked = (StackPane) products_box.getChildren().get(0);
         lastClicked.setStyle("-fx-background-color: #ff6600;");
-        lastClickedValue = products_list.get(0);
+        lastClickedValue = shown_list.get(0);
 
         sort_options.setSpacing(10);
         sort_by_label.setStyle("-fx-text-fill: whitesmoke; -fx-font-size: 18px");
@@ -143,31 +182,44 @@ public class ProductManagerView extends SubScene {
             public void handle(KeyEvent event) {
                 if (event.getCode().equals(KeyCode.ENTER)) {
                     buildProductsList(sort_by.getSelectionModel().getSelectedIndex(), search_field.getText(), false);
+                    search_field.clear();
                 }
             }
         });
-        sort_options.getChildren().addAll(sort_by_label, sort_by, search_label, search_field);
-        HBox.setMargin(sort_by, new Insets(0, PRODUCT_MANAGER_W / 2, 0, 0));
-        header.getChildren().add(sort_options);
+        add_product.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                //TODO: dialog
+            }
+        });
+        sort_options.getChildren().addAll(add_product, sort_by_label, sort_by);
+        search_bar.getChildren().addAll(search_label, search_field);
+
+        sort_options.setAlignment(Pos.CENTER);
+        search_bar.setAlignment(Pos.CENTER);
+
+        header.setLeft(sort_options);
+        header.setRight(search_bar);
         StackPane.setMargin(sort_options, new Insets(5, 0, 0, 0));
 
         body.getChildren().addAll(scrollPane, details);
         wrapper.getChildren().addAll(header, body);
-        components.getChildren().add(wrapper);
 
         buildDetails();
     }
 
-    private void refresh_product_list() {
-        products_list = controller.getProductsList();
-    }
-
+    /**
+     * @param sort_option selected sort method to sort the product list
+     * @param search specified value to filter product list items
+     * @param refresh fetch products in database or not
+     */
     private void buildProductsList(@NamedArg("sort_option") int sort_option,
                                    @NamedArg("search_value") String search,
                                    @NamedArg("refresh") boolean refresh) {
 
-        if (refresh)
+        if (refresh) {
             products_list = controller.getProductsList();
+        }
 
         products_list.sort(new Comparator<Product>() {
             @Override
@@ -196,11 +248,14 @@ public class ProductManagerView extends SubScene {
                 return (int) result;
             }
         });
+
         products_box.getChildren().clear();
+        shown_list.clear();
 
         for (Product p : products_list) {
             if (p.getLabel().contains(search)) {
-                System.out.println(p.getLabel().contains(""));
+                shown_list.add(p);
+
                 StackPane pane = new StackPane();
                 VBox product_wrapper = new VBox();
                 HBox informations = new HBox();
@@ -208,8 +263,6 @@ public class ProductManagerView extends SubScene {
                 Text name = new Text(p.getLabel());
                 Text stock = new Text("Quantité: " + String.valueOf(p.getStock()));
                 Text price = new Text("Prix: " + String.valueOf(p.getSellPrice()));
-
-                pane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, new CornerRadii(5), new BorderWidths(5))));
 
                 name.setFill(Color.WHITESMOKE);
                 stock.setFill(Color.WHITESMOKE);
@@ -240,7 +293,7 @@ public class ProductManagerView extends SubScene {
                     }
                     pane.setStyle("-fx-background-color: #ff6600;");
                     lastClicked = pane;
-                    lastClickedValue = products_list.get(products_box.getChildren().indexOf(pane));
+                    lastClickedValue = shown_list.get(products_box.getChildren().indexOf(pane));
                     actualiseDetails();
                 });
 
@@ -249,6 +302,9 @@ public class ProductManagerView extends SubScene {
         }
     }
 
+    /**
+     * build the details grid (structure)
+     */
     private void buildDetails() {
         String[] labels = {"Nom", "En stock", "Quantité critique", "Livré le"};
         for (int i = 0; i < 2; i++) {
@@ -279,6 +335,9 @@ public class ProductManagerView extends SubScene {
         actualiseDetails();
     }
 
+    /**
+     * fill the details grid depending on the selected product
+     */
     private void actualiseDetails() {
         for (Node node : grid.getChildren()) {
             if (node instanceof Label && GridPane.getColumnIndex(node) == 1) {

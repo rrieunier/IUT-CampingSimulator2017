@@ -120,8 +120,7 @@ public class ConnectionView extends Scene {
 
         setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
-                Optional<Map<String, Pair<Boolean, Boolean>>> edit_result = new PermissionsDialog().showAndWait();
-                //connectionButtonAction(login_field.getText(), password_field.getText());
+                connectionButtonAction(login_field.getText(), password_field.getText());
             }
         });
 
