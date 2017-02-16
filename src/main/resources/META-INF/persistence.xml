@@ -2,37 +2,31 @@
 <persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence" version="2.1">
 
     <persistence-unit name="camping-unit">
-        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
 
-        <class>fr.iut.model.Authorization</class>
-        <class>fr.iut.model.Client</class>
-        <class>fr.iut.model.ClientHasProblem</class>
-        <class>fr.iut.model.Employee</class>
-        <class>fr.iut.model.Location</class>
-        <class>fr.iut.model.LocationHasProblem</class>
-        <class>fr.iut.model.Log</class>
-        <class>fr.iut.model.Map</class>
-        <class>fr.iut.model.Problem</class>
-        <class>fr.iut.model.Product</class>
-        <class>fr.iut.model.Purchase</class>
-        <class>fr.iut.model.Reservation</class>
-        <class>fr.iut.model.Restocking</class>
-        <class>fr.iut.model.Spot</class>
-        <class>fr.iut.model.Supplier</class>
-        <class>fr.iut.model.SupplierHasProduct</class>
-        <class>fr.iut.model.Task</class>
-        <class>fr.iut.model.User</class>
-        <class>fr.iut.model.UserHasAuthorization</class>
-        <class>fr.iut.model.Notification</class>
-        <class>fr.iut.model.UserHasNotification</class>
+        <class>fr.iut.persistence.domain.Authorization</class>
+        <class>fr.iut.persistence.domain.Client</class>
+        <class>fr.iut.persistence.domain.Employee</class>
+        <class>fr.iut.persistence.domain.Location</class>
+        <class>fr.iut.persistence.domain.Log</class>
+        <class>fr.iut.persistence.domain.Map</class>
+        <class>fr.iut.persistence.domain.Problem</class>
+        <class>fr.iut.persistence.domain.Product</class>
+        <class>fr.iut.persistence.domain.Purchase</class>
+        <class>fr.iut.persistence.domain.Reservation</class>
+        <class>fr.iut.persistence.domain.Restocking</class>
+        <class>fr.iut.persistence.domain.Spot</class>
+        <class>fr.iut.persistence.domain.Supplier</class>
+        <class>fr.iut.persistence.domain.Task</class>
+        <class>fr.iut.persistence.domain.Notification</class>
 
         <properties>
-            <property name="mappingResources" value="fr/iut/model/*.xml" />
-            <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/CampingSimulator"/>
             <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
-            <property name="hibernate.connection.username" value="camping"/>
-            <property name="hibernate.connection.password" value="camping"/>
-            <property name="hibernate." value=""/>
+            <property name="hibernate.default_schema" value="Camping"/>
+            <property name="hibernate.connection.username" value="root"/>
+            <property name="hibernate.connection.password" value="root"/>
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+            <property name="hibernate.showSql" value="true"/>
         </properties>
     </persistence-unit>
 </persistence>
