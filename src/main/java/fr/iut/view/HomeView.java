@@ -31,45 +31,30 @@ public class HomeView extends Scene {
 
     private HomeController controller;
     private String username;
-    private VBox components;
+    private BorderPane components;
 
-    public static final int LEFT_PADDING_TAB = 80;
+    public static final int LEFT_PADDING_TAB = 50;
 
     public HomeView(HomeController controller, String username) {
-        super(new VBox(), App.SCREEN_W, App.SCREEN_H);
+        super(new BorderPane(), App.SCREEN_W, App.SCREEN_H);
         this.controller = controller;
         this.username = username;
 
-        components = (VBox)getRoot();
+        components = (BorderPane) getRoot();
         components.setStyle("-fx-background-color: rgb(12, 27, 51);");
-        /*
-        //ROWS
-        RowConstraints row1 = new RowConstraints();
-        RowConstraints row2 = new RowConstraints();
-        row1.setPercentHeight(90);
-        row2.setPercentHeight(10);
-        row2.setValignment(VPos.BOTTOM);
-        components.getRowConstraints().addAll(row1, row2);
 
-        //COLUMNS
-        ColumnConstraints column1 = new ColumnConstraints();
-*/
         TabPane tabPane = new TabPane();
-        tabPane.setTabMinWidth(App.SCREEN_W/2 - 50);
+        tabPane.setTabMinWidth(App.SCREEN_W/2 - 57);
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         tabPane.getStylesheets().add(new File("res/style.css").toURI().toString());
-
-        BorderPane borderPane = new BorderPane();
 
         Tab tabManagment = new Tab(), tabMap = new Tab();
         buildManagmentTab(tabManagment);
         buildMapTab(tabMap);
 
         tabPane.getTabs().addAll(tabManagment, tabMap);
-        borderPane.setCenter(tabPane);
-        borderPane.setMinWidth(App.SCREEN_W);
-
-        components.getChildren().add(borderPane);
+        components.setCenter(tabPane);
+        //borderPane.setMinWidth(App.SCREEN_W);
 
         buildFooter();
     }
@@ -78,13 +63,14 @@ public class HomeView extends Scene {
         tab.setText("Gestion");
 
         StackPane container = new StackPane();
+        container.setPadding(new Insets(50, 0, 0, LEFT_PADDING_TAB));
         container.setStyle("-fx-background-color: rgb(12, 27, 51);");
 
         VBox verticalTabs = new VBox();
         verticalTabs.getStylesheets().add(new File("res/style.css").toURI().toString());
         verticalTabs.getStyleClass().add("horizontalTabs");
         verticalTabs.setSpacing(30);
-        BorderPane.setMargin(verticalTabs, new Insets(50, 0, 0, LEFT_PADDING_TAB));
+        //BorderPane.setMargin(verticalTabs, new Insets(50, 0, 0, LEFT_PADDING_TAB));
 
         BorderPane borderPane = new BorderPane();
 
@@ -121,7 +107,10 @@ public class HomeView extends Scene {
                 }
 
                 borderPane.setCenter(subScene);
-                //BorderPane.setMargin(subScene, new Insets(50, 0, 0, 0)); //TODO : maxime
+
+                if(subScene != null) {
+                    BorderPane.setAlignment(subScene, Pos.TOP_CENTER);
+                }
             });
         }
 
@@ -150,7 +139,6 @@ public class HomeView extends Scene {
 
         VBox vboxUser = new VBox();
         vboxUser.setAlignment(Pos.CENTER);
-        BorderPane.setMargin(vboxUser, new Insets(0, 0, 0, LEFT_PADDING_TAB));
 
         Text welcome_text = new Text("Bienvenue " + username + " !");
         welcome_text.setFont(new Font(20));
@@ -168,17 +156,6 @@ public class HomeView extends Scene {
         vboxUser.getChildren().addAll(welcome_text, decoButton);
         footerWrapper.setLeft(vboxUser);
 
-
-        HBox notification_wrapper = new HBox();
-
-        notification_wrapper.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                Optional<Integer> result = controller.getNotificationsController().getView().showAndWait();
-
-                result.ifPresent(value -> System.out.println("update label with new notifications value")); //TODO
-            }
-        });
 
         Image img = new Image(new File("res/notification.png").toURI().toString());
         ImageView alertIcon = new ImageView(img);
@@ -199,14 +176,22 @@ public class HomeView extends Scene {
         notification_text.setFill(Color.WHITE);
         notification_text.applyCss();
 
+        HBox notification_wrapper = new HBox();
+
+        notification_wrapper.setOnMouseClicked(mouseEvent -> {
+            Optional<Integer> result = controller.getNotificationsController().getView().showAndWait();
+
+            result.ifPresent(value -> notification_text.setText("Vous avez " + controller.getNotificationsController().getNotifications().size() + " notifications en attente.")); //TODO
+        });
+
         notification_wrapper.getChildren().addAll(alertIcon, notification_text);
-        BorderPane.setMargin(notification_wrapper, new Insets(0, 30, 0, 0));
 
 
         footerWrapper.setRight(notification_wrapper);
         notification_wrapper.setAlignment(Pos.CENTER);
 
-        components.getChildren().add(footerWrapper);
+        BorderPane.setMargin(footerWrapper, new Insets(0, 50, 25, LEFT_PADDING_TAB));
+        components.setBottom(footerWrapper);
     }
 
     private Timeline createBlinker(Node node) {

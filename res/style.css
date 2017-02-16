@@ -1,6 +1,8 @@
 .tab-pane > .tab-header-area > .headers-region > .tab {
     -fx-padding: 20px;
     -fx-background-color: #336699;
+    -fx-border-width: 0 0 3 0;
+    -fx-border-color: #ff6600;
 }
 
 .tab-pane > .tab-header-area > .headers-region > .tab:selected {

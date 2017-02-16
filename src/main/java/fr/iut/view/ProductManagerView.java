@@ -38,7 +38,7 @@ public class ProductManagerView extends SubScene {
     /**
      * height of the ProductManager Subscene
      */
-    public static double PRODUCT_MANAGER_H = App.SCREEN_H * 7 / 9;
+    public static double PRODUCT_MANAGER_H = App.SCREEN_H * 7 / 9.45;
     /**
      * instance of the controller
      */

@@ -6,8 +6,10 @@ import fr.iut.controller.MapController;
 import fr.iut.view.ConnectionView;
 import fr.iut.view.HomeView;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.awt.*;
 
@@ -66,6 +68,7 @@ public class App extends Application {
                 }
 
                 homeController = new HomeController(this, connectionController.getConnectedUser());
+                stage.setOnCloseRequest(windowEvent -> homeController.OnWindowIsClosing());
                 stage.setScene(homeController.getView());
                 break;
         }
