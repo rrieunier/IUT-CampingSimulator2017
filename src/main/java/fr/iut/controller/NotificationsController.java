@@ -1,6 +1,6 @@
 package fr.iut.controller;
 
-import fr.iut.model.Notification;
+import fr.iut.persistence.domain.Notification;
 import fr.iut.view.NotificationsDialog;
 import javafx.scene.control.Dialog;
 

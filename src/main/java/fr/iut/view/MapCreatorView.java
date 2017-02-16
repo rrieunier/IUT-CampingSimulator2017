@@ -2,8 +2,8 @@ package fr.iut.view;
 
 import fr.iut.App;
 import fr.iut.controller.MapController;
-import fr.iut.model.Location;
-import fr.iut.model.Spot;
+import fr.iut.persistence.domain.Location;
+import fr.iut.persistence.domain.Spot;
 import javafx.application.Platform;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;

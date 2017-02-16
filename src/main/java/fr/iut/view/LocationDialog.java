@@ -1,7 +1,7 @@
 package fr.iut.view;
 
-import fr.iut.model.Location;
-import fr.iut.model.Spot;
+import fr.iut.persistence.domain.Location;
+import fr.iut.persistence.domain.Spot;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -65,9 +65,9 @@ public class LocationDialog extends Dialog<Map<String, String>> {
         CheckBox shadow = new CheckBox("Ombre");
 
         if(spot != null) {
-            water.setSelected(spot.isWater());
-            elec.setSelected(spot.isElectricity());
-            shadow.setSelected(spot.isShadow());
+            water.setSelected(spot.hasWater());
+            elec.setSelected(spot.hasElectricity());
+            shadow.setSelected(spot.hasShadow());
         }
 
         grid.add(new Label("Nom:"), 0, 0);

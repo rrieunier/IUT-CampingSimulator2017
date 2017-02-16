@@ -2,19 +2,12 @@ package fr.iut.view;
 
 import fr.iut.App;
 import fr.iut.controller.NotificationsController;
-import fr.iut.model.Notification;
-import javafx.geometry.HPos;
-import javafx.geometry.Pos;
+import fr.iut.persistence.domain.Notification;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import javafx.util.Pair;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by shellcode on 2/14/17.

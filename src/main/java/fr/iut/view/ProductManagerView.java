@@ -3,7 +3,7 @@ package fr.iut.view;
 
 import fr.iut.App;
 import fr.iut.controller.HomeController;
-import fr.iut.model.Product;
+import fr.iut.persistence.domain.Product;
 import javafx.beans.NamedArg;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -227,7 +227,7 @@ public class ProductManagerView extends SubScene {
                 double result = 0;
                 switch (sort_option) {
                     case 1:
-                        result = o2.getLabel().compareTo(o1.getLabel());
+                        result = o2.getName().compareTo(o1.getName());
                         break;
                     case 2:
                         result = o1.getStock() - o2.getStock();
@@ -242,7 +242,7 @@ public class ProductManagerView extends SubScene {
                         result = o2.getSellPrice() - o1.getSellPrice();
                         break;
                     default:
-                        result = o1.getLabel().compareTo(o2.getLabel());
+                        result = o1.getName().compareTo(o2.getName());
                         break;
                 }
                 return (int) result;
@@ -253,14 +253,14 @@ public class ProductManagerView extends SubScene {
         shown_list.clear();
 
         for (Product p : products_list) {
-            if (p.getLabel().contains(search)) {
+            if (p.getName().contains(search)) {
                 shown_list.add(p);
 
                 StackPane pane = new StackPane();
                 VBox product_wrapper = new VBox();
                 HBox informations = new HBox();
 
-                Text name = new Text(p.getLabel());
+                Text name = new Text(p.getName());
                 Text stock = new Text("Quantité: " + String.valueOf(p.getStock()));
                 Text price = new Text("Prix: " + String.valueOf(p.getSellPrice()));
 
@@ -343,7 +343,7 @@ public class ProductManagerView extends SubScene {
             if (node instanceof Label && GridPane.getColumnIndex(node) == 1) {
                 switch (GridPane.getRowIndex(node)) {
                     case 0:
-                        ((Label) node).setText(lastClickedValue.getLabel());
+                        ((Label) node).setText(lastClickedValue.getName());
                         break;
                     case 1:
                         ((Label) node).setText(String.valueOf(lastClickedValue.getStock()));
