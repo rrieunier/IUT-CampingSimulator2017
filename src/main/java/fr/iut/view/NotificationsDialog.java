@@ -2,7 +2,7 @@ package fr.iut.view;
 
 import fr.iut.App;
 import fr.iut.controller.NotificationsController;
-import fr.iut.persistence.domain.Notification;
+import fr.iut.persistence.entities.Notification;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
