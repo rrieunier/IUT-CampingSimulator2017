@@ -53,4 +53,8 @@ public class HomeController implements ControllerInterface {
     public StatisticsController getStatiscticsController() {
         return statisticsController;
     }
+
+    public void OnWindowIsClosing() {
+        notificationsController.stopQuerying();
+    }
 }

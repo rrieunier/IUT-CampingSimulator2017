@@ -17,6 +17,8 @@ public class NotificationsController implements ControllerInterface {
 
     private List<Notification> notifications = new ArrayList<>();
 
+    private boolean querying = true;
+
     public NotificationsController(HomeController homeController) {
         this.homeController = homeController;
 
@@ -54,15 +56,21 @@ public class NotificationsController implements ControllerInterface {
     private void updateNotificationsAsynchronously() {
         new Thread(() -> {
 
-            //TODO : query database to update notifications
-            System.out.println("querying notifications in database...");
+            while(querying) {
+                //TODO : query database to update notifications
+                System.out.println("querying notifications in database...");
 
-            try {
-                Thread.sleep(1000); //update toutes les secondes
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                try {
+                    Thread.sleep(1000); //update toutes les secondes
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
 
         }).start();
+    }
+
+    public void stopQuerying() {
+        querying = false;
     }
 }
