@@ -1,4 +1,4 @@
-package fr.iut.model;
+package fr.iut.persistence.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,7 +12,7 @@ import javax.persistence.Table;
 @Table(name = "AUTHORIZATION")
 public class Authorization {
     @Id
-    @Column(name = "label", nullable = false, length = 45)
+    @Column(nullable = false, length = 45)
     private String label;
 
     public String getLabel() {

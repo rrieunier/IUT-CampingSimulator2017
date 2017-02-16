@@ -1,4 +1,4 @@
-package fr.iut.model;
+package fr.iut.persistence.domain;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -7,71 +7,32 @@ import java.sql.Timestamp;
  * Created by Sydpy on 2/15/17.
  */
 @Entity
+@Table(name = "LOG")
 public class Log {
-    private Timestamp datetime;
-    private String action;
+
+    @Id @GeneratedValue
+    @Column(nullable = false)
     private int id;
-    private User userByUserId;
 
-    @Basic
-    @Column(name = "datetime", nullable = false)
-    public Timestamp getDatetime() {
-        return datetime;
-    }
+    @Column(nullable = false)
+    private String action;
 
-    public void setDatetime(Timestamp datetime) {
-        this.datetime = datetime;
-    }
+    @Column(nullable = false)
+    private Timestamp datetime = new Timestamp(System.currentTimeMillis());
 
-    @Basic
-    @Column(name = "action", nullable = false, length = 150)
-    public String getAction() {
-        return action;
-    }
-
-    public void setAction(String action) {
-        this.action = action;
-    }
-
-    @Id
-    @Column(name = "id", nullable = false)
     public int getId() {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public String getAction() {
+        return action;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Log log = (Log) o;
-
-        if (id != log.id) return false;
-        if (datetime != null ? !datetime.equals(log.datetime) : log.datetime != null) return false;
-        if (action != null ? !action.equals(log.action) : log.action != null) return false;
-
-        return true;
+    public Timestamp getDatetime() {
+        return datetime;
     }
 
-    @Override
-    public int hashCode() {
-        int result = datetime != null ? datetime.hashCode() : 0;
-        result = 31 * result + (action != null ? action.hashCode() : 0);
-        result = 31 * result + id;
-        return result;
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "User_id", referencedColumnName = "id", nullable = false)
-    public User getUserByUserId() {
-        return userByUserId;
-    }
-
-    public void setUserByUserId(User userByUserId) {
-        this.userByUserId = userByUserId;
+    public void setAction(String action) {
+        this.action = action;
     }
 }
