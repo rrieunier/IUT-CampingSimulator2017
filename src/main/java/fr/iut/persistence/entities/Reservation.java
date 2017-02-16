@@ -1,4 +1,4 @@
-package fr.iut.persistence.domain;
+package fr.iut.persistence.entities;
 
 import javax.persistence.*;
 import java.sql.Timestamp;

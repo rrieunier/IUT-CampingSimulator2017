@@ -1,4 +1,4 @@
-package fr.iut.persistence.domain;
+package fr.iut.persistence.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
