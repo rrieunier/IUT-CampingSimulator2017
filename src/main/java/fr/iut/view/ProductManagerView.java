@@ -3,7 +3,7 @@ package fr.iut.view;
 
 import fr.iut.App;
 import fr.iut.controller.HomeController;
-import fr.iut.persistence.domain.Product;
+import fr.iut.persistence.entities.Product;
 import javafx.beans.NamedArg;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;

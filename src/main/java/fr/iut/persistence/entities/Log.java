@@ -1,4 +1,4 @@
-package fr.iut.persistence.domain;
+package fr.iut.persistence.entities;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -20,8 +20,15 @@ public class Log {
     @Column(nullable = false)
     private Timestamp datetime = new Timestamp(System.currentTimeMillis());
 
+    @ManyToOne(optional = false)
+    private Employee employee;
+
     public int getId() {
         return id;
+    }
+
+    public Employee getEmployee() {
+        return employee;
     }
 
     public String getAction() {
@@ -34,5 +41,13 @@ public class Log {
 
     public void setAction(String action) {
         this.action = action;
+    }
+
+    public void setDatetime(Timestamp datetime) {
+        this.datetime = datetime;
+    }
+
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
     }
 }

@@ -2,7 +2,7 @@ package fr.iut.controller;
 
 import fr.iut.App;
 import fr.iut.State;
-import fr.iut.persistence.domain.Product;
+import fr.iut.persistence.entities.Product;
 import fr.iut.view.HomeView;
 import javafx.scene.Scene;
 

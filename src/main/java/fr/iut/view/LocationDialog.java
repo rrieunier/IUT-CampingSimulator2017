@@ -1,7 +1,7 @@
 package fr.iut.view;
 
-import fr.iut.persistence.domain.Location;
-import fr.iut.persistence.domain.Spot;
+import fr.iut.persistence.entities.Location;
+import fr.iut.persistence.entities.Spot;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Node;

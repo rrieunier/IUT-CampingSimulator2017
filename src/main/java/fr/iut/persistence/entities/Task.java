@@ -1,4 +1,4 @@
-package fr.iut.persistence.domain;
+package fr.iut.persistence.entities;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -23,6 +23,9 @@ public class Task {
     @Column(nullable = false)
     private String label;
 
+    @ManyToOne(optional = false)
+    private Employee employee;
+
     public int getIdTask() {
         return idTask;
     }
@@ -39,6 +42,10 @@ public class Task {
         return label;
     }
 
+    public Employee getEmployee() {
+        return employee;
+    }
+
     public void setStarttime(Timestamp starttime) {
         this.starttime = starttime;
     }
@@ -49,5 +56,9 @@ public class Task {
 
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
     }
 }

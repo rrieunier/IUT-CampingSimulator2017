@@ -1,6 +1,8 @@
-package fr.iut.persistence.domain;
+package fr.iut.persistence.entities;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by Sydpy on 2/15/17.
@@ -34,6 +36,32 @@ public class Employee {
     @Column
     private String password;
 
+    @ManyToMany(
+            targetEntity=Authorization.class,
+            cascade={CascadeType.PERSIST, CascadeType.MERGE}
+    )
+    @JoinTable(
+            joinColumns=@JoinColumn(name="employee_id"),
+            inverseJoinColumns=@JoinColumn(name="authorization_id")
+    )
+    private Set<Authorization> authorizations = new HashSet<>();
+
+    @ManyToMany(
+            targetEntity=Notification.class,
+            cascade={CascadeType.PERSIST, CascadeType.MERGE}
+    )
+    @JoinTable(
+            joinColumns=@JoinColumn(name="employee_id"),
+            inverseJoinColumns=@JoinColumn(name="notification_id")
+    )
+    private Set<Notification> notifications = new HashSet<>();
+
+    @OneToMany(mappedBy = "employee" )
+    private Set<Task> tasks = new HashSet<>();
+
+    @OneToMany(mappedBy = "employee" )
+    private Set<Log> logs = new HashSet<>();
+
     public int getId() {
         return id;
     }
@@ -66,6 +94,22 @@ public class Employee {
         return password;
     }
 
+    public Set<Authorization> getAuthorizations() {
+        return authorizations;
+    }
+
+    public Set<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public Set<Task> getTasks() {
+        return tasks;
+    }
+
+    public Set<Log> getLogs() {
+        return logs;
+    }
+
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
@@ -92,5 +136,21 @@ public class Employee {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setAuthorizations(Set<Authorization> authorizations) {
+        this.authorizations = authorizations;
+    }
+
+    public void setNotifications(Set<Notification> notifications) {
+        this.notifications = notifications;
+    }
+
+    public void setTasks(Set<Task> tasks) {
+        this.tasks = tasks;
+    }
+
+    public void setLogs(Set<Log> logs) {
+        this.logs = logs;
     }
 }

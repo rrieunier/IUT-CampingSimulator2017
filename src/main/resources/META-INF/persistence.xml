@@ -4,21 +4,21 @@
     <persistence-unit name="camping-unit">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
 
-        <class>fr.iut.persistence.domain.Authorization</class>
-        <class>fr.iut.persistence.domain.Client</class>
-        <class>fr.iut.persistence.domain.Employee</class>
-        <class>fr.iut.persistence.domain.Location</class>
-        <class>fr.iut.persistence.domain.Log</class>
-        <class>fr.iut.persistence.domain.Map</class>
-        <class>fr.iut.persistence.domain.Problem</class>
-        <class>fr.iut.persistence.domain.Product</class>
-        <class>fr.iut.persistence.domain.Purchase</class>
-        <class>fr.iut.persistence.domain.Reservation</class>
-        <class>fr.iut.persistence.domain.Restocking</class>
-        <class>fr.iut.persistence.domain.Spot</class>
-        <class>fr.iut.persistence.domain.Supplier</class>
-        <class>fr.iut.persistence.domain.Task</class>
-        <class>fr.iut.persistence.domain.Notification</class>
+        <class>fr.iut.persistence.entities.Authorization</class>
+        <class>fr.iut.persistence.entities.Client</class>
+        <class>fr.iut.persistence.entities.Employee</class>
+        <class>fr.iut.persistence.entities.Location</class>
+        <class>fr.iut.persistence.entities.Log</class>
+        <class>fr.iut.persistence.entities.Map</class>
+        <class>fr.iut.persistence.entities.Problem</class>
+        <class>fr.iut.persistence.entities.Product</class>
+        <class>fr.iut.persistence.entities.Purchase</class>
+        <class>fr.iut.persistence.entities.Reservation</class>
+        <class>fr.iut.persistence.entities.Restocking</class>
+        <class>fr.iut.persistence.entities.Spot</class>
+        <class>fr.iut.persistence.entities.Supplier</class>
+        <class>fr.iut.persistence.entities.Task</class>
+        <class>fr.iut.persistence.entities.Notification</class>
 
         <properties>
             <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>

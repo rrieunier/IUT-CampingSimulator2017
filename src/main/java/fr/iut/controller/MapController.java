@@ -2,7 +2,7 @@ package fr.iut.controller;
 
 import fr.iut.App;
 import fr.iut.State;
-import fr.iut.persistence.domain.Location;
+import fr.iut.persistence.entities.Location;
 import fr.iut.view.MapCreatorView;
 import javafx.scene.Scene;
 
