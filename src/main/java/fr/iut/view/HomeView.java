@@ -35,6 +35,8 @@ public class HomeView extends Scene {
 
     public static final int LEFT_PADDING_TAB = 50;
 
+    private ToggleButton selectedTab = null;
+
     public HomeView(HomeController controller, String username) {
         super(new BorderPane(), App.SCREEN_W, App.SCREEN_H);
         this.controller = controller;
@@ -92,8 +94,16 @@ public class HomeView extends Scene {
             newTab.setMinHeight(App.SCREEN_H / 10);
             verticalTabs.getChildren().add(newTab);
 
+            //Permet d'eviter la déselection d'un bouton déjà séléctionné
+            newTab.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+                if(selectedTab == newTab)
+                    event.consume();
+            });
+
             int finalI = i;
             newTab.setOnAction(actionEvent -> {
+
+                selectedTab = newTab;
 
                 SubScene subScene = null;
 

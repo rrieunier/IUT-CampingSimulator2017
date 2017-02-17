@@ -279,14 +279,14 @@ public class ProductManagerView extends SubScene {
 
                 pane.getChildren().add(product_wrapper);
 
-                if (products_box.getChildren().size() % 2 == 0)
+                if (products_box.getChildren().size() % 2 == 1)
                     pane.setStyle("-fx-background-color: #336699;");
                 else
                     pane.setStyle("-fx-background-color: #0F355C;");
 
                 pane.setOnMouseClicked(event -> {
                     if (lastClicked != null) {
-                        if (products_box.getChildren().indexOf(lastClicked) % 2 == 0)
+                        if (products_box.getChildren().indexOf(lastClicked) % 2 == 1)
                             lastClicked.setStyle("-fx-background-color: #336699;");
                         else
                             lastClicked.setStyle("-fx-background-color: #0F355C;");
