@@ -26,6 +26,9 @@ public class Task {
     @ManyToOne(optional = false)
     private Employee employee;
 
+    @ManyToOne
+    private Location location;
+
     public int getIdTask() {
         return idTask;
     }
@@ -46,6 +49,10 @@ public class Task {
         return employee;
     }
 
+    public Location getLocation() {
+        return location;
+    }
+
     public void setStarttime(Timestamp starttime) {
         this.starttime = starttime;
     }
@@ -60,5 +67,9 @@ public class Task {
 
     public void setEmployee(Employee employee) {
         this.employee = employee;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 }

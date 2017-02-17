@@ -2,6 +2,8 @@ package fr.iut.persistence.entities;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by Sydpy on 2/15/17.
@@ -26,6 +28,20 @@ public class Problem {
     @Column(nullable = false, length = 45)
     private String state = "Non corrigé";
 
+    @ManyToMany(
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+            mappedBy = "problems",
+            targetEntity = Location.class
+    )
+    private Set<Location> locations = new HashSet<>();
+
+    @ManyToMany(
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+            mappedBy = "problems",
+            targetEntity = Client.class
+    )
+    private Set<Client> clients = new HashSet<>();
+
     public int getId() {
         return id;
     }
@@ -46,6 +62,14 @@ public class Problem {
         return state;
     }
 
+    public Set<Location> getLocations() {
+        return locations;
+    }
+
+    public Set<Client> getClients() {
+        return clients;
+    }
+
     public void setDescription(String description) {
         this.description = description;
     }
@@ -60,5 +84,13 @@ public class Problem {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public void setLocations(Set<Location> locations) {
+        this.locations = locations;
+    }
+
+    public void setClients(Set<Client> clients) {
+        this.clients = clients;
     }
 }

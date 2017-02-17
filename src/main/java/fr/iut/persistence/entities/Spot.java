@@ -1,9 +1,8 @@
 package fr.iut.persistence.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by Sydpy on 2/15/17.
@@ -28,6 +27,9 @@ public class Spot extends Location {
     @Column(nullable = false)
     private boolean shadow = false;
 
+    @OneToMany(mappedBy = "spot")
+    private Set<Reservation> reservations = new HashSet<>();
+
     public float getPricePerDay() {
         return pricePerDay;
     }
@@ -48,6 +50,10 @@ public class Spot extends Location {
         return shadow;
     }
 
+    public Set<Reservation> getReservations() {
+        return reservations;
+    }
+
     public void setPricePerDay(float pricePerDay) {
         this.pricePerDay = pricePerDay;
     }
@@ -66,5 +72,9 @@ public class Spot extends Location {
 
     public void setShadow(boolean shadow) {
         this.shadow = shadow;
+    }
+
+    public void setReservations(Set<Reservation> reservations) {
+        this.reservations = reservations;
     }
 }

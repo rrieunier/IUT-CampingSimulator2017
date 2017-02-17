@@ -29,6 +29,12 @@ public class Reservation {
     @Column
     private String clientComment;
 
+    @ManyToOne(optional = false)
+    private Client client;
+
+    @ManyToOne(optional = false)
+    private Spot spot;
+
     public int getId() {
         return id;
     }
@@ -51,6 +57,14 @@ public class Reservation {
 
     public String getClientComment() {
         return clientComment;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public Spot getSpot() {
+        return spot;
     }
 
     public void setStarttime(Timestamp starttime) {
