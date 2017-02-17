@@ -1,6 +1,8 @@
 package fr.iut.persistence.entities;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by Sydpy on 2/15/17.
@@ -25,6 +27,15 @@ public class Product {
     @Column(nullable = false)
     private float sellPrice;
 
+    @OneToMany(mappedBy = "product")
+    private Set<Purchase> purchases = new HashSet<>();
+
+    @OneToMany(mappedBy = "product")
+    private Set<Restocking> restockings = new HashSet<>();
+
+    @OneToMany(mappedBy = "product")
+    private Set<SupplierProposeProduct> supplierProposeProducts = new HashSet<>();
+
     public int getId() {
         return id;
     }
@@ -45,6 +56,18 @@ public class Product {
         return sellPrice;
     }
 
+    public Set<Purchase> getPurchases() {
+        return purchases;
+    }
+
+    public Set<Restocking> getRestockings() {
+        return restockings;
+    }
+
+    public Set<SupplierProposeProduct> getSupplierProposeProducts() {
+        return supplierProposeProducts;
+    }
+
     public void setStock(int stock) {
         this.stock = stock;
     }
@@ -59,5 +82,17 @@ public class Product {
 
     public void setSellPrice(float sellPrice) {
         this.sellPrice = sellPrice;
+    }
+
+    public void setPurchases(Set<Purchase> purchases) {
+        this.purchases = purchases;
+    }
+
+    public void setRestockings(Set<Restocking> restockings) {
+        this.restockings = restockings;
+    }
+
+    public void setSupplierProposeProducts(Set<SupplierProposeProduct> supplierProposeProducts) {
+        this.supplierProposeProducts = supplierProposeProducts;
     }
 }

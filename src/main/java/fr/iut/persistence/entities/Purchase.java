@@ -20,6 +20,12 @@ public class Purchase {
     @Column(nullable = false)
     private int quantity;
 
+    @ManyToOne(optional = false)
+    private Client client;
+
+    @ManyToOne(optional = false)
+    private Product product;
+
     public int getId() {
         return id;
     }
@@ -32,11 +38,27 @@ public class Purchase {
         return quantity;
     }
 
+    public Client getClient() {
+        return client;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
     public void setDatetime(Timestamp datetime) {
         this.datetime = datetime;
     }
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 }
