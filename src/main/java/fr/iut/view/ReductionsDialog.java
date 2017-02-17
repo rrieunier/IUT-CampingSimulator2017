@@ -34,7 +34,6 @@ public class ReductionsDialog extends Dialog<Map<String, Integer>> {
         dialogPane.getStylesheets().add(new File("res/style.css").toURI().toString());
 
         VBox wrapper = new VBox();
-        //wrapper.setSpacing(REDUCTIONS_HEIGHT/10);
 
         GridPane gridPane = new GridPane();
         gridPane.setMinHeight(REDUCTIONS_HEIGHT);
