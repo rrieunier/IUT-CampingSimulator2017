@@ -33,6 +33,9 @@ public class HomeView extends Scene {
     private String username;
     private BorderPane components;
 
+    public static double TAB_CONTENT_W = App.SCREEN_W * 5 / 6;
+    public static double TAB_CONTENT_H = App.SCREEN_H * 7 / 9.45;
+
     public static final int LEFT_PADDING_TAB = 50;
 
     private ToggleButton selectedTab = null;
@@ -83,8 +86,10 @@ public class HomeView extends Scene {
         for(int i = 0; i < 6; i++) {
             ToggleButton newTab = new ToggleButton();
 
-            if(i == 0)
+            if(i == 0) {
                 newTab.setSelected(true);
+                borderPane.setCenter(new ClientManagerView(controller.getClientsController()));
+            }
 
             newTab.setToggleGroup(buttonsGroup);
             newTab.setText(tabsValue[i]);
@@ -108,7 +113,7 @@ public class HomeView extends Scene {
                 SubScene subScene = null;
 
                 switch (finalI) {
-                    case 0: break;
+                    case 0: subScene = new ClientManagerView(controller.getClientsController()); break;
                     case 1: break;
                     case 2: break;
                     case 3: break;
