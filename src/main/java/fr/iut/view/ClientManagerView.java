@@ -26,6 +26,10 @@ public class ClientManagerView extends SubScene {
 
         BorderPane root = (BorderPane) getRoot();
         root.setBorder(new Border(new BorderStroke(Color.DARKGRAY, BorderStrokeStyle.SOLID, new CornerRadii(2), new BorderWidths(5))));
+        root.setStyle("-fx-background-color: rgb(12, 27, 51);");
+
+        HeaderView header = new HeaderView("Gestion des clients");
+        root.setTop(header);
 
         VBox wrapper1 = new VBox();
         wrapper1.setSpacing(10);
@@ -64,5 +68,14 @@ public class ClientManagerView extends SubScene {
         wrapper1.getChildren().addAll(clientsScroll, newClient);
 
         root.setLeft(wrapper1);
+
+        VBox clientDetailsWrapper = new VBox();
+        BorderPane.setMargin(clientDetailsWrapper, new Insets(30));
+        clientDetailsWrapper.setStyle("-fx-background-color: white;");
+        clientDetailsWrapper.setMinHeight(HomeView.TAB_CONTENT_H);
+        HeaderView headerDetails = new HeaderView("Détails");
+
+        clientDetailsWrapper.getChildren().add(headerDetails);
+        root.setCenter(clientDetailsWrapper);
     }
 }
