@@ -30,15 +30,6 @@ import java.util.Comparator;
  * the product manager screen
  */
 public class ProductManagerView extends SubScene {
-
-    /**
-     * width of the ProductManager SubScene
-     */
-    public static double PRODUCT_MANAGER_W = App.SCREEN_W * 5 / 6;
-    /**
-     * height of the ProductManager Subscene
-     */
-    public static double PRODUCT_MANAGER_H = App.SCREEN_H * 7 / 9.45;
     /**
      * instance of the controller
      */
@@ -76,11 +67,11 @@ public class ProductManagerView extends SubScene {
      * @param controller
      */
     public ProductManagerView(@NamedArg("controller") HomeController controller) {
-        super(new VBox(), PRODUCT_MANAGER_W, PRODUCT_MANAGER_H);
+        super(new VBox(), HomeView.TAB_CONTENT_W, HomeView.TAB_CONTENT_H);
         this.controller = controller;
 
         VBox wrapper = (VBox) getRoot();
-        wrapper.setMaxSize(PRODUCT_MANAGER_W, PRODUCT_MANAGER_H);
+        wrapper.setMaxSize(HomeView.TAB_CONTENT_W, HomeView.TAB_CONTENT_H);
         wrapper.setBorder(new Border(new BorderStroke(Color.DARKGRAY, BorderStrokeStyle.SOLID, new CornerRadii(2), new BorderWidths(5))));
         wrapper.setPadding(new Insets(0));
         wrapper.setLayoutY(0);
@@ -107,11 +98,11 @@ public class ProductManagerView extends SubScene {
         search_label.setLabelFor(search_field);
 
         HBox body = new HBox();
-        body.setMinWidth(PRODUCT_MANAGER_W * 19 / 20);
+        body.setMinWidth(HomeView.TAB_CONTENT_W * 19 / 20);
 
         products_box = new VBox();
         products_box.setSpacing(0);
-        products_box.setPrefWidth(PRODUCT_MANAGER_W / 4);
+        products_box.setPrefWidth(HomeView.TAB_CONTENT_W / 4);
         VBox.setVgrow(products_box, Priority.ALWAYS);
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
@@ -121,8 +112,8 @@ public class ProductManagerView extends SubScene {
 
         details.getStylesheets().add(new File("res/style.css").toURI().toString());
         details.getStyleClass().add("product-detail");
-        details.setPrefWidth(3 * PRODUCT_MANAGER_W / 4);
-        details.setMaxHeight(17 * PRODUCT_MANAGER_H / 19);
+        details.setPrefWidth(3 * HomeView.TAB_CONTENT_W / 4);
+        details.setMaxHeight(17 * HomeView.TAB_CONTENT_H / 19);
 
         HeaderView details_header = new HeaderView("Détails du produit");
         grid.setGridLinesVisible(true);
@@ -130,7 +121,7 @@ public class ProductManagerView extends SubScene {
         grid.getStyleClass().add("stock-grid");
 
         HBox buttons = new HBox();
-        buttons.setSpacing(PRODUCT_MANAGER_W / 8);
+        buttons.setSpacing(HomeView.TAB_CONTENT_W / 8);
         for (int i = 0; i < 2; i++) {
             Button button = new Button();
             if (i == 0) {
@@ -150,14 +141,14 @@ public class ProductManagerView extends SubScene {
                     }
                 });
             }
-            button.setPrefWidth(PRODUCT_MANAGER_W / 6);
+            button.setPrefWidth(HomeView.TAB_CONTENT_W / 6);
             button.getStylesheets().add(new File("res/style.css").toURI().toString());
             button.getStyleClass().add("record-sales");
             buttons.getChildren().add(button);
         }
 
         details.getChildren().addAll(details_header, grid, buttons);
-        VBox.setMargin(buttons, new Insets(PRODUCT_MANAGER_H / 15, 0, 0, PRODUCT_MANAGER_W / 9));
+        VBox.setMargin(buttons, new Insets(HomeView.TAB_CONTENT_H / 15, 0, 0, HomeView.TAB_CONTENT_W / 9));
 
         buildProductsList(0, "", true);
 
@@ -175,7 +166,7 @@ public class ProductManagerView extends SubScene {
             }
         });
         search_label.setStyle("-fx-text-fill: whitesmoke; -fx-font-size: 18px");
-        search_field.setPrefWidth(PRODUCT_MANAGER_W / 7);
+        search_field.setPrefWidth(HomeView.TAB_CONTENT_W / 7);
         search_field.setPromptText("Nom du produit");
         search_field.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override

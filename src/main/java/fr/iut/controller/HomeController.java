@@ -14,13 +14,12 @@ public class HomeController implements ControllerInterface {
     private App app;
     private HomeView homeView;
     private NotificationsController notificationsController = new NotificationsController(this);
-
-    private StatisticsController statisticsController;
+    private ClientsController clientsController = new ClientsController(this);
+    private StatisticsController statisticsController = new StatisticsController(this);
 
     public HomeController(App app, String connectedUser) {
         this.app = app;
         homeView = new HomeView(this, connectedUser);
-        statisticsController = new StatisticsController(app, this);
     }
 
     public ArrayList<Product> getProductsList() {
@@ -52,6 +51,10 @@ public class HomeController implements ControllerInterface {
 
     public StatisticsController getStatiscticsController() {
         return statisticsController;
+    }
+
+    public ClientsController getClientsController() {
+        return clientsController;
     }
 
     public void OnWindowIsClosing() {
