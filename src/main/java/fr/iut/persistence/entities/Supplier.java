@@ -11,8 +11,8 @@ import java.util.Set;
 @Table(name = "SUPPLIER")
 public class Supplier {
 
-    @Id @GeneratedValue
-    @Column
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(nullable = false)
     private int id;
 
     @Column(nullable = false)
@@ -59,6 +59,10 @@ public class Supplier {
 
     public Set<SupplierProposeProduct> getSupplierProposeProducts() {
         return supplierProposeProducts;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setName(String name) {

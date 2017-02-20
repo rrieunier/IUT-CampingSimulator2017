@@ -11,7 +11,7 @@ import java.util.Set;
 @Table(name = "EMPLOYEE")
 public class Employee {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
     private int id;
 
@@ -108,6 +108,10 @@ public class Employee {
 
     public Set<Log> getLogs() {
         return logs;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setFirstName(String firstName) {

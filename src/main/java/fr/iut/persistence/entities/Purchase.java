@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 @Table(name = "PURCHASE")
 public class Purchase {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
     private int id;
 
@@ -44,6 +44,10 @@ public class Purchase {
 
     public Product getProduct() {
         return product;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setDatetime(Timestamp datetime) {

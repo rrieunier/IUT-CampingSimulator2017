@@ -11,7 +11,7 @@ import java.util.Set;
 @Table(name = "NOTIFICATION")
 public class Notification {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
     private int id;
 
@@ -42,6 +42,10 @@ public class Notification {
 
     public Set<Employee> getEmployees() {
         return employees;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setTitle(String title) {

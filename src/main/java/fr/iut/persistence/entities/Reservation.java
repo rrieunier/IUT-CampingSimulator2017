@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 @Table(name = "RESERVATION")
 public class Reservation {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
     private int id;
 
@@ -67,6 +67,10 @@ public class Reservation {
         return spot;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public void setStarttime(Timestamp starttime) {
         this.starttime = starttime;
     }
@@ -85,5 +89,13 @@ public class Reservation {
 
     public void setClientComment(String clientComment) {
         this.clientComment = clientComment;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+    public void setSpot(Spot spot) {
+        this.spot = spot;
     }
 }

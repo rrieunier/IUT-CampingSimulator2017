@@ -12,7 +12,7 @@ import java.util.Set;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Location {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private int id;
 
@@ -60,6 +60,10 @@ public class Location {
 
     public Set<Problem> getProblems() {
         return problems;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setName(String name) {

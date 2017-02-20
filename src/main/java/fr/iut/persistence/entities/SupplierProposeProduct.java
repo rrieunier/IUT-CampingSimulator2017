@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Table(name = "SUPPLIER_PROPOSE_PRODUCT")
 public class SupplierProposeProduct {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
     private int id;
 
@@ -36,6 +36,10 @@ public class SupplierProposeProduct {
 
     public Product getProduct() {
         return product;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setSellPrice(float sellPrice) {

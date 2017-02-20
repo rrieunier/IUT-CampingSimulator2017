@@ -11,7 +11,7 @@ import java.util.Set;
 @Table(name = "CLIENT")
 public class Client {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
     private int id;
 
@@ -73,6 +73,10 @@ public class Client {
 
     public Set<Purchase> getPurchases() {
         return purchases;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setLastname(String lastname) {

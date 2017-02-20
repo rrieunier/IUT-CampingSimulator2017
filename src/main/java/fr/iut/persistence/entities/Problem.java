@@ -12,7 +12,7 @@ import java.util.Set;
 @Table(name = "PROBLEM")
 public class Problem {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
     private int id;
 
@@ -68,6 +68,10 @@ public class Problem {
 
     public Set<Client> getClients() {
         return clients;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setDescription(String description) {

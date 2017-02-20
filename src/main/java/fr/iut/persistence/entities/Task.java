@@ -10,9 +10,9 @@ import java.sql.Timestamp;
 @Table(name = "TASK")
 public class Task {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
-    private int idTask;
+    private int id;
 
     @Column(nullable = false)
     private Timestamp starttime;
@@ -29,8 +29,8 @@ public class Task {
     @ManyToOne
     private Location location;
 
-    public int getIdTask() {
-        return idTask;
+    public int getId() {
+        return id;
     }
 
     public Timestamp getStarttime() {
@@ -51,6 +51,10 @@ public class Task {
 
     public Location getLocation() {
         return location;
+    }
+
+    public void setId(int idTask) {
+        this.id = idTask;
     }
 
     public void setStarttime(Timestamp starttime) {
