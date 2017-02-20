@@ -8,13 +8,13 @@ import java.util.List;
  */
 public interface GenericDAO<T, Id extends Serializable> {
 
-    void persist(T entity);
+    boolean persist(T entity);
 
-    void update(T entity);
+    boolean update(T entity);
 
     T findById(Id id);
 
     List findAll();
 
-    void delete(T entity);
+    boolean delete(T entity);
 }
