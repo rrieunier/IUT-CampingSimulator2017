@@ -2,6 +2,7 @@ package fr.iut.controller;
 
 import fr.iut.App;
 import fr.iut.State;
+import fr.iut.persistence.dao.impl.GenericDAOImpl;
 import fr.iut.persistence.entities.Product;
 import fr.iut.view.HomeView;
 import javafx.scene.Scene;
@@ -23,16 +24,9 @@ public class HomeController implements ControllerInterface {
     }
 
     public ArrayList<Product> getProductsList() {
-        ArrayList<Product> products = new ArrayList<>();
-        for (int i = 0 ; i < 20 ; i++) {
-            // findAll quand DAO ok
-            Product product = new Product();
-            product.setName("Produit n° " + i);
-            product.setSellPrice(i * 2);
-            product.setStock(i);
-            products.add(product);
-        }
-        return products;
+        GenericDAOImpl<Product, java.io.Serializable> dao = new GenericDAOImpl<>(Product.class);
+
+        return (ArrayList<Product>) dao.findAll();
     }
 
     @Override

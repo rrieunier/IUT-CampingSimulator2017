@@ -35,9 +35,8 @@ public class StatisticsView extends SubScene {
         super(new VBox(), HomeView.TAB_CONTENT_W, HomeView.TAB_CONTENT_H);
 
         this.controller = controller;
-        VBox components = (VBox) getRoot();
 
-        VBox wrapper = new VBox();
+        VBox wrapper = (VBox) getRoot();
         HeaderView header = new HeaderView("Statistiques");
         HBox body = new HBox();
 
@@ -45,6 +44,5 @@ public class StatisticsView extends SubScene {
 
 
         wrapper.getChildren().addAll(header, body);
-        components.getChildren().add(wrapper);
     }
 }

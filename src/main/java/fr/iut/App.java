@@ -15,9 +15,10 @@ import java.awt.*;
 
 public class App extends Application {
 
+    private static final GraphicsDevice[] monitors = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
     private static final Dimension SCREEN_SIZE = Toolkit.getDefaultToolkit().getScreenSize();
 
-    public static final double SCREEN_W = SCREEN_SIZE.getWidth();
+    public static final double SCREEN_W = SCREEN_SIZE.getWidth() / monitors.length;
     public static final double SCREEN_H = SCREEN_SIZE.getHeight();
 
     private Stage stage;
