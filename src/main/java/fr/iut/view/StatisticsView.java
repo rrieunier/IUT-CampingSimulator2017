@@ -70,6 +70,7 @@ class StatisticsView extends SubScene {
         scrollPane.setContent(body);
         scrollPane.setMinHeight(17 * HomeView.TAB_CONTENT_H / 19);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
         buildInterface(body);
 
@@ -181,6 +182,7 @@ class StatisticsView extends SubScene {
 
             case GRAPHIC:
                 Chart chart = controller.makeChart(selectedCategory, selectedStat, ChartType.PIE);
+                body.add(chart, 1, 0);
                 break;
         }
     }
