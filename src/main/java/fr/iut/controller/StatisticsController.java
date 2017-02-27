@@ -2,29 +2,25 @@ package fr.iut.controller;
 
 
 import fr.iut.persistence.dao.impl.GenericDAOImpl;
-import fr.iut.persistence.entities.Reservation;
 import fr.iut.persistence.entities.Spot;
 import fr.iut.view.ChartType;
+import fr.iut.view.ChartView;
 import fr.iut.view.HomeView;
 import fr.iut.view.SelectedCategory;
 import javafx.beans.NamedArg;
-import javafx.beans.binding.Bindings;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Side;
-import javafx.scene.Node;
 import javafx.scene.chart.*;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Optional;
 
 public class StatisticsController implements ControllerInterface {
 
@@ -46,7 +42,7 @@ public class StatisticsController implements ControllerInterface {
     }
 
     // TODO: Implement other charts type (other than PieChart)
-    public Chart makeChart(SelectedCategory category, int selectedChart, ChartType type) {
+    public ChartView makeChart(SelectedCategory category, int selectedChart, ChartType type) {
         switch (category) {
             case RESERVATIONS:
                 return reservationChart(selectedChart, type);
@@ -63,12 +59,14 @@ public class StatisticsController implements ControllerInterface {
             case NONE:
                 break;
         }
-        return new PieChart();
+        return null;
     }
 
-    private Chart reservationChart(int selectedChart, ChartType type) {
+    private ChartView reservationChart(int selectedChart, ChartType type) {
 
         Chart chart = new PieChart();
+        TableView<SpotV> table = new TableView<>();
+
         switch (type) {
             case PIE:
                 break;
@@ -87,7 +85,7 @@ public class StatisticsController implements ControllerInterface {
                 reservations.sort(new Comparator<Spot>() {
                     @Override
                     public int compare(Spot o1, Spot o2) {
-                        return o1.getReservations().size() - o2.getReservations().size();
+                        return o2.getReservations().size() - o1.getReservations().size();
                     }
                 });
 
@@ -101,8 +99,22 @@ public class StatisticsController implements ControllerInterface {
                 chart.setPrefSize(HomeView.TAB_CONTENT_W / 2, HomeView.TAB_CONTENT_H * 15 / 20);
                 chart.getStylesheets().add(new File("res/style.css").toURI().toString());
                 chart.getStyleClass().add("pie-chart");
-
                 chart.setTitle("Emplacements les plus réservés");
+
+                final ObservableList<SpotV> data = FXCollections.observableArrayList();
+                for (Spot s : reservations) {
+                    data.add(new SpotV(s.getName(), s.getReservations().size()));
+                }
+
+                TableColumn nameColum = new TableColumn<>("Nom");
+                TableColumn resColumn = new TableColumn<>("Nb de réservation");
+                nameColum.setPrefWidth(HomeView.TAB_CONTENT_W / 6);
+                resColumn.setPrefWidth(HomeView.TAB_CONTENT_W / 6);
+                nameColum.setCellValueFactory(new PropertyValueFactory<>("name"));
+                resColumn.setCellValueFactory(new PropertyValueFactory<>("nbRes"));
+
+                table.getColumns().addAll(nameColum, resColumn);
+                table.setItems(data);
 
                 dao.close();
                 break;
@@ -117,6 +129,35 @@ public class StatisticsController implements ControllerInterface {
                 break;
         }
 
-        return chart;
+        return new ChartView(chart, table);
+    }
+
+    public static class SpotV {
+        private final SimpleStringProperty name;
+        private final SimpleIntegerProperty nbRes;
+
+        private SpotV(String name, Integer nbRes) {
+            this.name = new SimpleStringProperty(name);
+            this.nbRes = new SimpleIntegerProperty(nbRes);
+        }
+
+
+        public String getName() {
+            return name.get();
+        }
+
+        public SimpleStringProperty nameProperty() {
+            return name;
+        }
+
+        public int getNbRes() {
+            return nbRes.get();
+        }
+
+        public SimpleIntegerProperty nbResProperty() {
+            return nbRes;
+        }
     }
 }
+
+

@@ -181,8 +181,9 @@ class StatisticsView extends SubScene {
                 break;
 
             case GRAPHIC:
-                Chart chart = controller.makeChart(selectedCategory, selectedStat, ChartType.PIE);
-                body.add(chart, 1, 0);
+                ChartView chart = controller.makeChart(selectedCategory, selectedStat, ChartType.PIE);
+                body.add(chart.getTable(), 0, 0);
+                body.add(chart.getChart(), 1, 0);
                 break;
         }
     }
