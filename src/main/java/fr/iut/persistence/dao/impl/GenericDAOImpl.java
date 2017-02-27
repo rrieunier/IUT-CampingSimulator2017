@@ -1,10 +1,9 @@
 package fr.iut.persistence.dao.impl;
 
 import fr.iut.persistence.dao.GenericDAO;
+import fr.iut.persistence.dao.HibernateUtil;
+import org.hibernate.Session;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.persistence.criteria.CriteriaQuery;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -16,28 +15,22 @@ import java.util.List;
 public class GenericDAOImpl<T, Id extends Serializable> implements GenericDAO<T, Id> {
 
     private Class<T> persistentClass;
-    private EntityManager entityManager;
-    private String persistenceUnit;
+    private Session session = HibernateUtil.getSessionFactory().openSession();
 
     public GenericDAOImpl(Class<T> persistentClass) {
-        this(persistentClass, "CampingUnit");
-    }
-
-    public GenericDAOImpl(Class<T> persistentClass, String persistenceUnit) {
         this.persistentClass = persistentClass;
-        this.persistenceUnit = persistenceUnit;
     }
 
     @Override
     public boolean persist(T entity) {
-        entityManager.getTransaction().begin();
+        session.beginTransaction();
 
         try {
-            entityManager.persist(entity);
-            entityManager.getTransaction().commit();
+            session.save(entity);
+            session.getTransaction().commit();
         }catch (Exception e){
             e.printStackTrace();
-            entityManager.getTransaction().rollback();
+            session.getTransaction().rollback();
             return false;
         }
 
@@ -47,14 +40,14 @@ public class GenericDAOImpl<T, Id extends Serializable> implements GenericDAO<T,
     @Override
     public boolean update(T entity) {
 
-        entityManager.getTransaction().begin();
+        session.beginTransaction();
 
         try {
-            entityManager.refresh(entity);
-            entityManager.getTransaction().commit();
+            session.update(entity);
+            session.getTransaction().commit();
         }catch (Exception e){
             e.printStackTrace();
-            entityManager.getTransaction().rollback();
+            session.getTransaction().rollback();
             return false;
         }
 
@@ -63,16 +56,16 @@ public class GenericDAOImpl<T, Id extends Serializable> implements GenericDAO<T,
 
     @Override
     public T findById(Id id) {
-        entityManager.getTransaction().begin();
+        session.beginTransaction();
 
         T entity = null;
 
         try {
-            entity = entityManager.find(persistentClass, id);
-            entityManager.getTransaction().commit();
+            entity = session.find(persistentClass, id);
+            session.getTransaction().commit();
         }catch (Exception e){
             e.printStackTrace();
-            entityManager.getTransaction().rollback();
+            session.getTransaction().rollback();
         }
 
         return entity;
@@ -80,18 +73,18 @@ public class GenericDAOImpl<T, Id extends Serializable> implements GenericDAO<T,
 
     @Override
     public List<T> findAll() {
-        entityManager.getTransaction().begin();
+        session.beginTransaction();
 
         List<T> entities = new ArrayList<T>();
         try {
-            CriteriaQuery<T> criteria = entityManager.getCriteriaBuilder().createQuery(persistentClass);
+            CriteriaQuery<T> criteria = session.getCriteriaBuilder().createQuery(persistentClass);
             criteria.select(criteria.from(persistentClass));
 
-            entities = entityManager.createQuery(criteria).getResultList();
-            entityManager.getTransaction().commit();
+            entities = session.createQuery(criteria).getResultList();
+            session.getTransaction().commit();
         }catch (Exception e){
             e.printStackTrace();
-            entityManager.getTransaction().rollback();
+            session.getTransaction().rollback();
         }
 
         return entities;
@@ -99,14 +92,14 @@ public class GenericDAOImpl<T, Id extends Serializable> implements GenericDAO<T,
 
     @Override
     public boolean delete(T entity) {
-        entityManager.getTransaction().begin();
+        session.beginTransaction();
 
         try {
-            entityManager.remove(entity);
-            entityManager.getTransaction().commit();
+            session.remove(entity);
+            session.getTransaction().commit();
         }catch (Exception e){
             e.printStackTrace();
-            entityManager.getTransaction().rollback();
+            session.getTransaction().rollback();
             return false;
         }
 
@@ -114,11 +107,11 @@ public class GenericDAOImpl<T, Id extends Serializable> implements GenericDAO<T,
     }
 
     public void open(){
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory(persistenceUnit);
-        entityManager = emf.createEntityManager();
+
+        session = HibernateUtil.getSessionFactory().openSession();
     }
 
     public void close(){
-        entityManager.close();
+        session.close();
     }
 }
