@@ -302,3 +302,6 @@
        add constraint FK9y4w10ihe6vms9vgb9th4n7na 
        foreign key (location_id) 
        references LOCATION (id);
+
+  GRANT SELECT, INSERT, DELETE ON Camping.* TO 'camping'@'%';
+
