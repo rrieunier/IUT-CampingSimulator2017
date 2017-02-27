@@ -15,7 +15,7 @@ import java.util.List;
 public class GenericDAOImpl<T, Id extends Serializable> implements GenericDAO<T, Id> {
 
     private Class<T> persistentClass;
-    private Session session = HibernateUtil.getSessionFactory().openSession();
+    private Session session = null;
 
     public GenericDAOImpl(Class<T> persistentClass) {
         this.persistentClass = persistentClass;
