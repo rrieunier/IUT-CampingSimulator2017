@@ -303,5 +303,5 @@
        foreign key (location_id) 
        references LOCATION (id);
 
-  GRANT SELECT, INSERT, DELETE ON Camping.* TO 'camping'@'%';
+  GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.* TO 'camping'@'%';
 
