@@ -1,14 +1,13 @@
 package fr.iut.view;
 
-import fr.iut.model.LocationEntity;
-import fr.iut.model.SpotEntity;
+import fr.iut.persistence.entities.Location;
+import fr.iut.persistence.entities.Spot;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-import javafx.util.Pair;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,12 +21,12 @@ public class LocationDialog extends Dialog<Map<String, String>> {
         this(imageView, null);
     }
 
-    public LocationDialog(ImageView imageView, LocationEntity location) {
+    public LocationDialog(ImageView imageView, Location location) {
 
-        SpotEntity spot = null;
+        Spot spot = null;
 
-        if(location != null)
-            spot = location.getSpot();
+        if(location instanceof Spot)
+            spot = (Spot)location;
 
         setTitle("Création d'emplacement");
         setHeaderText("Renseignez les informations concernant cet emplacement.");
@@ -36,7 +35,7 @@ public class LocationDialog extends Dialog<Map<String, String>> {
         ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
         getDialogPane().getButtonTypes().add(okButtonType);
 
-        ButtonType deleteButtonType = new ButtonType("Supprimer", ButtonBar.ButtonData.FINISH);
+        ButtonType deleteButtonType = new ButtonType("Supprimer");
 
         if(location != null)
             getDialogPane().getButtonTypes().add(deleteButtonType);
@@ -66,9 +65,9 @@ public class LocationDialog extends Dialog<Map<String, String>> {
         CheckBox shadow = new CheckBox("Ombre");
 
         if(spot != null) {
-            water.setSelected(spot.isWater());
-            elec.setSelected(spot.isElectricity());
-            shadow.setSelected(spot.isShadow());
+            water.setSelected(spot.hasWater());
+            elec.setSelected(spot.hasElectricity());
+            shadow.setSelected(spot.hasShadow());
         }
 
         grid.add(new Label("Nom:"), 0, 0);

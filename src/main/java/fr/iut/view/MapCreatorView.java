@@ -1,8 +1,9 @@
 package fr.iut.view;
 
 import fr.iut.App;
-import fr.iut.model.LocationEntity;
-import fr.iut.model.SpotEntity;
+import fr.iut.controller.MapController;
+import fr.iut.persistence.entities.Location;
+import fr.iut.persistence.entities.Spot;
 import javafx.application.Platform;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
@@ -34,10 +35,12 @@ import java.util.Optional;
 public class MapCreatorView extends Scene {
 
     private final static int MAP_VIEWPORT_WIDTH = (int)(App.SCREEN_W*3/4);
-    private final static int MAP_VIEWPORT_HEIGHT = (int)(App.SCREEN_H/2);
-    private App app;
+    private final static int MAP_VIEWPORT_HEIGHT = (int)(App.SCREEN_H / 2 + App.SCREEN_H / 10);
+    private MapController controller;
+
+    private StackPane stackPaneRoot;
     private ScrollPane mapViewPort;
-    private ArrayList<LocationEntity> locations = new ArrayList<>();
+    private ArrayList<Location> locations = new ArrayList<>();
 
     private StackPane mapPane;
     private File mapFile = null;
@@ -47,18 +50,17 @@ public class MapCreatorView extends Scene {
     private double mouseX ;
     private double mouseY ;
 
-    public MapCreatorView(App app, String username) {
+    public MapCreatorView(MapController controller) {
         super(new StackPane());
-        this.app = app;
+        this.controller = controller;
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Bienvenue " + username);
         alert.setHeaderText(null);
         alert.setContentText("Cette interface permet de créer la carte de votre camping, glissez/deposez les éléments dessus.");
 
         Platform.runLater(alert::showAndWait);
 
-        StackPane stackPane = (StackPane)getRoot();
+        stackPaneRoot = (StackPane)getRoot();
 
         ScrollPane scrollPane = new ScrollPane();
         VBox verticalWrap = new VBox();
@@ -92,118 +94,10 @@ public class MapCreatorView extends Scene {
         mapViewPort.setMaxHeight(MAP_VIEWPORT_HEIGHT);
         mapViewPort.setPannable(true);
 
-        addEventFilter(MouseEvent.MOUSE_RELEASED, mouseEvent -> {
-            if(selectedIcon != null) {
-                Bounds boundsInScene = selectedIcon.localToScene(selectedIcon.getBoundsInLocal());
-                Bounds mapViewPort_coords = mapViewPort.sceneToLocal(boundsInScene);
-                Bounds map_coords = mapPane.sceneToLocal(boundsInScene);
-
-                //Si l'item est dans le viewport
-                if(mapViewPort_coords.getMinX() > 0 && mapViewPort_coords.getMaxX() < mapViewPort.getWidth() && mapViewPort_coords.getMinY() > 0 && mapViewPort_coords.getMaxY() < mapViewPort.getHeight()) {
-
-                    String fileStr = selectedBigIconFile.toURI().toString();
-                    ImageView bigIcon = new ImageView(new Image(fileStr));
-
-                    Optional<Map<String, String>> result = new LocationDialog(bigIcon).showAndWait();
-
-                    result.ifPresent(mapResult -> {
-                        ImageView imageView = new ImageView(selectedIcon.getImage());
-
-                        imageView.setTranslateX(map_coords.getMinX());
-                        imageView.setTranslateY(map_coords.getMinY());
-                        mapPane.getChildren().add(imageView);
-
-                        LocationEntity location = new LocationEntity();
-                        SpotEntity spot = new SpotEntity();
-                        location.setSpot(spot);
-
-                        location.setName(mapResult.get("name"));
-                        location.setPointX(map_coords.getMinX());
-                        location.setPointY(map_coords.getMinY());
-                        spot.setCapacity(Integer.parseInt(mapResult.get("capacity")));
-                        spot.setElectricity(Boolean.parseBoolean(mapResult.get("elec")));
-                        spot.setWater(Boolean.parseBoolean(mapResult.get("water")));
-                        spot.setShadow(Boolean.parseBoolean(mapResult.get("shadow")));
-
-                        imageView.setOnMouseClicked(mouseEvent1 -> {
-                            Optional<Map<String, String>> edit_result = new LocationDialog(bigIcon, location).showAndWait();
-
-                            edit_result.ifPresent(mapEditResult -> {
-
-                                if(mapEditResult.containsKey("delete")) {
-                                    mapPane.getChildren().remove(imageView);
-                                    locations.remove(location);
-                                }
-
-                                else {
-                                    location.setName(mapEditResult.get("name"));
-                                    location.setPointX(map_coords.getMinX());
-                                    location.setPointY(map_coords.getMinY());
-                                    spot.setCapacity(Integer.parseInt(mapEditResult.get("capacity")));
-                                    spot.setElectricity(Boolean.parseBoolean(mapEditResult.get("elec")));
-                                    spot.setWater(Boolean.parseBoolean(mapEditResult.get("water")));
-                                    spot.setShadow(Boolean.parseBoolean(mapEditResult.get("shadow")));
-                                }
-                            });
-                        });
-
-                        locations.add(location);
-                    });
-                }
-
-                stackPane.getChildren().remove(selectedIcon);
-                selectedIcon = null;
-                selectedBigIconFile = null;
-            }
-        });
+        handleDropItem();
 
         FlowPane items = new FlowPane();
-        items.setPadding(new Insets(30));
-        items.setStyle("-fx-background-color: rgb(50, 50, 50); -fx-border-color: rgb(55, 77, 114); -fx-border-width: 5px;");
-        items.setAlignment(Pos.CENTER);
-        items.setHgap(80);
-        items.setVgap(80);
-
-        File[] files64 = new File("res/items/x64").listFiles();
-
-        if(files64 == null) {
-            System.out.println("Can't find any items !!!");
-            return;
-        }
-
-        for (File file : files64) {
-            if (file.isFile()) {
-                ImageView item = new ImageView(new Image(file.toURI().toString()));
-
-                item.setOnMousePressed(mouseEvent -> {
-                    if(mapFile != null) {
-                        String fileStr = new File("res/items/x32/" + file.getName()).toURI().toString();
-                        selectedIcon = new ImageView(new Image(fileStr));
-                        selectedIcon.setManaged(false); //très important, permet de dire au parent (Le stackpane, de ne pas gérer de la position de l'image
-                        selectedBigIconFile = file;
-                        stackPane.getChildren().add(selectedIcon);
-
-                        mouseX = mouseEvent.getSceneX();
-                        mouseY = mouseEvent.getSceneY();
-                        selectedIcon.relocate(mouseX - selectedIcon.getImage().getWidth() / 2, mouseY - selectedIcon.getImage().getHeight() / 2);
-                    }
-                });
-
-                item.setOnMouseDragged(mouseEvent -> {
-                    if(selectedIcon != null) {
-                        double deltaX = mouseEvent.getSceneX() - mouseX ;
-                        double deltaY = mouseEvent.getSceneY() - mouseY ;
-
-                        selectedIcon.relocate(selectedIcon.getLayoutX() + deltaX, selectedIcon.getLayoutY() + deltaY);
-
-                        mouseX = mouseEvent.getSceneX() ;
-                        mouseY = mouseEvent.getSceneY() ;
-                    }
-                });
-
-                items.getChildren().add(item);
-            }
-        }
+        buildDraggableItems(items);
 
         HBox buttonsBox = new HBox();
         Button buttonReset = new Button("Réinitialiser la carte");
@@ -242,13 +136,8 @@ public class MapCreatorView extends Scene {
         });
 
         buttonFinish.setOnMouseClicked(mouseEvent -> {
-            System.out.println("Saving map & points in database");
-            /*
-            for(Location location : locations)
-                location.store();
-                */
-
-            app.start("dev");
+            controller.store(mapFile, locations);
+            controller.finish();
         });
 
         mapPane.setOnMouseClicked(mouseEvent -> {
@@ -290,8 +179,124 @@ public class MapCreatorView extends Scene {
         VBox.setMargin(mapViewPort, new Insets(20, 0, 20, 0));
         verticalWrap.getChildren().addAll(header, mapViewPort, items, buttonsBox);
 
-        stackPane.getChildren().addAll(scrollPane);
+        stackPaneRoot.getChildren().addAll(scrollPane);
 
         verticalWrap.setAlignment(Pos.TOP_CENTER);
+    }
+
+    private void buildDraggableItems(FlowPane items) {
+        items.setPadding(new Insets(30));
+        items.setStyle("-fx-background-color: rgb(50, 50, 50); -fx-border-color: rgb(55, 77, 114); -fx-border-width: 5px;");
+        items.setAlignment(Pos.CENTER);
+        items.setHgap(80);
+        items.setVgap(80);
+
+        File[] files64 = new File("res/items/x64").listFiles();
+
+        if(files64 == null) {
+            System.out.println("Can't find any items !!!");
+            return;
+        }
+
+        for (File file : files64) {
+            if (file.isFile()) {
+                ImageView item = new ImageView(new Image(file.toURI().toString()));
+
+                item.setOnMousePressed(mouseEvent -> {
+                    if(mapFile != null) {
+                        String fileStr = new File("res/items/x32/" + file.getName()).toURI().toString();
+                        selectedIcon = new ImageView(new Image(fileStr));
+                        selectedIcon.setManaged(false); //très important, permet de dire au parent (Le stackpane, de ne pas gérer de la position de l'image
+                        selectedBigIconFile = file;
+                        stackPaneRoot.getChildren().add(selectedIcon);
+
+                        mouseX = mouseEvent.getSceneX();
+                        mouseY = mouseEvent.getSceneY();
+                        selectedIcon.relocate(mouseX - selectedIcon.getImage().getWidth() / 2, mouseY - selectedIcon.getImage().getHeight() / 2);
+                    }
+                });
+
+                item.setOnMouseDragged(mouseEvent -> {
+                    if(selectedIcon != null) {
+                        double deltaX = mouseEvent.getSceneX() - mouseX ;
+                        double deltaY = mouseEvent.getSceneY() - mouseY ;
+
+                        selectedIcon.relocate(selectedIcon.getLayoutX() + deltaX, selectedIcon.getLayoutY() + deltaY);
+
+                        mouseX = mouseEvent.getSceneX() ;
+                        mouseY = mouseEvent.getSceneY() ;
+                    }
+                });
+
+                items.getChildren().add(item);
+            }
+        }
+    }
+
+    private void handleDropItem() {
+        addEventFilter(MouseEvent.MOUSE_RELEASED, mouseEvent -> {
+            if(selectedIcon != null) {
+                Bounds boundsInScene = selectedIcon.localToScene(selectedIcon.getBoundsInLocal());
+                Bounds mapViewPort_coords = mapViewPort.sceneToLocal(boundsInScene);
+                Bounds map_coords = mapPane.sceneToLocal(boundsInScene);
+
+                //Si l'item est dans le viewport
+                if(mapViewPort_coords.getMinX() > 0 && mapViewPort_coords.getMaxX() < mapViewPort.getWidth() && mapViewPort_coords.getMinY() > 0 && mapViewPort_coords.getMaxY() < mapViewPort.getHeight()) {
+
+                    String fileStr = selectedBigIconFile.toURI().toString();
+                    ImageView bigIcon = new ImageView(new Image(fileStr));
+
+                    Optional<Map<String, String>> result = new LocationDialog(bigIcon).showAndWait();
+
+                    result.ifPresent(mapResult -> {
+                        ImageView imageView = new ImageView(selectedIcon.getImage());
+
+                        imageView.setTranslateX(map_coords.getMinX());
+                        imageView.setTranslateY(map_coords.getMinY());
+                        mapPane.getChildren().add(imageView);
+
+                        Spot spot = new Spot();
+
+                        spot.setName(mapResult.get("name"));
+                        spot.setPointX(map_coords.getMinX());
+                        spot.setPointY(map_coords.getMinY());
+                        spot.setCapacity(Integer.parseInt(mapResult.get("capacity")));
+                        spot.setElectricity(Boolean.parseBoolean(mapResult.get("elec")));
+                        spot.setWater(Boolean.parseBoolean(mapResult.get("water")));
+                        spot.setShadow(Boolean.parseBoolean(mapResult.get("shadow")));
+
+
+                        imageView.setOnMouseClicked(mouseEvent1 -> {
+                            Optional<Map<String, String>> edit_result = new LocationDialog(bigIcon, spot).showAndWait();
+
+                            edit_result.ifPresent(mapEditResult -> {
+
+                                if(mapEditResult.containsKey("delete")) {
+                                    mapPane.getChildren().remove(imageView);
+                                    locations.remove(spot);
+                                }
+
+                                else {
+                                    spot.setName(mapEditResult.get("name"));
+                                    spot.setPointX(map_coords.getMinX());
+                                    spot.setPointY(map_coords.getMinY());
+                                    spot.setCapacity(Integer.parseInt(mapEditResult.get("capacity")));
+                                    spot.setElectricity(Boolean.parseBoolean(mapEditResult.get("elec")));
+                                    spot.setWater(Boolean.parseBoolean(mapEditResult.get("water")));
+                                    spot.setShadow(Boolean.parseBoolean(mapEditResult.get("shadow")));
+
+                                }
+                            });
+                        });
+
+                        locations.add(spot);
+                    });
+                }
+
+                stackPaneRoot.getChildren().remove(selectedIcon);
+                selectedIcon = null;
+                selectedBigIconFile = null;
+            }
+        });
     }
 }
