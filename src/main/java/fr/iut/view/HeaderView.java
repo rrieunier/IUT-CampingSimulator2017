@@ -14,7 +14,7 @@ public class HeaderView extends BorderPane {
 
     public HeaderView(String title){
 
-        setPadding(new Insets(20));
+        setPadding(new Insets(15));
         setStyle("-fx-background-color: #336699;");
         this.title = new Text(title);
         this.title.setFill(Color.WHITESMOKE);

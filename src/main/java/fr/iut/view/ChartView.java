@@ -1,10 +1,7 @@
 package fr.iut.view;
 
-import fr.iut.controller.StatisticsController;
-import javafx.beans.NamedArg;
 import javafx.scene.chart.Chart;
 import javafx.scene.control.TableView;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 
 

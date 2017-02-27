@@ -42,6 +42,8 @@ class StatisticsView extends SubScene {
     private SelectedCategory selectedCategory = SelectedCategory.NONE;
     private int selectedStat = -1;
 
+    HBox chartTypeSelectBox = new HBox();
+
     /**
      * @param controller
      */
@@ -72,8 +74,46 @@ class StatisticsView extends SubScene {
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
+        Button back_button = new Button("←");
+        back_button.getStylesheets().add(new File("res/style.css").toURI().toString());
+        back_button.getStyleClass().add("record-sales");
+        back_button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                switch (statisticsState) {
+                    case STAT_LIST:
+                        statisticsState = StatisticsState.CATEGORIES;
+                        buildInterface(body);
+                        break;
+
+                    case GRAPHIC:
+                        statisticsState = StatisticsState.STAT_LIST;
+                        buildInterface(body);
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+        });
+
+        Button pieTypeButton = new Button("Pie");
+        pieTypeButton.getStylesheets().add(new File("res/style.css").toURI().toString());
+        pieTypeButton.getStyleClass().add("record-sales");
+        Button lineTypeButton = new Button("Line");
+        lineTypeButton.getStylesheets().add(new File("res/style.css").toURI().toString());
+        lineTypeButton.getStyleClass().add("record-sales");
+        Button barTypeButton = new Button("Bar");
+        barTypeButton.getStylesheets().add(new File("res/style.css").toURI().toString());
+        barTypeButton.getStyleClass().add("record-sales");
+        chartTypeSelectBox.getChildren().addAll(pieTypeButton, lineTypeButton, barTypeButton);
+        chartTypeSelectBox.setSpacing(10);
+        chartTypeSelectBox.setVisible(false);
+
         buildInterface(body);
 
+        header.setLeft(back_button);
+        header.setRight(chartTypeSelectBox);
         wrapper.getChildren().addAll(header, scrollPane);
     }
 
@@ -84,6 +124,7 @@ class StatisticsView extends SubScene {
 
         switch (this.statisticsState) {
             case CATEGORIES:
+                chartTypeSelectBox.setVisible(false);
                 for (int i = 0; i < NUMBER_OF_CATEGORIES; i++) {
                     int finalI = i;
 
@@ -106,14 +147,13 @@ class StatisticsView extends SubScene {
                 break;
 
             case STAT_LIST:
-                //ArrayList<String> options = new ArrayList<>();
+                chartTypeSelectBox.setVisible(false);
                 String[] options = new String[]{};
                 switch (this.selectedCategory) {
                     case RESERVATIONS:
                         options = new String[]{
                                 "Emplacements les \nplus réservés",
                                 "Emplacements les \nmoins réservés",
-                                "Réservations en \nfonctions de la nationalité",
                                 "Réservations impayées",
                         };
                         break;
@@ -121,7 +161,6 @@ class StatisticsView extends SubScene {
                     case CLIENTS:
                         options = new String[]{
                                 "Clients les \nplus fidèles",
-                                "Clients par \nnationalité",
                                 "Clients les \nplus plaintifs",
                                 "Clients les \nmoins plaintifs",
                                 "Clients achetant \nle plus"
@@ -181,6 +220,7 @@ class StatisticsView extends SubScene {
                 break;
 
             case GRAPHIC:
+                chartTypeSelectBox.setVisible(true);
                 ChartView chart = controller.makeChart(selectedCategory, selectedStat, ChartType.PIE);
                 body.add(chart.getTable(), 0, 0);
                 body.add(chart.getChart(), 1, 0);
