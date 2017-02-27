@@ -31,7 +31,7 @@ public class DAOTest extends TestCase{
 
     public void testPersist() throws Exception {
 
-        GenericDAOImpl<Client, Integer> dao = new GenericDAOImpl<>(Client.class, "CampingUnitTests");
+        GenericDAOImpl<Client, Integer> dao = new GenericDAOImpl<>(Client.class);
         dao.open();
 
         Client client = new Client();
@@ -48,7 +48,7 @@ public class DAOTest extends TestCase{
     public void testRelationsPerist() throws Exception {
 
         GenericDAOImpl<Authorization, String> daoAuth =
-                new GenericDAOImpl<>(Authorization.class, "CampingUnitTests");
+                new GenericDAOImpl<>(Authorization.class);
 
         daoAuth.open();
 
@@ -61,7 +61,7 @@ public class DAOTest extends TestCase{
         daoAuth.close();
 
         GenericDAOImpl<Employee, Integer> daoEmp =
-                new GenericDAOImpl<>(Employee.class, "CampingUnitTests");
+                new GenericDAOImpl<>(Employee.class);
         daoEmp.open();
 
         Employee employee = new Employee();
