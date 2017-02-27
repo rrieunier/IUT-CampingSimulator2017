@@ -1,7 +1,8 @@
 package fr.iut.view;
 
-/**
- * Created by damnhotuser on 27/02/17.
- */
+
 public enum ChartType {
+    PIE,
+    LINE,
+    BAR
 }
