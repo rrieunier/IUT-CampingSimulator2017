@@ -24,9 +24,13 @@ public class HomeController implements ControllerInterface {
     }
 
     public ArrayList<Product> getProductsList() {
-        GenericDAOImpl<Product, java.io.Serializable> dao = new GenericDAOImpl<>(Product.class);
+        GenericDAOImpl<Product, Integer> dao = new GenericDAOImpl<Product, Integer>(Product.class);
 
-        return (ArrayList<Product>) dao.findAll();
+        dao.open();
+        ArrayList<Product> products = (ArrayList<Product>) dao.findAll();
+        dao.close();
+
+        return (ArrayList<Product>) products;
     }
 
     @Override

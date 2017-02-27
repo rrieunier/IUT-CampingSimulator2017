@@ -73,8 +73,6 @@ public class ProductManagerView extends SubScene {
         VBox wrapper = (VBox) getRoot();
         wrapper.setMaxSize(HomeView.TAB_CONTENT_W, HomeView.TAB_CONTENT_H);
         wrapper.setBorder(new Border(new BorderStroke(Color.DARKGRAY, BorderStrokeStyle.SOLID, new CornerRadii(2), new BorderWidths(5))));
-        wrapper.setPadding(new Insets(0));
-        wrapper.setLayoutY(0);
 
         wrapper.setStyle("-fx-background-color: rgb(12, 27, 51);");
 
@@ -152,37 +150,39 @@ public class ProductManagerView extends SubScene {
 
         buildProductsList(0, "", true);
 
-        lastClicked = (StackPane) products_box.getChildren().get(0);
-        lastClicked.setStyle("-fx-background-color: #ff6600;");
-        lastClickedValue = shown_list.get(0);
+        if (!products_list.isEmpty()) {
+            lastClicked = (StackPane) products_box.getChildren().get(0);
+            lastClicked.setStyle("-fx-background-color: #ff6600;");
+            lastClickedValue = shown_list.get(0);
 
-        sort_options.setSpacing(10);
-        sort_by_label.setStyle("-fx-text-fill: whitesmoke; -fx-font-size: 18px");
-        sort_by.getSelectionModel().select(0);
-        sort_by.valueProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                buildProductsList(sort_by.getSelectionModel().getSelectedIndex(), search_field.getText(), false);
-            }
-        });
-        search_label.setStyle("-fx-text-fill: whitesmoke; -fx-font-size: 18px");
-        search_field.setPrefWidth(HomeView.TAB_CONTENT_W / 7);
-        search_field.setPromptText("Nom du produit");
-        search_field.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                if (event.getCode().equals(KeyCode.ENTER)) {
+            sort_options.setSpacing(10);
+            sort_by_label.setStyle("-fx-text-fill: whitesmoke; -fx-font-size: 18px");
+            sort_by.getSelectionModel().select(0);
+            sort_by.valueProperty().addListener(new ChangeListener<String>() {
+                @Override
+                public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                     buildProductsList(sort_by.getSelectionModel().getSelectedIndex(), search_field.getText(), false);
-                    search_field.clear();
                 }
-            }
-        });
-        add_product.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                //TODO: dialog
-            }
-        });
+            });
+            search_label.setStyle("-fx-text-fill: whitesmoke; -fx-font-size: 18px");
+            search_field.setPrefWidth(HomeView.TAB_CONTENT_W / 7);
+            search_field.setPromptText("Nom du produit");
+            search_field.setOnKeyPressed(new EventHandler<KeyEvent>() {
+                @Override
+                public void handle(KeyEvent event) {
+                    if (event.getCode().equals(KeyCode.ENTER)) {
+                        buildProductsList(sort_by.getSelectionModel().getSelectedIndex(), search_field.getText(), false);
+                        search_field.clear();
+                    }
+                }
+            });
+            add_product.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    //TODO: dialog
+                }
+            });
+        }
         sort_options.getChildren().addAll(add_product, sort_by_label, sort_by);
         search_bar.getChildren().addAll(search_label, search_field);
 
@@ -197,12 +197,13 @@ public class ProductManagerView extends SubScene {
         wrapper.getChildren().addAll(header, body);
 
         buildDetails();
+
     }
 
     /**
      * @param sort_option selected sort method to sort the product list
-     * @param search specified value to filter product list items
-     * @param refresh fetch products in database or not
+     * @param search      specified value to filter product list items
+     * @param refresh     fetch products in database or not
      */
     private void buildProductsList(@NamedArg("sort_option") int sort_option,
                                    @NamedArg("search_value") String search,
@@ -218,7 +219,7 @@ public class ProductManagerView extends SubScene {
                 double result = 0;
                 switch (sort_option) {
                     case 1:
-                        result = o2.getName().compareTo(o1.getName());
+                        result = o2.getName().toLowerCase().compareTo(o1.getName().toLowerCase());
                         break;
                     case 2:
                         result = o1.getStock() - o2.getStock();
@@ -233,7 +234,7 @@ public class ProductManagerView extends SubScene {
                         result = o2.getSellPrice() - o1.getSellPrice();
                         break;
                     default:
-                        result = o1.getName().compareTo(o2.getName());
+                        result = o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
                         break;
                 }
                 return (int) result;
@@ -244,7 +245,7 @@ public class ProductManagerView extends SubScene {
         shown_list.clear();
 
         for (Product p : products_list) {
-            if (p.getName().contains(search)) {
+            if (p.getName().toLowerCase().contains(search)) {
                 shown_list.add(p);
 
                 StackPane pane = new StackPane();
@@ -253,7 +254,7 @@ public class ProductManagerView extends SubScene {
 
                 Text name = new Text(p.getName());
                 Text stock = new Text("Quantité: " + String.valueOf(p.getStock()));
-                Text price = new Text("Prix: " + String.valueOf(p.getSellPrice()));
+                Text price = new Text("Prix: " + String.valueOf(p.getSellPrice()) + " €");
 
                 name.setFill(Color.WHITESMOKE);
                 stock.setFill(Color.WHITESMOKE);
@@ -330,21 +331,23 @@ public class ProductManagerView extends SubScene {
      * fill the details grid depending on the selected product
      */
     private void actualiseDetails() {
-        for (Node node : grid.getChildren()) {
-            if (node instanceof Label && GridPane.getColumnIndex(node) == 1) {
-                switch (GridPane.getRowIndex(node)) {
-                    case 0:
-                        ((Label) node).setText(lastClickedValue.getName());
-                        break;
-                    case 1:
-                        ((Label) node).setText(String.valueOf(lastClickedValue.getStock()));
-                        break;
-                    case 2:
-                        ((Label) node).setText("TODO GET WITH DAO");
-                        break;
-                    case 3:
-                        ((Label) node).setText("TODO GET WITH DAO");
-                        break;
+        if (!products_list.isEmpty()) {
+            for (Node node : grid.getChildren()) {
+                if (node instanceof Label && GridPane.getColumnIndex(node) == 1) {
+                    switch (GridPane.getRowIndex(node)) {
+                        case 0:
+                            ((Label) node).setText(lastClickedValue.getName());
+                            break;
+                        case 1:
+                            ((Label) node).setText(String.valueOf(lastClickedValue.getStock()));
+                            break;
+                        case 2:
+                            ((Label) node).setText(String.valueOf(lastClickedValue.getCriticalQuantity()));
+                            break;
+                        case 3:
+                            ((Label) node).setText(String.valueOf("Dernier réapprovisionement inconnu..."));
+                            break;
+                    }
                 }
             }
         }
