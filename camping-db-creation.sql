@@ -104,7 +104,7 @@
 
     create table MAP (
        id integer not null,
-        image tinyblob not null,
+        image longblob not null,
         primary key (id)
     );
 
