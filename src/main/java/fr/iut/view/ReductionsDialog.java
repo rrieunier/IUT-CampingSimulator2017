@@ -1,6 +1,7 @@
 package fr.iut.view;
 
 import fr.iut.App;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
@@ -25,7 +26,47 @@ public class ReductionsDialog extends Dialog<Map<String, Integer>> {
     public static final double REDUCTIONS_HEIGHT = App.SCREEN_H / 3;
     public static final double REDUCTIONS_WIDTH = App.SCREEN_W / 3;
 
+    private GridPane gridPane = new GridPane();
+    private ArrayList<Map<Text, Pair<RadioButton, Integer>>> reductionsArrayList = new ArrayList<>();
+
+
     private App app; //TODO : il faut un controller, pas une instance de App
+
+    private void add(String name, int i, Integer value){
+        Text text = new Text(name);
+        text.setStyle("-fx-font-weight: bold;" +
+                "-fx-font-size: 17px");
+        text.setFill(Color.WHITESMOKE);
+        gridPane.add(text, 0, i);
+
+        Text textValue = new Text("(" + value.toString() + "%)");
+        textValue.setStyle("-fx-font-weight: bold;" +
+                "-fx-font-size: 17px");
+        textValue.setFill(Color.WHITESMOKE);
+        gridPane.add(textValue, 1, i);
+
+        RadioButton radioButton = new RadioButton();
+        GridPane.setHalignment(radioButton, HPos.CENTER);
+        gridPane.add(radioButton, 2, i);
+
+        radioButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                for (int i = 0; i < reductionsArrayList.size(); i++){
+                    for (Map.Entry<Text, Pair<RadioButton, Integer>> entry : reductionsArrayList.get(i).entrySet()){
+                        if(entry.getValue().getKey().isSelected())
+                            entry.getValue().getKey().setSelected(false);
+                    }
+                }
+                radioButton.setSelected(true);
+            }
+        });
+
+        Pair<RadioButton, Integer> pair = new Pair<>(radioButton, value);
+        Map<Text, Pair<RadioButton, Integer>> map = new HashMap<>();
+        map.put(text, pair);
+        reductionsArrayList.add(map);
+    }
 
     public ReductionsDialog(){
         setTitle("Réductions");
@@ -35,7 +76,6 @@ public class ReductionsDialog extends Dialog<Map<String, Integer>> {
 
         VBox wrapper = new VBox();
 
-        GridPane gridPane = new GridPane();
         gridPane.setMinHeight(REDUCTIONS_HEIGHT);
         gridPane.setAlignment(Pos.TOP_CENTER);
 
@@ -58,10 +98,8 @@ public class ReductionsDialog extends Dialog<Map<String, Integer>> {
 
         String[] labels = {"Etudiant", "Senior", "Famille", "Groupe", "Autres" };
         Integer[] values = {5, 5, 10, 10, 0};
-        ArrayList<ReductionsLine> reductionsLines = new ArrayList<ReductionsLine>(labels.length);
         for (int i = 0; i < labels.length; i++) {
-            ReductionsLine reductionsLine = new ReductionsLine(labels[i], values[i], gridPane, i);
-            reductionsLines.add(reductionsLine);
+            add(labels[i], i, values[i]);
         }
 
         TextField textField = new TextField();
@@ -90,12 +128,17 @@ public class ReductionsDialog extends Dialog<Map<String, Integer>> {
 
             if (dialogButton == okButtonType){
                 map = new HashMap<>(1);
-                reductionsLines.get(reductionsLines.size()-1).setValue(Integer.valueOf(textField.getText()));
-                for (ReductionsLine reductionsLine : reductionsLines){
-                    if(reductionsLine.getRadioButton().isSelected()){
-                        map.put(reductionsLine.getText().getText(), reductionsLine.getValue());
-                        System.out.println(reductionsLine.getText().getText());
-                        System.out.println(reductionsLine.getValue());
+                if(textField.getLength() > 0){
+                    for(Map.Entry<Text, Pair<RadioButton, Integer>> textPairEntry : reductionsArrayList.get(reductionsArrayList.size()-1).entrySet()){
+                        Pair<RadioButton, Integer> pair = new Pair<>(textPairEntry.getValue().getKey(), Integer.valueOf(textField.getText().toString()));
+                        textPairEntry.setValue(pair);
+                    }
+                }
+
+                for (int i = 0; i < reductionsArrayList.size(); i++){
+                    for (Map.Entry<Text, Pair<RadioButton, Integer>> entry : reductionsArrayList.get(i).entrySet()){
+                        if(entry.getValue().getKey().isSelected())
+                            map.put(entry.getKey().getText().toString(), entry.getValue().getValue());
                     }
                 }
             }
