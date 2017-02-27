@@ -8,6 +8,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.SubScene;
+import javafx.scene.chart.Chart;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -16,23 +17,11 @@ import javafx.scene.paint.Color;
 import java.io.File;
 import java.util.ArrayList;
 
-
 enum StatisticsState {
     CATEGORIES,
     STAT_LIST,
     GRAPHIC
 }
-
-enum SelectedCategory {
-    RESERVATIONS,
-    CLIENTS,
-    PURCHASES,
-    EMPLOYEES,
-    PROBLEMS,
-    OTHERS,
-    NONE
-}
-
 
 /**
  * the statistics screen
@@ -51,6 +40,7 @@ class StatisticsView extends SubScene {
      */
     private StatisticsState statisticsState = StatisticsState.CATEGORIES;
     private SelectedCategory selectedCategory = SelectedCategory.NONE;
+    private int selectedStat = -1;
 
     /**
      * @param controller
@@ -170,6 +160,8 @@ class StatisticsView extends SubScene {
                 }
 
                 for (int i = 0; i < options.length; i++) {
+                    int finalI = i;
+
                     Button button = new Button(options[i]);
                     button.setPrefSize(CATEGORIE_BUTTON_SIZE, CATEGORIE_BUTTON_SIZE);
                     button.setAlignment(Pos.CENTER);
@@ -179,6 +171,7 @@ class StatisticsView extends SubScene {
                         @Override
                         public void handle(MouseEvent event) {
                             statisticsState = StatisticsState.GRAPHIC;
+                            selectedStat = finalI;
                             buildInterface(body);
                         }
                     });
@@ -187,6 +180,7 @@ class StatisticsView extends SubScene {
                 break;
 
             case GRAPHIC:
+                Chart chart = controller.makeChart(selectedCategory, selectedStat, ChartType.PIE);
                 break;
         }
     }
