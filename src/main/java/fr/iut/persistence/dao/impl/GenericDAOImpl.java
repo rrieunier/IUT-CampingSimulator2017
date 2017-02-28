@@ -106,6 +106,28 @@ public class GenericDAOImpl<T, Id extends Serializable> implements GenericDAO<T,
         return true;
     }
 
+    @Override
+    public boolean deleteAll() {
+
+        session.beginTransaction();
+
+        try{
+            List<T> all = findAll();
+            for(T i : all)
+                session.remove(i);
+
+            session.getTransaction().commit();
+
+        }catch (Exception e){
+            e.printStackTrace();
+            session.getTransaction().rollback();
+            return false;
+        }
+
+
+        return true;
+    }
+
     public void open(){
 
         session = HibernateUtil.getSessionFactory().openSession();

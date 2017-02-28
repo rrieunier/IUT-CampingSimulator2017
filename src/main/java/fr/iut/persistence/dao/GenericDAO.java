@@ -17,4 +17,6 @@ public interface GenericDAO<T, Id extends Serializable> {
     List findAll();
 
     boolean delete(T entity);
+
+    boolean deleteAll();
 }
