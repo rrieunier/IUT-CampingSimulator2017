@@ -162,7 +162,6 @@ public class ClientManagerView extends SubScene {
         bookingButton.getStylesheets().add(new File("res/style.css").toURI().toString());
         bookingButton.getStyleClass().add("record-sales");
         bookingButton.setMinWidth(HomeView.TAB_CONTENT_W / 4);
-
         bookingButton.setOnAction(actionEvent -> {
             //TODO : aller sur la carte
         });
