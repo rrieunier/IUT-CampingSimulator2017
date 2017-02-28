@@ -1,22 +1,23 @@
 package fr.iut.view;
 
 import fr.iut.controller.ClientsController;
+import fr.iut.persistence.dao.GenericDAO;
+import fr.iut.persistence.dao.impl.GenericDAOImpl;
 import fr.iut.persistence.entities.Client;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.SubScene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import java.io.File;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Created by shellcode on 2/17/17.
@@ -76,7 +77,10 @@ public class ClientManagerView extends SubScene {
         newClient.getStylesheets().add(new File("res/style.css").toURI().toString());
         newClient.getStyleClass().add("record-sales");
         newClient.setMinWidth(HomeView.TAB_CONTENT_W / 4);
-        //newClient.setOnAction(event -> new InputsListDialog()); // TODO
+        newClient.setOnAction(event -> {
+            controller.createClient();
+            // TODO : Clement verifie que c'est propre et me gueule pas dessus stp si j'ai fais de la merde
+        });
 
 
         wrapper1.getChildren().addAll(clientsScroll, newClient);
@@ -179,7 +183,8 @@ public class ClientManagerView extends SubScene {
         reducButton.getStyleClass().add("record-sales");
         reducButton.setMinWidth(HomeView.TAB_CONTENT_W / 4);
 
-        billButton.setOnAction(actionEvent -> {
+        reducButton.setOnAction(actionEvent -> {
+            Optional<Map<String, Integer>> permissions_result = new ReductionsDialog().showAndWait();
             //TODO : stocker la reduction qqpart
         });
 

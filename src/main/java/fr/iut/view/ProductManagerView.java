@@ -1,8 +1,8 @@
 package fr.iut.view;
 
 
-import fr.iut.App;
 import fr.iut.controller.HomeController;
+import fr.iut.persistence.dao.impl.GenericDAOImpl;
 import fr.iut.persistence.entities.Product;
 import javafx.beans.NamedArg;
 import javafx.beans.value.ChangeListener;
@@ -25,6 +25,8 @@ import javafx.scene.text.Text;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * the product manager screen
@@ -179,6 +181,34 @@ public class ProductManagerView extends SubScene {
             add_product.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
+
+                    InputsListDialog newProductDialog = new InputsListDialog("Nouveau Produit");
+                    newProductDialog.addTextField("Nom");
+                    newProductDialog.addTextField("Quantité en stock");
+                    newProductDialog.addTextField("Prix (0.0)");
+                    newProductDialog.addTextField("Quantité limite");
+                    Optional<Map<String, String>> newProduct_result = newProductDialog.showAndWait();
+
+                    /*System.out.println(newProduct_result.get().get("Nom"));
+                    System.out.println(newProduct_result.get().get("Quantité en stock"));
+                    System.out.println(newProduct_result.get().get("Quantité limite"));
+                    System.out.println(newProduct_result.get().get("Prix (0.0)"));
+
+                    Product product = new Product();
+                    //product.setId(243);
+                    product.setName(newProduct_result.get().get("Nom"));
+                    product.setStock(Integer.parseInt(newProduct_result.get().get("Quantité en stock")));
+                    product.setCriticalQuantity(Integer.parseInt(newProduct_result.get().get("Quantité limite")));
+                    product.setSellPrice(Float.parseFloat(newProduct_result.get().get("Prix (0.0)")));
+
+
+                    GenericDAOImpl<Product, Integer> dao = new GenericDAOImpl<>(Product.class);
+                    dao.open();
+                    dao.persist(product);
+                    dao.close();*/
+
+                    buildProductsList(0, "", true);
+
                     //TODO: dialog
                 }
             });

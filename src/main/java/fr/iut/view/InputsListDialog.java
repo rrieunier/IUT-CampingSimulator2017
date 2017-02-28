@@ -22,7 +22,7 @@ public class InputsListDialog extends Dialog<Map<String,String>>{
     private ArrayList<TextField> textFields = new ArrayList<>();
     private VBox wrapper;
 
-    public void add(String text){
+    public void addTextField(String text){
         TextField textField = new TextField();
         textField.setMaxWidth(WINDOW_WIDTH/1.1);
         textField.setMinHeight(WINDOW_HEIGHT / 15);
