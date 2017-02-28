@@ -152,7 +152,7 @@ public class ClientManagerView extends SubScene {
                 email.setDisable(false);
                 phone.setDisable(false);
                 editButton.setText("Sauvegarder");
-                //TODO : update du client dans la BDD
+                //TODO : saveOrUpdate du client dans la BDD
             }
 
             editMode = !editMode;

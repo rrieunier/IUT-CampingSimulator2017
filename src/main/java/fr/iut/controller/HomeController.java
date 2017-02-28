@@ -54,7 +54,7 @@ public class HomeController implements ControllerInterface {
 
         GenericDAOImpl<Product, Integer> dao = new GenericDAOImpl<>(Product.class);
         dao.open();
-        dao.persist(product);
+        dao.saveOrUpdate(product);
         dao.close();
     }
 
