@@ -46,7 +46,7 @@ public class ChartView extends HBox {
                     for (Float i : comparative.subList(7, comparative.size()))
                         sum += i;
                     sum = sum / comparative.subList(7, comparative.size()).size() + 1;
-                    pieChartData.add(new PieChart.Data("Others", sum));
+                    pieChartData.add(new PieChart.Data("Autres (moyenne)", sum));
                 }
 
                 chart = new PieChart(pieChartData);
@@ -70,7 +70,6 @@ public class ChartView extends HBox {
 
                 table.getColumns().addAll(strColumn, fltColumn);
                 table.setItems(data);
-
                 break;
 
             case LINE:
