@@ -20,10 +20,10 @@ public class MapDao extends GenericDAOImpl<Map, Integer>{
     }
 
     public boolean setMap(Map map){
-        return deleteAll() && persist(map);
+        return removeAll() && saveOrUpdate(map);
     }
 
     public boolean remove(){
-        return deleteAll();
+        return removeAll();
     }
 }
