@@ -25,7 +25,7 @@ public class MapController implements ControllerInterface {
     }
 
     public void store(File mapFile, ArrayList<Location> locations) {
-        //TODO : persist map and locations in the bdd
+        //TODO : saveOrUpdate map and locations in the bdd
     }
 
     @Override

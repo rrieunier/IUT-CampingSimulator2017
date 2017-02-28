@@ -15,35 +15,18 @@ import java.util.List;
 public class GenericDAOImpl<T, Id extends Serializable> implements GenericDAO<T, Id> {
 
     private Class<T> persistentClass;
-    private Session session = null;
+    protected Session session = null;
 
     public GenericDAOImpl(Class<T> persistentClass) {
         this.persistentClass = persistentClass;
     }
 
     @Override
-    public boolean persist(T entity) {
+    public boolean saveOrUpdate(T entity) {
         session.beginTransaction();
 
         try {
-            session.save(entity);
-            session.getTransaction().commit();
-        }catch (Exception e){
-            e.printStackTrace();
-            session.getTransaction().rollback();
-            return false;
-        }
-
-        return true;
-    }
-
-    @Override
-    public boolean update(T entity) {
-
-        session.beginTransaction();
-
-        try {
-            session.update(entity);
+            session.saveOrUpdate(entity);
             session.getTransaction().commit();
         }catch (Exception e){
             e.printStackTrace();
@@ -91,7 +74,7 @@ public class GenericDAOImpl<T, Id extends Serializable> implements GenericDAO<T,
     }
 
     @Override
-    public boolean delete(T entity) {
+    public boolean remove(T entity) {
         session.beginTransaction();
 
         try {
@@ -102,6 +85,28 @@ public class GenericDAOImpl<T, Id extends Serializable> implements GenericDAO<T,
             session.getTransaction().rollback();
             return false;
         }
+
+        return true;
+    }
+
+    @Override
+    public boolean removeAll() {
+
+        session.beginTransaction();
+
+        try{
+            List<T> all = findAll();
+            for(T i : all)
+                session.remove(i);
+
+            session.getTransaction().commit();
+
+        }catch (Exception e){
+            e.printStackTrace();
+            session.getTransaction().rollback();
+            return false;
+        }
+
 
         return true;
     }

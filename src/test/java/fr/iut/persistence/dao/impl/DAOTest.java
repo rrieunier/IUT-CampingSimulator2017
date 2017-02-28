@@ -38,9 +38,9 @@ public class DAOTest extends TestCase{
         client.setFirstname("azerztery");
         client.setLastname("azerztery");
 
-        assertTrue(dao.persist(client));
+        assertTrue(dao.saveOrUpdate(client));
         assertNotNull(dao.findById(client.getId()));
-        assertTrue(dao.delete(client));
+        assertTrue(dao.remove(client));
 
         dao.close();
     }
@@ -55,7 +55,7 @@ public class DAOTest extends TestCase{
         Authorization authorization = new Authorization();
         authorization.setLabel("auth");
 
-        assertTrue(daoAuth.persist(authorization));
+        assertTrue(daoAuth.saveOrUpdate(authorization));
         assertNotNull(daoAuth.findById("auth"));
 
         daoAuth.close();
@@ -71,9 +71,9 @@ public class DAOTest extends TestCase{
         employee.setPassword("zerzegfsf");
         employee.getAuthorizations().add(authorization);
 
-        assertTrue(daoEmp.persist(employee));
+        assertTrue(daoEmp.saveOrUpdate(employee));
         assertNotNull(daoEmp.findById(employee.getId()));
-        assertTrue(daoEmp.update(employee));
+        assertTrue(daoEmp.saveOrUpdate(employee));
 
         assertTrue(daoEmp.findById(employee.getId()).getAuthorizations().contains(authorization));
 

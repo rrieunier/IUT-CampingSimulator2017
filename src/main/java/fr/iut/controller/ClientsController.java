@@ -64,7 +64,7 @@ public class ClientsController implements ControllerInterface {
 
         GenericDAOImpl<Client, Integer> dao = new GenericDAOImpl<>(Client.class);
         dao.open();
-        dao.persist(client);
+        dao.saveOrUpdate(client);
         dao.close();
     }
 }

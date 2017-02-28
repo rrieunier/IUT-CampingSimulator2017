@@ -105,7 +105,7 @@ public class LocationDialog extends Dialog<Map<String, String>> {
 
             else if(dialogButton == deleteButtonType) {
                 map = new HashMap<>(1);
-                map.put("delete", "delete");
+                map.put("remove", "remove");
             }
 
             return map;

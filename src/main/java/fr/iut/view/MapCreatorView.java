@@ -271,7 +271,7 @@ public class MapCreatorView extends Scene {
 
                             edit_result.ifPresent(mapEditResult -> {
 
-                                if(mapEditResult.containsKey("delete")) {
+                                if(mapEditResult.containsKey("remove")) {
                                     mapPane.getChildren().remove(imageView);
                                     locations.remove(spot);
                                 }
