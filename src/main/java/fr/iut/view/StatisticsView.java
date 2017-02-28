@@ -217,6 +217,7 @@ class StatisticsView extends SubScene {
                     });
                     body.add(button, i % 3, (int) i / 3);
                 }
+
                 break;
 
             case GRAPHIC:
