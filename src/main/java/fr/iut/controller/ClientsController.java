@@ -1,10 +1,14 @@
 package fr.iut.controller;
 
+import fr.iut.persistence.dao.impl.GenericDAOImpl;
 import fr.iut.persistence.entities.Client;
 import fr.iut.view.ClientManagerView;
+import fr.iut.view.InputsListDialog;
 import javafx.scene.SubScene;
 
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Created by shellcode on 2/17/17.
@@ -42,5 +46,25 @@ public class ClientsController implements ControllerInterface {
         }
 
         return stub;
+    }
+
+    public void createClient(){
+        InputsListDialog newClientDialog = new InputsListDialog("Nouveau Client");
+        newClientDialog.addTextField("Nom");
+        newClientDialog.addTextField("Prénom");
+        newClientDialog.addTextField("Téléphone");
+        newClientDialog.addTextField("Mail");
+        Optional<Map<String, String>> newClient_result = newClientDialog.showAndWait();
+
+        Client client = new Client();
+        client.setFirstname(newClient_result.get().get("Prénom"));
+        client.setLastname(newClient_result.get().get("Nom"));
+        client.setPhone(newClient_result.get().get("Téléphone"));
+        client.setEmail(newClient_result.get().get("Mail"));
+
+        GenericDAOImpl<Client, Integer> dao = new GenericDAOImpl<>(Client.class);
+        dao.open();
+        dao.persist(client);
+        dao.close();
     }
 }
