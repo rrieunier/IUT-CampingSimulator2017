@@ -5,7 +5,9 @@ import fr.iut.controller.HomeController;
 import fr.iut.controller.MapController;
 import fr.iut.view.ConnectionView;
 import fr.iut.view.HomeView;
+import fr.iut.view.MapCreatorView;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -25,7 +27,7 @@ public class App extends Application {
 
     //Controllers, il doit y avoir un état (classe State) par controller
     private ConnectionController connectionController = new ConnectionController(this);
-    private MapController mapController;
+    private MapController mapController = new MapController(this);
     private HomeController homeController;
 
     public static void main(String[] args) {
@@ -45,6 +47,11 @@ public class App extends Application {
 
     public void switchState(State state) {
 
+        if(connectionController == null && state != State.CONNECTION) {
+            System.out.println("You are not connected.");
+            System.exit(1);
+        }
+
         stage.setWidth(SCREEN_W);
         stage.setHeight(SCREEN_H);
 
@@ -57,17 +64,12 @@ public class App extends Application {
                 break;
 
             case MAP_CREATOR:
-                mapController = new MapController(this);
-                stage.setScene(mapController.getView());
+                MapCreatorView scene = (MapCreatorView)mapController.getView();
+                stage.setScene(scene);
+                scene.showInfo();
                 break;
 
             case HOME:
-
-                if(connectionController == null) {
-                    System.out.println("Impossible d'afficher l'interface d'accueil sans avoir été authentifié !!!");
-                    System.exit(1);
-                }
-
                 homeController = new HomeController(this, connectionController.getConnectedUser());
                 stage.setOnCloseRequest(windowEvent -> homeController.OnWindowIsClosing());
                 stage.setScene(homeController.getView());
@@ -75,5 +77,9 @@ public class App extends Application {
         }
 
         stage.centerOnScreen();
+    }
+
+    public boolean doINeedToShowMapEditor() {
+        return !mapController.isMapAlreadyCreated();
     }
 }

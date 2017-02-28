@@ -39,6 +39,7 @@ public class HomeView extends Scene {
     public static final int LEFT_PADDING_TAB = 50;
 
     private ToggleButton selectedTab = null;
+    private Timeline blinkAnimation;
 
     public HomeView(HomeController controller, String username) {
         super(new BorderPane(), App.SCREEN_W, App.SCREEN_H);
@@ -185,8 +186,10 @@ public class HomeView extends Scene {
         Text notification_text = new Text("Vous avez " + notifs_count + " notifications en attente.");
         notification_text.setFont(new Font(20));
 
-        if(notifs_count > 0)
-            createBlinker(notification_text).play();
+        if(notifs_count > 0) {
+            blinkAnimation = createBlinker(notification_text);
+            blinkAnimation.play();
+        }
 
         notification_text.setFill(Color.WHITE);
         notification_text.applyCss();
@@ -239,5 +242,10 @@ public class HomeView extends Scene {
         blink.setCycleCount(Animation.INDEFINITE);
 
         return blink;
+    }
+
+    public void stopBlinkAnimation() {
+        if(blinkAnimation != null)
+            blinkAnimation.stop();
     }
 }

@@ -54,12 +54,6 @@ public class MapCreatorView extends Scene {
         super(new StackPane());
         this.controller = controller;
 
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setHeaderText(null);
-        alert.setContentText("Cette interface permet de créer la carte de votre camping, glissez/deposez les éléments dessus.");
-
-        Platform.runLater(alert::showAndWait);
-
         stackPaneRoot = (StackPane)getRoot();
 
         ScrollPane scrollPane = new ScrollPane();
@@ -148,6 +142,17 @@ public class MapCreatorView extends Scene {
                 mapFile = fileChooser.showOpenDialog(getWindow());
 
                 if (mapFile != null) {
+
+                    System.out.println("map picture size : " + mapFile.length());
+
+                    if(mapFile.length() > 16000000) {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setHeaderText(null);
+                        alert.setContentText("Votre image est trop volumineuse ! Maximum : 16Mo");
+                        mapFile = null;
+                        return;
+                    }
+
                     Image image = new Image(mapFile.toURI().toString());
 
                     buttonFinish.setDisable(false);
@@ -298,5 +303,13 @@ public class MapCreatorView extends Scene {
                 selectedBigIconFile = null;
             }
         });
+    }
+
+    public void showInfo() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setHeaderText(null);
+        alert.setContentText("Cette interface permet de créer la carte de votre camping, glissez/deposez les éléments dessus.");
+
+        Platform.runLater(alert::showAndWait);
     }
 }

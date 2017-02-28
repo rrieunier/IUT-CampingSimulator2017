@@ -135,6 +135,7 @@ public class ConnectionView extends Scene {
     }
 
     private void connectionButtonAction(String username, String password) {
+
         boolean connected = controller.tryLogin(username, password);
 
         if (connected) {

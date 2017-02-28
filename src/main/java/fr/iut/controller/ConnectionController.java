@@ -2,8 +2,13 @@ package fr.iut.controller;
 
 import fr.iut.App;
 import fr.iut.State;
+import fr.iut.persistence.dao.impl.GenericDAOImpl;
+import fr.iut.persistence.entities.Employee;
 import fr.iut.view.ConnectionView;
 import javafx.scene.Scene;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class ConnectionController implements ControllerInterface {
@@ -11,6 +16,8 @@ public class ConnectionController implements ControllerInterface {
     private App app;
     private ConnectionView connectionView = new ConnectionView(this);
     private String connectedUser = null;
+
+    private GenericDAOImpl<Employee, Integer> daoEmployee = new GenericDAOImpl<>(Employee.class);
 
     public ConnectionController(App app) {
         this.app = app;
@@ -21,20 +28,40 @@ public class ConnectionController implements ControllerInterface {
         return connectionView;
     }
 
-    @SuppressWarnings("unused")
     public boolean tryLogin(String username, String password) {
 
-        //if(connectionSucceed)
-            connectedUser = username;
+        return true;/*
 
-        //TODO : demander à la base de données si les identifiants sont bons, s'il ne le sont pas, la fonction retourne false et ConnectionView affiche un message d'erreur
-        return true;
+        if(username.length() == 0 || password.length() == 0)
+            return false;
+
+        daoEmployee.open();
+        List<Employee> employees = daoEmployee.findAll();
+        daoEmployee.close();
+
+        Employee employee = null;
+
+        for(Employee e : employees) {
+            if (e.getLogin().equals(username)) {
+                employee = e;
+                break;
+            }
+        }
+
+        if(employee == null || !employee.getPassword().equals(password))
+            return false;
+
+        connectedUser = employee.getLogin();
+
+        return true;*/
     }
 
     @Override
     public void finish() {
-        //TODO : remetrre State.MAP_CREATOR
-        app.switchState(State.HOME);
+        if(app.doINeedToShowMapEditor())
+            app.switchState(State.MAP_CREATOR);
+        else
+            app.switchState(State.HOME);
     }
 
     public String getConnectedUser() {

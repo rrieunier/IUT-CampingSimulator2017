@@ -1,6 +1,7 @@
 package fr.iut.controller;
 
 import fr.iut.persistence.entities.Notification;
+import fr.iut.view.HomeView;
 import fr.iut.view.NotificationsDialog;
 import javafx.scene.control.Dialog;
 
@@ -72,5 +73,6 @@ public class NotificationsController implements ControllerInterface {
 
     public void stopQuerying() {
         querying = false;
+        ((HomeView)homeController.getView()).stopBlinkAnimation();
     }
 }
