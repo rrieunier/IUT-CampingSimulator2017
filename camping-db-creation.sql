@@ -321,7 +321,7 @@
     COMMIT;
 
   REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'camping'@'%';
-  GRANT SELECT ON Camping.hibernate_sequence TO 'camping'@'%';
+  GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.hibernate_sequence TO 'camping'@'%';
   GRANT SELECT ON Camping.AUTHORIZATION TO 'camping'@'%';
   GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.CLIENT TO 'camping'@'%';
   GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.CLIENT_PROBLEM TO 'camping'@'%';
