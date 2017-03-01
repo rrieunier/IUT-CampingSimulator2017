@@ -29,7 +29,6 @@ public class ConnectionController implements ControllerInterface {
     }
 
     public boolean tryLogin(String username, String password) {
-
         if(username.length() == 0 || password.length() == 0)
             return false;
 

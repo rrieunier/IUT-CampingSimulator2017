@@ -42,7 +42,6 @@ class StatisticsView extends SubScene {
     private SelectedCategory selectedCategory = SelectedCategory.NONE;
     private int selectedStat = -1;
 
-    HBox chartTypeSelectBox = new HBox();
 
     /**
      * @param controller
@@ -97,23 +96,9 @@ class StatisticsView extends SubScene {
             }
         });
 
-        Button pieTypeButton = new Button("Pie");
-        pieTypeButton.getStylesheets().add(new File("res/style.css").toURI().toString());
-        pieTypeButton.getStyleClass().add("record-sales");
-        Button lineTypeButton = new Button("Line");
-        lineTypeButton.getStylesheets().add(new File("res/style.css").toURI().toString());
-        lineTypeButton.getStyleClass().add("record-sales");
-        Button barTypeButton = new Button("Bar");
-        barTypeButton.getStylesheets().add(new File("res/style.css").toURI().toString());
-        barTypeButton.getStyleClass().add("record-sales");
-        chartTypeSelectBox.getChildren().addAll(pieTypeButton, lineTypeButton, barTypeButton);
-        chartTypeSelectBox.setSpacing(10);
-        chartTypeSelectBox.setVisible(false);
-
         buildInterface(body);
 
         header.setLeft(back_button);
-        header.setRight(chartTypeSelectBox);
         wrapper.getChildren().addAll(header, scrollPane);
     }
 
@@ -124,7 +109,6 @@ class StatisticsView extends SubScene {
 
         switch (this.statisticsState) {
             case CATEGORIES:
-                chartTypeSelectBox.setVisible(false);
                 for (int i = 0; i < NUMBER_OF_CATEGORIES; i++) {
                     int finalI = i;
 
@@ -147,7 +131,6 @@ class StatisticsView extends SubScene {
                 break;
 
             case STAT_LIST:
-                chartTypeSelectBox.setVisible(false);
                 String[] options = new String[]{};
                 switch (this.selectedCategory) {
                     case RESERVATIONS:
@@ -181,7 +164,6 @@ class StatisticsView extends SubScene {
 
                     case PROBLEMS:
                         options = new String[]{
-                                "Problèmes en fonction \ndu temps",
                                 "Problèmes en fonction \ndes clients",
                                 "Problèmes en fonction \ndu lieu"
                         };
@@ -219,7 +201,6 @@ class StatisticsView extends SubScene {
                 break;
 
             case GRAPHIC:
-                chartTypeSelectBox.setVisible(true);
                 ChartView chart = controller.makeChart(selectedCategory, selectedStat, ChartType.PIE);
                 body.add(chart.getTable(), 0, 0);
                 body.add(chart.getChart(), 1, 0);
