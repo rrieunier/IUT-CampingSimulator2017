@@ -17,6 +17,7 @@ public class ClientsController implements ControllerInterface {
 
     HomeController homeController;
     ClientManagerView clientManagerView = new ClientManagerView(this);
+    GenericDAOImpl<Client, Integer> daoClient = new GenericDAOImpl<>(Client.class);
 
     public ClientsController(HomeController homeController) {
         this.homeController = homeController;
@@ -48,23 +49,9 @@ public class ClientsController implements ControllerInterface {
         return stub;
     }
 
-    public void createClient(){
-        InputsListDialog newClientDialog = new InputsListDialog("Nouveau Client");
-        newClientDialog.addTextField("Nom");
-        newClientDialog.addTextField("Prénom");
-        newClientDialog.addTextField("Téléphone");
-        newClientDialog.addTextField("Mail");
-        Optional<Map<String, String>> newClient_result = newClientDialog.showAndWait();
-
-        Client client = new Client();
-        client.setFirstname(newClient_result.get().get("Prénom"));
-        client.setLastname(newClient_result.get().get("Nom"));
-        client.setPhone(newClient_result.get().get("Téléphone"));
-        client.setEmail(newClient_result.get().get("Mail"));
-
-        GenericDAOImpl<Client, Integer> dao = new GenericDAOImpl<>(Client.class);
-        dao.open();
-        dao.saveOrUpdate(client);
-        dao.close();
+    public void saveClient(Client client) {
+        daoClient.open();
+        daoClient.saveOrUpdate(client);
+        daoClient.close();
     }
 }

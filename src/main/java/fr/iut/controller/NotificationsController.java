@@ -62,7 +62,9 @@ public class NotificationsController implements ControllerInterface {
                 System.out.println("querying notifications in database...");
 
                 try {
-                    Thread.sleep(10000); //saveOrUpdate toutes les 10 secondes
+                    //La boucle permet de pas attendre 10 secondes la fin du programme si jamais les requetes doivent s'arrêter
+                    for(int i = 0; i < 10 && querying; i++) //saveOrUpdate toutes les 10 secondes
+                        Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

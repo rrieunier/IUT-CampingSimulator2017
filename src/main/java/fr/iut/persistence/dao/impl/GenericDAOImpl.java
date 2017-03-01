@@ -5,8 +5,8 @@ import fr.iut.persistence.dao.HibernateUtil;
 import org.hibernate.Session;
 
 import javax.persistence.criteria.CriteriaQuery;
+import javax.transaction.Transactional;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,102 +21,44 @@ public class GenericDAOImpl<T, Id extends Serializable> implements GenericDAO<T,
         this.persistentClass = persistentClass;
     }
 
-    @Override
-    public boolean saveOrUpdate(T entity) {
-        session.beginTransaction();
-
-        try {
-            session.saveOrUpdate(entity);
-            session.getTransaction().commit();
-        }catch (Exception e){
-            e.printStackTrace();
-            session.getTransaction().rollback();
-            return false;
-        }
-
-        return true;
+    @Transactional(rollbackOn = Exception.class)
+    public void saveOrUpdate(T entity) {
+        session.saveOrUpdate(entity);
     }
 
-    @Override
+    @Transactional(rollbackOn = Exception.class)
     public T findById(Id id) {
-        session.beginTransaction();
-
-        T entity = null;
-
-        try {
-            entity = session.find(persistentClass, id);
-            session.getTransaction().commit();
-        }catch (Exception e){
-            e.printStackTrace();
-            session.getTransaction().rollback();
-        }
-
-        return entity;
+        return session.find(persistentClass, id);
     }
 
-    @Override
+    @Transactional(rollbackOn = Exception.class)
     public List<T> findAll() {
-        session.beginTransaction();
+        CriteriaQuery<T> criteria = session.getCriteriaBuilder().createQuery(persistentClass);
+        criteria.select(criteria.from(persistentClass));
 
-        List<T> entities = new ArrayList<T>();
-        try {
-            CriteriaQuery<T> criteria = session.getCriteriaBuilder().createQuery(persistentClass);
-            criteria.select(criteria.from(persistentClass));
-
-            entities = session.createQuery(criteria).getResultList();
-            session.getTransaction().commit();
-        }catch (Exception e){
-            e.printStackTrace();
-            session.getTransaction().rollback();
-        }
-
-        return entities;
+        return session.createQuery(criteria).getResultList();
     }
 
-    @Override
-    public boolean remove(T entity) {
-        session.beginTransaction();
-
-        try {
-            session.remove(entity);
-            session.getTransaction().commit();
-        }catch (Exception e){
-            e.printStackTrace();
-            session.getTransaction().rollback();
-            return false;
-        }
-
-        return true;
+    @Transactional(rollbackOn = Exception.class)
+    public void remove(T entity) {
+        session.remove(entity);
     }
 
-    @Override
-    public boolean removeAll() {
+    @Transactional(rollbackOn = Exception.class)
+    public void removeAll() {
 
-        session.beginTransaction();
+        List<T> all = findAll();
+        for (T i : all)
+            session.remove(i);
 
-        try{
-            List<T> all = findAll();
-            for(T i : all)
-                session.remove(i);
-
-            session.getTransaction().commit();
-
-        }catch (Exception e){
-            e.printStackTrace();
-            session.getTransaction().rollback();
-            return false;
-        }
-
-
-        return true;
     }
 
-    public void open(){
+    public void open() {
 
         session = HibernateUtil.getSessionFactory().openSession();
     }
 
-    public void close(){
+    public void close() {
         session.close();
     }
 }

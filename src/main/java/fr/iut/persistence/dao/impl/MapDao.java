@@ -2,6 +2,7 @@ package fr.iut.persistence.dao.impl;
 
 import fr.iut.persistence.entities.Map;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -13,17 +14,21 @@ public class MapDao extends GenericDAOImpl<Map, Integer>{
         super(Map.class);
     }
 
+    @Transactional(rollbackOn = Exception.class)
     public Map getMap(){
         List<Map> all = findAll();
 
         return (all.isEmpty() ? null : all.get(0));
     }
 
-    public boolean setMap(Map map){
-        return removeAll() && saveOrUpdate(map);
+    @Transactional(rollbackOn = Exception.class)
+    public void setMap(Map map){
+        removeAll();
+        saveOrUpdate(map);
     }
 
-    public boolean remove(){
-        return removeAll();
+    @Transactional(rollbackOn = Exception.class)
+    public void remove(){
+        removeAll();
     }
 }

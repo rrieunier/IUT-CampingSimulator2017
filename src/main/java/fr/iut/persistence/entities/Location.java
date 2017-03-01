@@ -12,7 +12,8 @@ import java.util.Set;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Location {
 
-    @Id
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false, updatable = false)
     private int id;
 
     @Column
