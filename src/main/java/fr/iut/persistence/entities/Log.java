@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 public class Log {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false, updatable = false)
+    @Column(updatable = false)
     private int id;
 
     @Column(nullable = false)

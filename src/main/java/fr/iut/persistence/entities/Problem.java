@@ -13,7 +13,7 @@ import java.util.Set;
 public class Problem {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false, updatable = false)
+    @Column(updatable = false)
     private int id;
 
     @Column(nullable = false)
