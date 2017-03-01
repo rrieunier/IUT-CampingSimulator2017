@@ -23,12 +23,12 @@ public class MapController implements ControllerInterface {
     private MapDao daoMap = new MapDao();
     private GenericDAOImpl<Location, Integer> daoLocation = new GenericDAOImpl<>(Location.class);
 
-    private boolean mapAlreadyCreated;
+    private Map currentMap = null;
 
     public MapController(App app) {
         this.app = app;
         daoMap.open();
-        mapAlreadyCreated = daoMap.findAll().size() > 0;
+        currentMap = daoMap.getMap();
         daoMap.close();
     }
 
@@ -50,7 +50,7 @@ public class MapController implements ControllerInterface {
         }
 
         daoMap.setMap(map);
-        mapAlreadyCreated = true;
+        currentMap = map;
 
         daoMap.close();
 
@@ -67,6 +67,6 @@ public class MapController implements ControllerInterface {
     }
 
     public boolean isMapAlreadyCreated() {
-        return mapAlreadyCreated;
+        return currentMap != null;
     }
 }
