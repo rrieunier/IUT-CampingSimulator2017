@@ -247,60 +247,67 @@ public class MapCreatorView extends Scene {
 
                 //Si l'item est dans le viewport
                 if(mapViewPort_coords.getMinX() > 0 && mapViewPort_coords.getMaxX() < mapViewPort.getWidth() && mapViewPort_coords.getMinY() > 0 && mapViewPort_coords.getMaxY() < mapViewPort.getHeight()) {
-
-                    String fileStr = selectedBigIconFile.toURI().toString();
-                    ImageView bigIcon = new ImageView(new Image(fileStr));
-
-                    Optional<Map<String, String>> result = new LocationDialog(bigIcon).showAndWait();
-
-                    result.ifPresent(mapResult -> {
-                        ImageView imageView = new ImageView(selectedIcon.getImage());
-
-                        imageView.setTranslateX(map_coords.getMinX());
-                        imageView.setTranslateY(map_coords.getMinY());
-                        mapPane.getChildren().add(imageView);
-
-                        Spot spot = new Spot();
-
-                        spot.setName(mapResult.get("name"));
-                        spot.setPointX(map_coords.getMinX());
-                        spot.setPointY(map_coords.getMinY());
-                        spot.setCapacity(Integer.parseInt(mapResult.get("capacity")));
-                        spot.setElectricity(Boolean.parseBoolean(mapResult.get("elec")));
-                        spot.setWater(Boolean.parseBoolean(mapResult.get("water")));
-                        spot.setShadow(Boolean.parseBoolean(mapResult.get("shadow")));
-
-
-                        imageView.setOnMouseClicked(mouseEvent1 -> {
-                            Optional<Map<String, String>> edit_result = new LocationDialog(bigIcon, spot).showAndWait();
-
-                            edit_result.ifPresent(mapEditResult -> {
-
-                                if(mapEditResult.containsKey("remove")) {
-                                    mapPane.getChildren().remove(imageView);
-                                    locations.remove(spot);
-                                }
-
-                                else {
-                                    spot.setName(mapEditResult.get("name"));
-                                    spot.setPointX(map_coords.getMinX());
-                                    spot.setPointY(map_coords.getMinY());
-                                    spot.setCapacity(Integer.parseInt(mapEditResult.get("capacity")));
-                                    spot.setElectricity(Boolean.parseBoolean(mapEditResult.get("elec")));
-                                    spot.setWater(Boolean.parseBoolean(mapEditResult.get("water")));
-                                    spot.setShadow(Boolean.parseBoolean(mapEditResult.get("shadow")));
-
-                                }
-                            });
-                        });
-
-                        locations.add(spot);
-                    });
+                    createItem(map_coords);
                 }
 
                 stackPaneRoot.getChildren().remove(selectedIcon);
                 selectedIcon = null;
                 selectedBigIconFile = null;
+            }
+        });
+    }
+
+    private void createItem(Bounds map_coords) {
+        String fileStr = selectedBigIconFile.toURI().toString();
+        ImageView bigIcon = new ImageView(new Image(fileStr));
+
+        Optional<Map<String, String>> result = new LocationDialog(bigIcon).showAndWait();
+
+        result.ifPresent(mapResult -> {
+            ImageView imageOnMap = new ImageView(selectedIcon.getImage());
+
+            imageOnMap.setTranslateX(map_coords.getMinX());
+            imageOnMap.setTranslateY(map_coords.getMinY());
+            mapPane.getChildren().add(imageOnMap);
+
+            Spot spot = new Spot();
+
+            spot.setName(mapResult.get("name"));
+            spot.setPointX(map_coords.getMinX());
+            spot.setPointY(map_coords.getMinY());
+            spot.setCapacity(Integer.parseInt(mapResult.get("capacity")));
+            spot.setElectricity(Boolean.parseBoolean(mapResult.get("elec")));
+            spot.setWater(Boolean.parseBoolean(mapResult.get("water")));
+            spot.setShadow(Boolean.parseBoolean(mapResult.get("shadow")));
+
+
+            imageOnMap.setOnMouseClicked(mouseEvent1 -> {
+                editItem(map_coords, bigIcon, imageOnMap, spot);
+            });
+
+            locations.add(spot);
+        });
+    }
+
+    private void editItem(Bounds map_coords, ImageView bigIcon, ImageView imageOnMap, Spot spot) {
+        Optional<Map<String, String>> edit_result = new LocationDialog(bigIcon, spot).showAndWait();
+
+        edit_result.ifPresent(mapEditResult -> {
+
+            if(mapEditResult.containsKey("remove")) {
+                mapPane.getChildren().remove(imageOnMap);
+                locations.remove(spot);
+            }
+
+            else {
+                spot.setName(mapEditResult.get("name"));
+                spot.setPointX(map_coords.getMinX());
+                spot.setPointY(map_coords.getMinY());
+                spot.setCapacity(Integer.parseInt(mapEditResult.get("capacity")));
+                spot.setElectricity(Boolean.parseBoolean(mapEditResult.get("elec")));
+                spot.setWater(Boolean.parseBoolean(mapEditResult.get("water")));
+                spot.setShadow(Boolean.parseBoolean(mapEditResult.get("shadow")));
+
             }
         });
     }
