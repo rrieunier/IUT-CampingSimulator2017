@@ -9,7 +9,8 @@ import javax.persistence.*;
 @Table(name = "MAP")
 public class Map {
 
-    @Id
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false, updatable = false)
     private int id;
 
     @Column(nullable = false)

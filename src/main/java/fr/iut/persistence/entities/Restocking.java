@@ -10,7 +10,8 @@ import java.sql.Timestamp;
 @Table(name = "RESTOCKING")
 public class Restocking {
 
-    @Id
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false, updatable = false)
     private int id;
 
     @Column(nullable = false)

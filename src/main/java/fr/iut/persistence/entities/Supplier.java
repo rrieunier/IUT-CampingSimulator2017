@@ -11,7 +11,8 @@ import java.util.Set;
 @Table(name = "SUPPLIER")
 public class Supplier {
 
-    @Id
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false, updatable = false)
     private int id;
 
     @Column(nullable = false)
