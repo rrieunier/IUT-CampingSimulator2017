@@ -30,8 +30,6 @@ public class ConnectionController implements ControllerInterface {
 
     public boolean tryLogin(String username, String password) {
 
-        return true;/*
-
         if(username.length() == 0 || password.length() == 0)
             return false;
 
@@ -53,7 +51,7 @@ public class ConnectionController implements ControllerInterface {
 
         connectedUser = employee.getLogin();
 
-        return true;*/
+        return true;
     }
 
     @Override
