@@ -33,7 +33,7 @@ public class HomeController implements ControllerInterface {
         ArrayList<Product> products = (ArrayList<Product>) dao.findAll();
         dao.close();
 
-        return (ArrayList<Product>) products;
+        return products;
     }
 
     public void addNewProduct(){

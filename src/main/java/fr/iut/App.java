@@ -27,7 +27,7 @@ public class App extends Application {
 
     //Controllers, il doit y avoir un état (classe State) par controller
     private ConnectionController connectionController = new ConnectionController(this);
-    private MapController mapController = new MapController(this);
+    MapController mapController = new MapController(this);
     private HomeController homeController;
 
     public static void main(String[] args) {
@@ -43,6 +43,13 @@ public class App extends Application {
         primaryStage.setResizable(false);
 
         primaryStage.show();
+    }
+
+    @Override
+    public void stop(){
+        System.out.println("Stopping...");
+        Platform.exit();
+        System.exit(0);
     }
 
     public void switchState(State state) {
@@ -71,8 +78,8 @@ public class App extends Application {
 
             case HOME:
                 homeController = new HomeController(this, connectionController.getConnectedUser());
-                stage.setOnCloseRequest(windowEvent -> homeController.OnWindowIsClosing());
                 stage.setScene(homeController.getView());
+                stage.setOnCloseRequest(action -> homeController.OnWindowIsClosing());
                 break;
         }
 

@@ -46,10 +46,13 @@ public class MapController implements ControllerInterface {
             map.setImage(Files.readAllBytes(Paths.get(mapFile.getAbsolutePath())));
         } catch (IOException e) {
             e.printStackTrace();
+            daoMap.close();
             return;
         }
 
+        System.out.println("persist map...");
         daoMap.setMap(map);
+        System.out.println("Done !");
         currentMap = map;
 
         daoMap.close();

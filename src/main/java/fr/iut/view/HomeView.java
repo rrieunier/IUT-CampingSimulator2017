@@ -245,7 +245,9 @@ public class HomeView extends Scene {
     }
 
     public void stopBlinkAnimation() {
-        if(blinkAnimation != null)
+        if(blinkAnimation != null) {
             blinkAnimation.stop();
+            blinkAnimation = null;
+        }
     }
 }
