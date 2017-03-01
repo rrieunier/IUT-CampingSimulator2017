@@ -1,8 +1,6 @@
 package fr.iut.view;
 
 import fr.iut.controller.ClientsController;
-import fr.iut.persistence.dao.GenericDAO;
-import fr.iut.persistence.dao.impl.GenericDAOImpl;
 import fr.iut.persistence.entities.Client;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -78,8 +76,20 @@ public class ClientManagerView extends SubScene {
         newClient.getStyleClass().add("record-sales");
         newClient.setMinWidth(HomeView.TAB_CONTENT_W / 4);
         newClient.setOnAction(event -> {
-            controller.createClient();
-            // TODO : Clement verifie que c'est propre et me gueule pas dessus stp si j'ai fais de la merde
+            InputsListDialog newClientDialog = new InputsListDialog("Nouveau Client");
+            newClientDialog.addTextField("Nom");
+            newClientDialog.addTextField("Prénom");
+            newClientDialog.addTextField("Téléphone");
+            newClientDialog.addTextField("Mail");
+            Optional<Map<String, String>> newClient_result = newClientDialog.showAndWait();
+
+            Client client = new Client();
+            client.setFirstname(newClient_result.get().get("Prénom"));
+            client.setLastname(newClient_result.get().get("Nom"));
+            client.setPhone(newClient_result.get().get("Téléphone"));
+            client.setEmail(newClient_result.get().get("Mail"));
+
+            controller.saveClient(client);
         });
 
 
