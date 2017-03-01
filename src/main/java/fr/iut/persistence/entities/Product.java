@@ -11,8 +11,7 @@ import java.util.Set;
 @Table(name = "PRODUCT")
 public class Product {
 
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(nullable = false)
+    @Id
     private int id;
 
     @Column(nullable = false)

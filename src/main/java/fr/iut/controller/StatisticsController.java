@@ -3,9 +3,7 @@ package fr.iut.controller;
 
 import fr.iut.persistence.dao.GenericDAO;
 import fr.iut.persistence.dao.impl.GenericDAOImpl;
-import fr.iut.persistence.entities.Client;
-import fr.iut.persistence.entities.Reservation;
-import fr.iut.persistence.entities.Spot;
+import fr.iut.persistence.entities.*;
 import fr.iut.view.ChartType;
 import fr.iut.view.ChartView;
 import fr.iut.view.HomeView;
@@ -50,15 +48,14 @@ public class StatisticsController implements ControllerInterface {
     // TODO: Implement other charts type (other than PieChart)
     public ChartView makeChart(@NamedArg("category") SelectedCategory category,
                                @NamedArg("selectedChart") int selectedChart,
-                               @NamedArg("type") ChartType type)
-    {
+                               @NamedArg("type") ChartType type) {
         switch (category) {
             case RESERVATIONS:
                 return reservationChart(selectedChart, type);
             case CLIENTS:
                 return clientChart(selectedChart, type);
             case PURCHASES:
-                break;
+                return purchaseChart(selectedChart, type);
             case EMPLOYEES:
                 break;
             case PROBLEMS:
@@ -71,214 +68,345 @@ public class StatisticsController implements ControllerInterface {
         return null;
     }
 
-    private ChartView reservationChart(@NamedArg("selectedChart") int selectedChart,
-                                       @NamedArg("type") ChartType type)
-    {
 
-        Chart chart = new PieChart();
-        TableView<SpotV> table = new TableView<>();
+    private ChartView reservationChart(@NamedArg("selectedChart") int selectedChart,
+                                       @NamedArg("type") ChartType type) {
+        GenericDAOImpl<Spot, Integer> dao;
+        ChartView chartView = null;
 
         switch (type) {
             case PIE:
+                switch (selectedChart) {
+                    case 0: // emplacements les plus réservés
+                        dao = new GenericDAOImpl<>(Spot.class);
+                        dao.open();
+                        ArrayList<Spot> spots = (ArrayList<Spot>) dao.findAll();
+
+                        spots.sort(new Comparator<Spot>() {
+                            @Override
+                            public int compare(Spot o1, Spot o2) {
+                                return o2.getReservations().size() - o1.getReservations().size();
+                            }
+                        });
+
+                        ArrayList<String> objects = new ArrayList<>();
+                        ArrayList<Float> comparative = new ArrayList<>();
+
+                        for (Spot s : spots) {
+                            objects.add(s.getName());
+                            comparative.add((float) s.getReservations().size());
+                        }
+                        comparative.sort(new Comparator<Float>() {
+                            @Override
+                            public int compare(Float o1, Float o2) {
+                                return (int) (o2 - o1);
+                            }
+                        });
+
+                        chartView = new ChartView(ChartType.PIE, objects, comparative,
+                                "Emplacements les plus réservés", "Nom", "Nombre de rés.");
+                        dao.close();
+                        break;
+
+                    case 1: // emplacements les moins réservés
+
+                        dao = new GenericDAOImpl<>(Spot.class);
+                        dao.open();
+                        spots = (ArrayList<Spot>) dao.findAll();
+
+                        spots.sort(new Comparator<Spot>() {
+                            @Override
+                            public int compare(Spot o1, Spot o2) {
+                                return o2.getReservations().size() - o1.getReservations().size();
+                            }
+                        });
+
+                        objects = new ArrayList<>();
+                        comparative = new ArrayList<>();
+
+                        for (Spot s : spots) {
+                            objects.add(s.getName());
+                            comparative.add((float) s.getReservations().size());
+                        }
+                        comparative.sort(new Comparator<Float>() {
+                            @Override
+                            public int compare(Float o1, Float o2) {
+                                return (int) (o1 - o2);
+                            }
+                        });
+
+                        chartView = new ChartView(ChartType.PIE, objects, comparative,
+                                "Emplacements les moins réservés\n\t\t(1/nb de res.)", "Nom", "Nombre de rés.");
+                        dao.close();
+                        break;
+
+                    default:
+                        break;
+                }
                 break;
+
             case LINE:
                 break;
+
             case BAR:
                 break;
         }
 
-        switch (selectedChart) {
-            case 0: // emplacements les plus réservés
-                GenericDAOImpl<Spot, Integer> dao_spots = new GenericDAOImpl<>(Spot.class);
-                dao_spots.open();
-
-                ArrayList<Spot> spots = (ArrayList<Spot>) dao_spots.findAll();
-                spots.sort(new Comparator<Spot>() {
-                    @Override
-                    public int compare(Spot o1, Spot o2) {
-                        return o2.getReservations().size() - o1.getReservations().size();
-                    }
-                });
-
-                ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(); // données observables
-                for (Spot r : spots.subList(0, (spots.size() > 8 ? 8 : spots.size()))) {
-                    pieChartData.add(new PieChart.Data(r.getName(), r.getReservations().size()));
-                }
-                if (spots.size() > 7) {
-                    int sum = 0;
-                    for (Spot c : spots.subList(7, spots.size())) {
-                        sum += c.getReservations().size();
-                    }
-                    sum = sum / (spots.subList(7, spots.size())).size() + 1;
-                    pieChartData.add(new PieChart.Data("Others", sum));
-                }
-
-                chart = new PieChart(pieChartData);
-                chart.setLegendSide(Side.RIGHT);
-                chart.setPrefSize(HomeView.TAB_CONTENT_W / 2, HomeView.TAB_CONTENT_H * 15 / 20);
-                chart.getStylesheets().add(new File("res/style.css").toURI().toString());
-                chart.getStyleClass().add("pie-chart");
-                chart.setTitle("Emplacements les plus réservés");
-
-                ObservableList<SpotV> data = FXCollections.observableArrayList();
-                for (Spot s : spots) {
-                    data.add(new SpotV(s.getName(), s.getReservations().size()));
-                }
-
-                TableColumn nameColum = new TableColumn<>("Nom");
-                TableColumn resColumn = new TableColumn<>("Nb de réservation");
-                nameColum.setPrefWidth(HomeView.TAB_CONTENT_W / 6);
-                resColumn.setPrefWidth(HomeView.TAB_CONTENT_W / 6);
-                nameColum.setCellValueFactory(new PropertyValueFactory<>("name"));
-                resColumn.setCellValueFactory(new PropertyValueFactory<>("nbRes"));
-
-                table.getColumns().addAll(nameColum, resColumn);
-                table.setItems(data);
-
-                dao_spots.close();
-                break;
-
-            case 1: // emplacements les moins réservés
-
-                dao_spots = new GenericDAOImpl<>(Spot.class);
-                dao_spots.open();
-
-                spots = (ArrayList<Spot>) dao_spots.findAll();
-                spots.sort(new Comparator<Spot>() {
-                    @Override
-                    public int compare(Spot o1, Spot o2) {
-                        return o1.getReservations().size() - o2.getReservations().size();
-                    }
-                });
-
-                pieChartData = FXCollections.observableArrayList();
-                for (Spot r : spots.subList(0, (spots.size() > 8 ? 8 : spots.size()))) {
-                    pieChartData.add(new PieChart.Data(r.getName(), (1.0 / (float) r.getReservations().size()) * 100.0));
-                }
-                if (spots.size() > 7) {
-                    int sum = 0;
-                    for (Spot c : spots.subList(7, spots.size())) {
-                        sum += c.getReservations().size();
-                    }
-                    sum = sum / (spots.subList(7, spots.size())).size() + 1;
-                    pieChartData.add(new PieChart.Data("Others", sum));
-                }
-
-                chart = new PieChart(pieChartData);
-                chart.setLegendSide(Side.RIGHT);
-                chart.setPrefSize(HomeView.TAB_CONTENT_W / 2, HomeView.TAB_CONTENT_H * 15 / 20);
-                chart.getStylesheets().add(new File("res/style.css").toURI().toString());
-                chart.getStyleClass().add("pie-chart");
-                chart.setTitle("Emplacements les moins réservés\n\t\t(1 / nb de res)");
-
-                data = FXCollections.observableArrayList();
-                for (Spot s : spots) {
-                    data.add(new SpotV(s.getName(), s.getReservations().size()));
-                }
-
-                nameColum = new TableColumn<>("Nom");
-                resColumn = new TableColumn<>("Nb de réservation");
-                nameColum.setPrefWidth(HomeView.TAB_CONTENT_W / 6);
-                resColumn.setPrefWidth(HomeView.TAB_CONTENT_W / 6);
-                nameColum.setCellValueFactory(new PropertyValueFactory<>("name"));
-                resColumn.setCellValueFactory(new PropertyValueFactory<>("nbRes"));
-
-                table.getColumns().addAll(nameColum, resColumn);
-                table.setItems(data);
-
-                dao_spots.close();
-
-                break;
-
-            case 2: // reservations impayées
-
-                break;
-        }
-
-        return new ChartView(chart, table);
+        return chartView;
     }
 
     private ChartView clientChart(@NamedArg("selectedChart") int selectedChart,
-                                  @NamedArg("type") ChartType type)
-    {
-        Chart chart = new PieChart();
-        TableView<ClientV> table = new TableView<>();
+                                  @NamedArg("type") ChartType type) {
+        GenericDAOImpl<Client, Integer> dao;
+        ChartView chartView = null;
 
         switch (type) {
             case PIE:
+                switch (selectedChart) {
+                    case 0:
+                        dao = new GenericDAOImpl<>(Client.class);
+                        dao.open();
+                        ArrayList<Client> clients = (ArrayList<Client>) dao.findAll();
+
+                        clients.sort(new Comparator<Client>() {
+                            @Override
+                            public int compare(Client o1, Client o2) {
+                                return o2.getReservations().size() - o1.getReservations().size();
+                            }
+                        });
+
+                        ArrayList<String> objects = new ArrayList<>();
+                        ArrayList<Float> comparative = new ArrayList<>();
+
+                        for (Client c : clients) {
+                            objects.add(c.getFirstname() + " " + c.getLastname());
+                            comparative.add((float) c.getReservations().size());
+                        }
+                        comparative.sort(new Comparator<Float>() {
+                            @Override
+                            public int compare(Float o1, Float o2) {
+                                return (int) (o2 - o1);
+                            }
+                        });
+
+                        chartView = new ChartView(ChartType.PIE, objects, comparative,
+                                "Clients les plus fidèles", "Nom", "Nombre de rés.");
+                        chartView.setLegendSide(Side.BOTTOM);
+                        dao.close();
+                        break;
+
+                    case 1:
+                        dao = new GenericDAOImpl<>(Client.class);
+                        dao.open();
+                        clients = (ArrayList<Client>) dao.findAll();
+
+                        clients.sort(new Comparator<Client>() {
+                            @Override
+                            public int compare(Client o1, Client o2) {
+                                return o2.getProblems().size() - o1.getProblems().size();
+                            }
+                        });
+
+                        objects = new ArrayList<>();
+                        comparative = new ArrayList<>();
+
+                        for (Client c : clients) {
+                            objects.add(c.getFirstname() + " " + c.getLastname());
+                            comparative.add((float) c.getProblems().size());
+                        }
+                        comparative.sort(new Comparator<Float>() {
+                            @Override
+                            public int compare(Float o1, Float o2) {
+                                return (int) (o2 - o1);
+                            }
+                        });
+
+                        chartView = new ChartView(ChartType.PIE, objects, comparative,
+                                "Clients ayant reportés \nle plus de problèmes", "Nom", "Nombre de prob.");
+                        chartView.setLegendSide(Side.BOTTOM);
+                        dao.close();
+
+                        break;
+
+                    case 2:
+                        dao = new GenericDAOImpl<>(Client.class);
+                        dao.open();
+                        clients = (ArrayList<Client>) dao.findAll();
+
+                        clients.sort(new Comparator<Client>() {
+                            @Override
+                            public int compare(Client o1, Client o2) {
+                                return o1.getProblems().size() - o2.getProblems().size();
+                            }
+                        });
+
+                        objects = new ArrayList<>();
+                        comparative = new ArrayList<>();
+
+                        for (Client c : clients) {
+                            objects.add(c.getFirstname() + " " + c.getLastname());
+                            comparative.add((float) c.getProblems().size());
+                        }
+                        comparative.sort(new Comparator<Float>() {
+                            @Override
+                            public int compare(Float o1, Float o2) {
+                                return (int) (o1 - o2);
+                            }
+                        });
+
+                        chartView = new ChartView(ChartType.PIE, objects, comparative,
+                                "Clients ayant reportés \nle moins de problèmes", "Nom", "Nombre de prob.");
+                        chartView.setLegendSide(Side.BOTTOM);
+                        dao.close();
+                        break;
+
+                    case 3:
+                        dao = new GenericDAOImpl<>(Client.class);
+                        dao.open();
+                        clients = (ArrayList<Client>) dao.findAll();
+
+                        clients.sort(new Comparator<Client>() {
+                            @Override
+                            public int compare(Client o1, Client o2) {
+                                return o2.getPurchases().size() - o1.getPurchases().size();
+                            }
+                        });
+
+                        objects = new ArrayList<>();
+                        comparative = new ArrayList<>();
+
+                        for (Client c : clients) {
+                            objects.add(c.getFirstname() + " " + c.getLastname());
+                            comparative.add((float) c.getPurchases().size());
+                        }
+                        comparative.sort(new Comparator<Float>() {
+                            @Override
+                            public int compare(Float o1, Float o2) {
+                                return (int) (o2 - o1);
+                            }
+                        });
+
+                        chartView = new ChartView(ChartType.PIE, objects, comparative,
+                                "Clients ayant acheté le plus", "Nom", "Nombre d'achats");
+                        chartView.setLegendSide(Side.BOTTOM);
+                        dao.close();
+                        break;
+                }
                 break;
+
             case LINE:
                 break;
+
             case BAR:
                 break;
         }
 
-        switch (selectedChart) {
-            case 0:
-                GenericDAOImpl<Client, Integer> client_dao = new GenericDAOImpl<>(Client.class);
-                client_dao.open();
+        return chartView;
+    }
 
-                ArrayList<Client> clients = (ArrayList<Client>) client_dao.findAll();
-                clients.sort(new Comparator<Client>() {
-                    @Override
-                    public int compare(Client o1, Client o2) {
-                        return o2.getReservations().size() - o1.getReservations().size();
-                    }
-                });
+    private ChartView purchaseChart(@NamedArg("selectedChart") int selectedChart,
+                                    @NamedArg("type") ChartType type) {
+        GenericDAOImpl<Product, Integer> dao;
+        ChartView chartView = null;
 
-                ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(); // données observables
-                for (Client r : clients.subList(0, (clients.size() > 7 ? 7 : clients.size()))) {
-                    pieChartData.add(new PieChart.Data(r.getFirstname() + " " + r.getLastname(), r.getReservations().size()));
+        switch (type) {
+
+            case PIE:
+                switch (selectedChart) {
+                    case 0: // produit le plus vendu
+                        dao = new GenericDAOImpl<>(Product.class);
+                        dao.open();
+                        ArrayList<Product> products = (ArrayList<Product>) dao.findAll();
+
+                        ArrayList<String> objects = new ArrayList<>();
+                        ArrayList<Float> comparative = new ArrayList<>();
+
+                        products.sort(new Comparator<Product>() {
+                            @Override
+                            public int compare(Product o1, Product o2) {
+                                int sum1 = 0;
+                                int sum2 = 0;
+                                for (Purchase p : o1.getPurchases())
+                                    sum1 += p.getQuantity();
+                                for (Purchase p : o2.getPurchases())
+                                    sum2 += p.getQuantity();
+                                return sum2 - sum1;
+                            }
+                        });
+
+                        for (Product c : products) {
+                            int sum = 0;
+                            objects.add(c.getName());
+                            for (Purchase p : c.getPurchases())
+                                sum += p.getQuantity();
+                            comparative.add((float) sum);
+                        }
+                        comparative.sort(new Comparator<Float>() {
+                            @Override
+                            public int compare(Float o1, Float o2) {
+                                return (int) (o2 - o1);
+                            }
+                        });
+
+                        chartView = new ChartView(ChartType.PIE, objects, comparative,
+                                "Produits les plus achetés", "Nom", "Nombre de ventes");
+                        chartView.setLegendSide(Side.BOTTOM);
+                        dao.close();
+                        break;
+
+                    case 1: // produits les moins vendus
+                        dao = new GenericDAOImpl<>(Product.class);
+                        dao.open();
+                        products = (ArrayList<Product>) dao.findAll();
+
+                        objects = new ArrayList<>();
+                        comparative = new ArrayList<>();
+
+                        products.sort(new Comparator<Product>() {
+                            @Override
+                            public int compare(Product o1, Product o2) {
+                                int sum1 = 0;
+                                int sum2 = 0;
+                                for (Purchase p : o1.getPurchases())
+                                    sum1 += p.getQuantity();
+                                for (Purchase p : o2.getPurchases())
+                                    sum2 += p.getQuantity();
+                                return sum1 - sum2;
+                            }
+                        });
+
+                        for (Product c : products) {
+                            int sum = 0;
+                            objects.add(c.getName());
+                            for (Purchase p : c.getPurchases())
+                                sum += p.getQuantity();
+                            comparative.add((float) sum);
+                        }
+                        comparative.sort(new Comparator<Float>() {
+                            @Override
+                            public int compare(Float o1, Float o2) {
+                                return (int) (o1 - o2);
+                            }
+                        });
+
+                        chartView = new ChartView(ChartType.PIE, objects, comparative,
+                                "Produits les moins achetés", "Nom", "Nombre de ventes");
+                        chartView.setLegendSide(Side.BOTTOM);
+                        dao.close();
+                        break;
+
+                    default:
+                        break;
                 }
-                if (clients.size() > 7) {
-                    int sum = 0;
-                    for (Client c : clients.subList(7, clients.size())) {
-                        sum += c.getReservations().size();
-                    }
-                    sum = sum / (clients.subList(7, clients.size())).size() + 1;
-                    pieChartData.add(new PieChart.Data("Others", sum));
-                }
-
-                chart = new PieChart(pieChartData);
-                chart.setLegendSide(Side.RIGHT);
-                chart.setPrefSize(HomeView.TAB_CONTENT_W / 2, HomeView.TAB_CONTENT_H * 15 / 20);
-                chart.getStylesheets().add(new File("res/style.css").toURI().toString());
-                chart.getStyleClass().add("pie-chart");
-                chart.setTitle("Clients réservant le plus");
-                chart.setLegendSide(Side.BOTTOM);
-
-                ObservableList<ClientV> data = FXCollections.observableArrayList();
-                for (Client c : clients) {
-                    data.add(new ClientV(c.getFirstname() + " "+  c.getLastname(), c.getPhone(), c.getReservations().size()));
-                }
-
-                TableColumn nameColumn = new TableColumn<>("Nom");
-                TableColumn phoneColumn = new TableColumn<>("Téléphone");
-                TableColumn resColumn = new TableColumn<>("Nb de réservation");
-                nameColumn.setPrefWidth(HomeView.TAB_CONTENT_W / 7);
-                phoneColumn.setPrefWidth(HomeView.TAB_CONTENT_W / 7);
-                resColumn.setPrefWidth(HomeView.TAB_CONTENT_W / 10);
-                nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-                phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
-                resColumn.setCellValueFactory(new PropertyValueFactory<>("nbRes"));
-
-                table.getColumns().addAll(nameColumn, phoneColumn, resColumn);
-                table.setItems(data);
-
-                client_dao.close();
                 break;
 
-            case 1:
+            case LINE:
                 break;
 
-            case 2:
-                break;
-
-            case 3:
+            case BAR:
                 break;
         }
-
-        return new ChartView(chart, table);
+        return chartView;
     }
 
     public static class SpotV {

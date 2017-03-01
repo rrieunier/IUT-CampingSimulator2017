@@ -3,6 +3,7 @@ package fr.iut.controller;
 import fr.iut.App;
 import fr.iut.State;
 import fr.iut.persistence.dao.impl.GenericDAOImpl;
+import fr.iut.persistence.dao.impl.MapDao;
 import fr.iut.persistence.entities.Location;
 import fr.iut.persistence.entities.Map;
 import fr.iut.view.MapCreatorView;
@@ -13,14 +14,13 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class MapController implements ControllerInterface {
 
     private App app;
     private MapCreatorView mapCreatorView = new MapCreatorView(this);
-    private GenericDAOImpl<Map, Integer> daoMap = new GenericDAOImpl<>(Map.class);
+    private MapDao daoMap = new MapDao();
     private GenericDAOImpl<Location, Integer> daoLocation = new GenericDAOImpl<>(Location.class);
 
     private boolean mapAlreadyCreated;
@@ -49,14 +49,16 @@ public class MapController implements ControllerInterface {
             return;
         }
 
-        daoMap.persist(map);
+        daoMap.setMap(map);
         mapAlreadyCreated = true;
 
         daoMap.close();
 
         daoLocation.open();
-        locations.forEach(daoLocation::persist);
+        locations.forEach(daoLocation::saveOrUpdate);
         daoLocation.close();
+
+        //TODO : saveOrUpdate map and locations in the bdd
     }
 
     @Override

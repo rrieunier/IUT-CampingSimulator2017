@@ -10,7 +10,7 @@
     );
 
     create table CLIENT (
-       id integer not null,
+       id integer not null AUTO_INCREMENT,
         email varchar(45),
         firstname varchar(45) not null,
         lastname varchar(45) not null,
@@ -25,7 +25,7 @@
     );
 
     create table EMPLOYEE (
-       id integer not null,
+       id integer not null AUTO_INCREMENT,
         completeAddress varchar(255),
         email varchar(45),
         firstName varchar(255) not null,
@@ -48,40 +48,8 @@
         primary key (employee_id, notification_id)
     );
 
-    create table hibernate_sequence (
-       next_val bigint
-    );
-
-    insert into hibernate_sequence values ( 1 );
-
-    insert into hibernate_sequence values ( 1 );
-
-    insert into hibernate_sequence values ( 1 );
-
-    insert into hibernate_sequence values ( 1 );
-
-    insert into hibernate_sequence values ( 1 );
-
-    insert into hibernate_sequence values ( 1 );
-
-    insert into hibernate_sequence values ( 1 );
-
-    insert into hibernate_sequence values ( 1 );
-
-    insert into hibernate_sequence values ( 1 );
-
-    insert into hibernate_sequence values ( 1 );
-
-    insert into hibernate_sequence values ( 1 );
-
-    insert into hibernate_sequence values ( 1 );
-
-    insert into hibernate_sequence values ( 1 );
-
-    insert into hibernate_sequence values ( 1 );
-
     create table LOCATION (
-       id integer not null,
+       id integer not null AUTO_INCREMENT,
         name varchar(255),
         pointX double precision not null,
         pointY double precision not null,
@@ -95,7 +63,7 @@
     );
 
     create table LOG (
-       id integer not null,
+       id integer not null AUTO_INCREMENT,
         action varchar(255) not null,
         datetime datetime not null,
         employee_id integer not null,
@@ -103,20 +71,20 @@
     );
 
     create table MAP (
-       id integer not null,
+       id integer not null AUTO_INCREMENT,
         image longblob not null,
         primary key (id)
     );
 
     create table NOTIFICATION (
-       id integer not null,
+       id integer not null AUTO_INCREMENT,
         content varchar(255) not null,
         title varchar(45) not null,
         primary key (id)
     );
 
     create table PROBLEM (
-       id integer not null,
+       id integer not null AUTO_INCREMENT,
         appearanceDatetime datetime not null,
         description varchar(255) not null,
         solutionDatetime datetime,
@@ -125,7 +93,7 @@
     );
 
     create table PRODUCT (
-       id integer not null,
+       id integer not null AUTO_INCREMENT,
         criticalQuantity integer not null,
         name varchar(255) not null,
         sellPrice float not null,
@@ -134,7 +102,7 @@
     );
 
     create table PURCHASE (
-       id integer not null,
+       id integer not null AUTO_INCREMENT,
         datetime datetime not null,
         quantity integer not null,
         client_id integer not null,
@@ -143,7 +111,7 @@
     );
 
     create table RESERVATION (
-       id integer not null,
+       id integer not null AUTO_INCREMENT,
         clientComment varchar(255),
         endtime datetime not null,
         personCount integer not null,
@@ -155,7 +123,7 @@
     );
 
     create table RESTOCKING (
-       id integer not null,
+       id integer not null AUTO_INCREMENT,
         datetime datetime not null,
         quantity integer not null,
         product_id integer not null,
@@ -174,7 +142,7 @@
     );
 
     create table SUPPLIER (
-       id integer not null,
+       id integer not null AUTO_INCREMENT,
         email varchar(255),
         name varchar(255) not null,
         phone varchar(255),
@@ -183,7 +151,7 @@
     );
 
     create table SUPPLIER_PROPOSE_PRODUCT (
-       id integer not null,
+       id integer not null AUTO_INCREMENT,
         sellPrice float not null,
         product_id integer not null,
         supplier_id integer not null,
@@ -191,7 +159,7 @@
     );
 
     create table TASK (
-       id integer not null,
+       id integer not null AUTO_INCREMENT,
         endtime datetime not null,
         label varchar(255) not null,
         starttime datetime not null,
@@ -321,7 +289,6 @@
     COMMIT;
 
   REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'camping'@'%';
-  GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.hibernate_sequence TO 'camping'@'%';
   GRANT SELECT ON Camping.AUTHORIZATION TO 'camping'@'%';
   GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.CLIENT TO 'camping'@'%';
   GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.CLIENT_PROBLEM TO 'camping'@'%';

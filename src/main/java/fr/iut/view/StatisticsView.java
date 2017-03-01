@@ -154,7 +154,6 @@ class StatisticsView extends SubScene {
                         options = new String[]{
                                 "Emplacements les \nplus réservés",
                                 "Emplacements les \nmoins réservés",
-                                "Réservations impayées",
                         };
                         break;
 
@@ -171,7 +170,6 @@ class StatisticsView extends SubScene {
                         options = new String[]{
                                 "Produits les \nplus vendus",
                                 "Produits les \nmoins vendus",
-                                "Produits vendus les \nplus rapidement"
                         };
                         break;
 
@@ -217,6 +215,7 @@ class StatisticsView extends SubScene {
                     });
                     body.add(button, i % 3, (int) i / 3);
                 }
+
                 break;
 
             case GRAPHIC:

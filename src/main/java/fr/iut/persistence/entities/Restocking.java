@@ -10,8 +10,7 @@ import java.sql.Timestamp;
 @Table(name = "RESTOCKING")
 public class Restocking {
 
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(nullable = false)
+    @Id
     private int id;
 
     @Column(nullable = false)
