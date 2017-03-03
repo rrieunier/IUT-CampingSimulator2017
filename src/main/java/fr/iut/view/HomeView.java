@@ -115,7 +115,7 @@ public class HomeView extends Scene {
 
                 switch (finalI) {
                     case 0: subScene = new ClientManagerView(controller.getClientsController()); break;
-                    case 1: break;
+                    case 1: subScene = new IncidentsManagerView(controller.getIncidentsController()); break;
                     case 2: break;
                     case 3: break;
                     case 4: subScene = new ProductManagerView(controller); break;

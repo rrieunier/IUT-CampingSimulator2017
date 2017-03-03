@@ -20,6 +20,7 @@ public class HomeController implements ControllerInterface {
     private NotificationsController notificationsController = new NotificationsController(this);
     private ClientsController clientsController = new ClientsController(this);
     private StatisticsController statisticsController = new StatisticsController(this);
+    private IncidentsController incidentsController = new IncidentsController(this);
 
     public HomeController(App app, String connectedUser) {
         this.app = app;
@@ -45,7 +46,6 @@ public class HomeController implements ControllerInterface {
         Optional<Map<String, String>> newProduct_result = newProductDialog.showAndWait();
 
         Product product = new Product();
-        //product.setId(243);
         product.setName(newProduct_result.get().get("Nom"));
         product.setStock(Integer.parseInt(newProduct_result.get().get("Quantité en stock")));
         product.setCriticalQuantity(Integer.parseInt(newProduct_result.get().get("Quantité limite")));
@@ -79,6 +79,8 @@ public class HomeController implements ControllerInterface {
     public ClientsController getClientsController() {
         return clientsController;
     }
+
+    public IncidentsController getIncidentsController() { return incidentsController; }
 
     public void OnWindowIsClosing() {
         notificationsController.stopQuerying();
