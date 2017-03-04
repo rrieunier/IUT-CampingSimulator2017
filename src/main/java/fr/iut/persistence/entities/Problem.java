@@ -25,8 +25,8 @@ public class Problem {
     @Column
     private Timestamp solutionDatetime;
 
-    @Column(nullable = false, length = 45)
-    private String state = "Non corrigé";
+    @Column(nullable = false)
+    private boolean resolved = false;
 
     @ManyToMany(
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},
@@ -58,8 +58,8 @@ public class Problem {
         return solutionDatetime;
     }
 
-    public String getState() {
-        return state;
+    public boolean isResolved() {
+        return resolved;
     }
 
     public Set<Location> getLocations() {
@@ -86,8 +86,8 @@ public class Problem {
         this.solutionDatetime = solutionDatetime;
     }
 
-    public void setState(String state) {
-        this.state = state;
+    public void setResolved(boolean resolved) {
+        this.resolved = resolved;
     }
 
     public void setLocations(Set<Location> locations) {

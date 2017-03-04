@@ -88,7 +88,7 @@
         appearanceDatetime datetime not null,
         description varchar(255) not null,
         solutionDatetime datetime,
-        state varchar(45) not null,
+        resolved bit not null,
         primary key (id)
     );
 
