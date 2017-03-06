@@ -38,7 +38,7 @@ public class ConnectionController implements ControllerInterface {
         Employee employee = null;
 
         for(Employee e : employees) {
-            if (e.getLogin().equals(username)) {
+            if (e.getLogin() != null && e.getLogin().equals(username)) {
                 employee = e;
                 break;
             }
