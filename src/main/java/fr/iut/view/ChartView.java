@@ -1,10 +1,6 @@
 package fr.iut.view;
 
-import com.mysql.cj.api.x.Table;
-import fr.iut.persistence.dao.GenericDAO;
-import fr.iut.persistence.dao.impl.GenericDAOImpl;
 import javafx.beans.property.SimpleFloatProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,7 +14,6 @@ import javafx.scene.layout.HBox;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Comparator;
 
 
 public class ChartView extends HBox {
