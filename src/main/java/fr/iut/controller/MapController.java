@@ -2,8 +2,8 @@ package fr.iut.controller;
 
 import fr.iut.App;
 import fr.iut.State;
-import fr.iut.persistence.dao.impl.GenericDAOImpl;
-import fr.iut.persistence.dao.impl.MapDao;
+import fr.iut.persistence.dao.GenericDAO;
+import fr.iut.persistence.dao.MapDao;
 import fr.iut.persistence.entities.Location;
 import fr.iut.persistence.entities.Map;
 import fr.iut.view.MapCreatorView;
@@ -21,7 +21,7 @@ public class MapController implements ControllerInterface {
     private App app;
     private MapCreatorView mapCreatorView = new MapCreatorView(this);
     private MapDao daoMap = new MapDao();
-    private GenericDAOImpl<Location, Integer> daoLocation = new GenericDAOImpl<>(Location.class);
+    private GenericDAO<Location, Integer> daoLocation = new GenericDAO<>(Location.class);
 
     private Map currentMap = null;
 

@@ -1,8 +1,7 @@
 package fr.iut.controller;
 
 
-import com.sun.org.apache.bcel.internal.generic.FLOAD;
-import fr.iut.persistence.dao.impl.GenericDAOImpl;
+import fr.iut.persistence.dao.GenericDAO;
 import fr.iut.persistence.entities.*;
 import fr.iut.view.ChartType;
 import fr.iut.view.ChartView;
@@ -15,13 +14,6 @@ import java.util.Comparator;
 
 public class StatisticsController implements ControllerInterface {
 
-    private HomeController controller;
-
-    public StatisticsController(@NamedArg("controller") HomeController controller) {
-        this.controller = controller;
-    }
-
-
     @Override
     public Object getView() {
         return null;
@@ -32,7 +24,6 @@ public class StatisticsController implements ControllerInterface {
 
     }
 
-    // TODO: Implement other charts type (other than PieChart)
     public ChartView makeChart(@NamedArg("category") SelectedCategory category,
                                @NamedArg("selectedChart") int selectedChart,
                                @NamedArg("type") ChartType type) {
@@ -58,12 +49,12 @@ public class StatisticsController implements ControllerInterface {
 
     private ChartView reservationChart(@NamedArg("selectedChart") int selectedChart,
                                        @NamedArg("type") ChartType type) {
-        GenericDAOImpl<Spot, Integer> dao;
+        GenericDAO<Spot, Integer> dao;
         ChartView chartView = null;
 
         switch (selectedChart) {
             case 0: // emplacements les plus réservés
-                dao = new GenericDAOImpl<>(Spot.class);
+                dao = new GenericDAO<>(Spot.class);
                 dao.open();
                 ArrayList<Spot> spots = (ArrayList<Spot>) dao.findAll();
 
@@ -95,7 +86,7 @@ public class StatisticsController implements ControllerInterface {
 
             case 1: // emplacements les moins réservés
 
-                dao = new GenericDAOImpl<>(Spot.class);
+                dao = new GenericDAO<>(Spot.class);
                 dao.open();
                 spots = (ArrayList<Spot>) dao.findAll();
 
@@ -134,12 +125,12 @@ public class StatisticsController implements ControllerInterface {
 
     private ChartView clientChart(@NamedArg("selectedChart") int selectedChart,
                                   @NamedArg("type") ChartType type) {
-        GenericDAOImpl<Client, Integer> dao;
+        GenericDAO<Client, Integer> dao;
         ChartView chartView = null;
 
         switch (selectedChart) {
             case 0: // clients les plus fidèles
-                dao = new GenericDAOImpl<>(Client.class);
+                dao = new GenericDAO<>(Client.class);
                 dao.open();
                 ArrayList<Client> clients = (ArrayList<Client>) dao.findAll();
 
@@ -171,7 +162,7 @@ public class StatisticsController implements ControllerInterface {
                 break;
 
             case 1:// clients les plus plaintifs
-                dao = new GenericDAOImpl<>(Client.class);
+                dao = new GenericDAO<>(Client.class);
                 dao.open();
                 clients = (ArrayList<Client>) dao.findAll();
 
@@ -204,7 +195,7 @@ public class StatisticsController implements ControllerInterface {
                 break;
 
             case 2: // clients les moins fidèles
-                dao = new GenericDAOImpl<>(Client.class);
+                dao = new GenericDAO<>(Client.class);
                 dao.open();
                 clients = (ArrayList<Client>) dao.findAll();
 
@@ -236,7 +227,7 @@ public class StatisticsController implements ControllerInterface {
                 break;
 
             case 3:// clients achetant le plus
-                dao = new GenericDAOImpl<>(Client.class);
+                dao = new GenericDAO<>(Client.class);
                 dao.open();
                 clients = (ArrayList<Client>) dao.findAll();
 
@@ -273,12 +264,12 @@ public class StatisticsController implements ControllerInterface {
 
     private ChartView purchaseChart(@NamedArg("selectedChart") int selectedChart,
                                     @NamedArg("type") ChartType type) {
-        GenericDAOImpl<Product, Integer> dao;
+        GenericDAO<Product, Integer> dao;
         ChartView chartView = null;
 
         switch (selectedChart) {
             case 0: // produit le plus vendu
-                dao = new GenericDAOImpl<>(Product.class);
+                dao = new GenericDAO<>(Product.class);
                 dao.open();
                 ArrayList<Product> products = (ArrayList<Product>) dao.findAll();
 
@@ -319,7 +310,7 @@ public class StatisticsController implements ControllerInterface {
                 break;
 
             case 1: // produits les moins vendus
-                dao = new GenericDAOImpl<>(Product.class);
+                dao = new GenericDAO<>(Product.class);
                 dao.open();
                 products = (ArrayList<Product>) dao.findAll();
 
@@ -368,12 +359,12 @@ public class StatisticsController implements ControllerInterface {
 
     private ChartView employeeChart(@NamedArg("selectedChart") int selectedChart,
                                     @NamedArg("type") ChartType type) {
-        GenericDAOImpl<Employee, Integer> dao;
+        GenericDAO<Employee, Integer> dao;
         ChartView chartView = null;
 
         switch (selectedChart) {
             case 0:
-                dao = new GenericDAOImpl<>(Employee.class);
+                dao = new GenericDAO<>(Employee.class);
                 dao.open();
                 ArrayList<Employee> employees = (ArrayList<Employee>) dao.findAll();
 
@@ -424,13 +415,13 @@ public class StatisticsController implements ControllerInterface {
 
     private ChartView problemChart(@NamedArg("selectedChart") int selectedChart,
                                    @NamedArg("type") ChartType type) {
-        GenericDAOImpl<Client, Integer> dao_client;
-        GenericDAOImpl<Location, Integer> dao_location;
+        GenericDAO<Client, Integer> dao_client;
+        GenericDAO<Location, Integer> dao_location;
         ChartView chartView = null;
 
         switch (selectedChart) {
             case 0:
-                dao_client = new GenericDAOImpl<>(Client.class);
+                dao_client = new GenericDAO<>(Client.class);
                 dao_client.open();
                 ArrayList<Client> clients = (ArrayList<Client>) dao_client.findAll();
 
@@ -463,7 +454,7 @@ public class StatisticsController implements ControllerInterface {
                 break;
 
             case 1:
-                dao_location = new GenericDAOImpl<>(Location.class);
+                dao_location = new GenericDAO<>(Location.class);
                 dao_location.open();
                 ArrayList<Location> locations = (ArrayList<Location>) dao_location.findAll();
 
@@ -499,7 +490,7 @@ public class StatisticsController implements ControllerInterface {
 
     private ChartView otherChart(@NamedArg("selectedChart") int selectedChart,
                                    @NamedArg("type") ChartType type) {
-        GenericDAOImpl<Employee, Integer> dao = new GenericDAOImpl<>(Employee.class);
+        GenericDAO<Employee, Integer> dao = new GenericDAO<>(Employee.class);
         ChartView chartView = null;
 
         switch (selectedChart) {

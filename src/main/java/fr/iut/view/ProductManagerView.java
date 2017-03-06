@@ -2,6 +2,7 @@ package fr.iut.view;
 
 
 import fr.iut.controller.HomeController;
+import fr.iut.controller.StatisticsController;
 import fr.iut.persistence.entities.Product;
 import javafx.beans.NamedArg;
 import javafx.beans.value.ChangeListener;
@@ -24,8 +25,6 @@ import javafx.scene.text.Text;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * the product manager screen

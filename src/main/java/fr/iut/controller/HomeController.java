@@ -2,7 +2,7 @@ package fr.iut.controller;
 
 import fr.iut.App;
 import fr.iut.State;
-import fr.iut.persistence.dao.impl.GenericDAOImpl;
+import fr.iut.persistence.dao.GenericDAO;
 import fr.iut.persistence.entities.Product;
 import fr.iut.view.HomeView;
 import fr.iut.view.InputsListDialog;
@@ -15,11 +15,18 @@ import java.util.Optional;
 
 public class HomeController implements ControllerInterface {
 
+    /**
+     * instance of the application
+     */
     private App app;
+    /**
+     * view of the application mainView
+     */
     private HomeView homeView;
+
     private NotificationsController notificationsController = new NotificationsController(this);
     private ClientsController clientsController = new ClientsController(this);
-    private StatisticsController statisticsController = new StatisticsController(this);
+    private StatisticsController statisticsController = new StatisticsController();
     private IncidentsController incidentsController = new IncidentsController(this);
 
     public HomeController(App app, String connectedUser) {
@@ -27,8 +34,11 @@ public class HomeController implements ControllerInterface {
         homeView = new HomeView(this, connectedUser);
     }
 
+    /**
+     * @return the whole list of products in database
+     */
     public ArrayList<Product> getProductsList() {
-        GenericDAOImpl<Product, Integer> dao = new GenericDAOImpl<Product, Integer>(Product.class);
+        GenericDAO<Product, Integer> dao = new GenericDAO<Product, Integer>(Product.class);
 
         dao.open();
         ArrayList<Product> products = (ArrayList<Product>) dao.findAll();
@@ -37,6 +47,9 @@ public class HomeController implements ControllerInterface {
         return products;
     }
 
+    /**
+     * add a newproduct in the database
+     */
     public void addNewProduct(){
         InputsListDialog newProductDialog = new InputsListDialog("Nouveau Produit");
         newProductDialog.addTextField("Nom");
@@ -52,7 +65,7 @@ public class HomeController implements ControllerInterface {
         product.setSellPrice(Float.parseFloat(newProduct_result.get().get("Prix (0.0)")));
 
 
-        GenericDAOImpl<Product, Integer> dao = new GenericDAOImpl<>(Product.class);
+        GenericDAO<Product, Integer> dao = new GenericDAO<>(Product.class);
         dao.open();
         dao.saveOrUpdate(product);
         dao.close();
@@ -63,6 +76,9 @@ public class HomeController implements ControllerInterface {
         return homeView;
     }
 
+    /**
+     * return to connection screen
+     */
     @Override
     public void finish() {
         app.switchState(State.CONNECTION);
@@ -72,9 +88,7 @@ public class HomeController implements ControllerInterface {
         return notificationsController;
     }
 
-    public StatisticsController getStatiscticsController() {
-        return statisticsController;
-    }
+    public StatisticsController getStatiscticsController() { return statisticsController; }
 
     public ClientsController getClientsController() {
         return clientsController;

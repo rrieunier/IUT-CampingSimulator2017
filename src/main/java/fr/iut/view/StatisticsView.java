@@ -102,7 +102,12 @@ class StatisticsView extends SubScene {
         wrapper.getChildren().addAll(header, scrollPane);
     }
 
-    public void buildInterface(GridPane body) {
+
+    /**
+     * @param body
+     * build content of statistics subscreen depending on user choices
+     */
+    public void buildInterface(@NamedArg("body") GridPane body) {
         body.getChildren().clear();
 
         String[] categories_labels = {"Réservations", "Clients", "Produits / Achats", "Salariés", "Incidents", "Autres"};
