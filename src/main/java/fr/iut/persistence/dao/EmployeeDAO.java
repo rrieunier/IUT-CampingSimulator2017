@@ -1,4 +1,4 @@
-package fr.iut.persistence.dao.impl;
+package fr.iut.persistence.dao;
 
 import fr.iut.persistence.entities.Employee;
 import org.hibernate.query.Query;
@@ -8,7 +8,7 @@ import javax.transaction.Transactional;
 /**
  * Created by Sydpy on 2/28/17.
  */
-public class EmployeeDAO extends GenericDAOImpl<Employee, Integer> {
+public class EmployeeDAO extends GenericDAO<Employee, Integer> {
 
     public EmployeeDAO() {
         super(Employee.class);

@@ -1,4 +1,4 @@
-package fr.iut.persistence.dao.impl;
+package fr.iut.persistence.dao;
 
 import fr.iut.persistence.entities.Map;
 
@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by Sydpy on 2/28/17.
  */
-public class MapDao extends GenericDAOImpl<Map, Integer>{
+public class MapDao extends GenericDAO<Map, Integer> {
 
     public MapDao() {
         super(Map.class);
