@@ -46,7 +46,7 @@ public class GenericDAOTest {
         Client client = new Client();
         client.setId(67906);
         client.setFirstname("Hervé");
-        client.setLastname("Bbebert");
+        client.setLastname("Bebert");
 
         GenericDAO<Client, Integer> dao = new GenericDAO<>(Client.class);
         dao.open();
