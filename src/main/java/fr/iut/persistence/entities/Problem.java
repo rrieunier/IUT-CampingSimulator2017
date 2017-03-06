@@ -12,22 +12,34 @@ import java.util.Set;
 @Table(name = "PROBLEM")
 public class Problem {
 
+    /**
+     * Problem's id
+     */
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false)
     private int id;
 
+    /**
+     * Problem's description.
+     */
     @Column(nullable = false)
     private String description;
 
+    /**
+     * Problem's date and time of appearance.
+     */
     @Column(nullable = false)
     private Timestamp appearanceDatetime;
 
+    /**
+     * Problem's date and time of solution.
+     */
     @Column
     private Timestamp solutionDatetime;
 
-    @Column(nullable = false)
-    private boolean resolved = false;
-
+    /**
+     * Locations affected by the problem.
+     */
     @ManyToMany(
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             mappedBy = "problems",
@@ -35,6 +47,9 @@ public class Problem {
     )
     private Set<Location> locations = new HashSet<>();
 
+    /**
+     * Clients affected by the problems.
+     */
     @ManyToMany(
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             mappedBy = "problems",
@@ -56,10 +71,6 @@ public class Problem {
 
     public Timestamp getSolutionDatetime() {
         return solutionDatetime;
-    }
-
-    public boolean isResolved() {
-        return resolved;
     }
 
     public Set<Location> getLocations() {
@@ -86,15 +97,15 @@ public class Problem {
         this.solutionDatetime = solutionDatetime;
     }
 
-    public void setResolved(boolean resolved) {
-        this.resolved = resolved;
-    }
-
     public void setLocations(Set<Location> locations) {
         this.locations = locations;
     }
 
     public void setClients(Set<Client> clients) {
         this.clients = clients;
+    }
+
+    public boolean isSolved(){
+        return solutionDatetime != null;
     }
 }

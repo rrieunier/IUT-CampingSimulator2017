@@ -11,22 +11,40 @@ import java.util.Set;
 @Table(name = "CLIENT")
 public class Client {
 
+    /**
+     * Client's id.
+     */
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false)
     private int id;
 
+    /**
+     * Client's lastname.
+     */
     @Column(nullable = false, length = 45)
     private String lastname;
 
+    /**
+     * Client's firstname.
+     */
     @Column(nullable = false, length = 45)
     private String firstname;
 
+    /**
+     * Client's phone number.
+     */
     @Column(length = 11)
     private String phone;
 
+    /**
+     * Client's email.
+     */
     @Column(length = 45)
     private String email;
 
+    /**
+     * Problems encountered by the client.
+     */
     @ManyToMany(
             targetEntity=Problem.class,
             cascade={CascadeType.PERSIST, CascadeType.MERGE}
@@ -37,9 +55,15 @@ public class Client {
     )
     private Set<Problem> problems = new HashSet<>();
 
+    /**
+     * Reservations made by the client.
+     */
     @OneToMany(mappedBy = "client")
     private Set<Reservation> reservations = new HashSet<>();
 
+    /**
+     * Purchases made by the client.
+     */
     @OneToMany(mappedBy = "client")
     private Set<Purchase> purchases = new HashSet<>();
 

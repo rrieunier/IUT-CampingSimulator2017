@@ -9,10 +9,16 @@ import javax.persistence.*;
 @Table(name = "MAP")
 public class Map {
 
+    /**
+     * Map's id
+     */
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false)
     private int id;
 
+    /**
+     * Map's image.
+     */
     @Column(nullable = false)
     private byte[] image;
 

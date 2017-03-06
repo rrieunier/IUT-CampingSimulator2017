@@ -10,22 +10,40 @@ import java.sql.Timestamp;
 @Table(name = "TASK")
 public class Task {
 
+    /**
+     * Task's id.
+     */
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false)
     private int id;
 
+    /**
+     * Task's start date and time.
+     */
     @Column(nullable = false)
     private Timestamp starttime;
 
+    /**
+     * Task's end date and time.
+     */
     @Column(nullable = false)
     private Timestamp endtime;
 
+    /**
+     * Task's label.
+     */
     @Column(nullable = false)
     private String label;
 
+    /**
+     * Employee who is attributed to this task.
+     */
     @ManyToOne(optional = false)
     private Employee employee;
 
+    /**
+     * Location on which the task is planned.
+     */
     @ManyToOne
     private Location location;
 

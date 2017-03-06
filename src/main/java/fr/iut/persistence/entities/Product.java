@@ -11,28 +11,52 @@ import java.util.Set;
 @Table(name = "PRODUCT")
 public class Product {
 
+    /**
+     * Product's id.
+     */
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false)
     private int id;
 
+    /**
+     * Product's stock.
+     */
     @Column(nullable = false)
     private int stock = 0;
 
+    /**
+     * Product's critical quantity.
+     */
     @Column(nullable = false)
     private int criticalQuantity = 0;
 
+    /**
+     * Product's name.
+     */
     @Column(nullable = false)
     private String name;
 
+    /**
+     * Product's sell price.
+     */
     @Column(nullable = false)
     private float sellPrice;
 
+    /**
+     * Purchases made for this product.
+     */
     @OneToMany(mappedBy = "product")
     private Set<Purchase> purchases = new HashSet<>();
 
+    /**
+     * Restocking made for this product.
+     */
     @OneToMany(mappedBy = "product")
     private Set<Restocking> restockings = new HashSet<>();
 
+    /**
+     * Relations between suppliers and this product.
+     */
     @OneToMany(mappedBy = "product")
     private Set<SupplierProposeProduct> supplierProposeProducts = new HashSet<>();
 

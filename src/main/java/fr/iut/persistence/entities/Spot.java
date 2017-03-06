@@ -12,21 +12,39 @@ import java.util.Set;
 @PrimaryKeyJoinColumn(name = "id", referencedColumnName = "id")
 public class Spot extends Location {
 
+    /**
+     * Spot's price per day.
+     */
     @Column(nullable = false)
     private float pricePerDay = 10.f;
 
+    /**
+     * Spot's person capacity.
+     */
     @Column(nullable = false)
     private int capacity;
 
+    /**
+     * Does this spot has water.
+     */
     @Column(nullable = false)
     private boolean water = false;
 
+    /**
+     * Does this spot has electricity.
+     */
     @Column(nullable = false)
     private boolean electricity = false;
 
+    /**
+     * Does this spot has shadow.
+     */
     @Column(nullable = false)
     private boolean shadow = false;
 
+    /**
+     * Reservations made to this spot.
+     */
     @OneToMany(mappedBy = "spot")
     private Set<Reservation> reservations = new HashSet<>();
 

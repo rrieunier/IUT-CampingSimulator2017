@@ -11,16 +11,28 @@ import java.util.Set;
 @Table(name = "NOTIFICATION")
 public class Notification {
 
+    /**
+     * Notification's id.
+     */
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false)
     private int id;
 
+    /**
+     * Notification's title.
+     */
     @Column(nullable = false, length = 45)
     private String title;
 
+    /**
+     * Notification's content.
+     */
     @Column(nullable = false)
     private String content;
 
+    /**
+     * Employees concerned about this notification.
+     */
     @ManyToMany(
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             mappedBy = "notifications",

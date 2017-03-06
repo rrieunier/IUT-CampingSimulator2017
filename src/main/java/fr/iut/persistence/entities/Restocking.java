@@ -10,19 +10,34 @@ import java.sql.Timestamp;
 @Table(name = "RESTOCKING")
 public class Restocking {
 
+    /**
+     * Restocking's id.
+     */
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false)
     private int id;
 
+    /**
+     * Quantity restocked.
+     */
     @Column(nullable = false)
     private int quantity;
 
+    /**
+     * Restocking date and time.
+     */
     @Column(nullable = false)
     private Timestamp datetime = new Timestamp(System.currentTimeMillis());
 
+    /**
+     * Product restocked.
+     */
     @ManyToOne(optional = false)
     private Product product;
 
+    /**
+     * Supplier who did this restocking.
+     */
     @ManyToOne(optional = false)
     private Supplier supplier;
 

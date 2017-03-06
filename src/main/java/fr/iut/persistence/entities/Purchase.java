@@ -10,19 +10,34 @@ import java.sql.Timestamp;
 @Table(name = "PURCHASE")
 public class Purchase {
 
+    /**
+     * Purchase's id.
+     */
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false)
     private int id;
 
+    /**
+     * Purchase's date and time.
+     */
     @Column(nullable = false)
     private Timestamp datetime = new Timestamp(System.currentTimeMillis());
 
+    /**
+     * Purchase's product quantity.
+     */
     @Column(nullable = false)
     private int quantity;
 
+    /**
+     * Client who made this purchase.
+     */
     @ManyToOne(optional = false)
     private Client client;
 
+    /**
+     * Product which was purchased.
+     */
     @ManyToOne(optional = false)
     private Product product;
 

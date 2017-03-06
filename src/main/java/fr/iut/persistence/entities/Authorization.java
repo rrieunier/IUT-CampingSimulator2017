@@ -10,10 +10,16 @@ import java.util.Set;
 @Entity
 @Table(name = "AUTHORIZATION")
 public class Authorization {
+    /**
+     * authorization label
+     */
     @Id
     @Column(nullable = false, length = 45)
     private String label;
 
+    /**
+     * employees having this authorization
+     */
     @ManyToMany(
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             mappedBy = "authorizations",

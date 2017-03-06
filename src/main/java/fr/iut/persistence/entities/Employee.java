@@ -11,31 +11,58 @@ import java.util.Set;
 @Table(name = "EMPLOYEE")
 public class Employee {
 
+    /**
+     * Employee's id.
+     */
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false)
     private int id;
 
+    /**
+     * Employee's firstname.
+     */
     @Column(nullable = false)
     private String firstName;
 
+    /**
+     * Employee's lastname.
+     */
     @Column(nullable = false)
     private String lastName;
 
+    /**
+     * Employee's phone number.
+     */
     @Column(length = 11)
     private String phone;
 
+    /**
+     * Employee's email.
+     */
     @Column(length = 45)
     private String email;
 
+    /**
+     * Employee's complete address.
+     */
     @Column
     private String completeAddress;
 
+    /**
+     * Employee's login if it's a user.
+     */
     @Column(length = 20, unique = true)
     private String login;
 
+    /**
+     * Employee's password if it's a user.
+     */
     @Column
     private String password;
 
+    /**
+     * Authorizations granted to this employee if it's a user.
+     */
     @ManyToMany(
             targetEntity=Authorization.class,
             cascade={CascadeType.PERSIST, CascadeType.MERGE}
@@ -46,6 +73,9 @@ public class Employee {
     )
     private Set<Authorization> authorizations = new HashSet<>();
 
+    /**
+     * Notifications sent to this employee if it's a user.
+     */
     @ManyToMany(
             targetEntity=Notification.class,
             cascade={CascadeType.PERSIST, CascadeType.MERGE}
@@ -56,9 +86,15 @@ public class Employee {
     )
     private Set<Notification> notifications = new HashSet<>();
 
+    /**
+     * Tasks attributed to this employee.
+     */
     @OneToMany(mappedBy = "employee" )
     private Set<Task> tasks = new HashSet<>();
 
+    /**
+     * Logs made by this employee if it's a user.
+     */
     @OneToMany(mappedBy = "employee" )
     private Set<Log> logs = new HashSet<>();
 

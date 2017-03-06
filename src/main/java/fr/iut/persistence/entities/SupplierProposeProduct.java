@@ -9,16 +9,28 @@ import javax.persistence.*;
 @Table(name = "SUPPLIER_PROPOSE_PRODUCT")
 public class SupplierProposeProduct {
 
+    /**
+     * Id of this proposition.
+     */
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false)
     private int id;
 
+    /**
+     * Sell price for this proposition.
+     */
     @Column(nullable = false)
     private float sellPrice;
 
+    /**
+     * Supplier who proposes.
+     */
     @ManyToOne(optional = false)
     private Supplier supplier;
 
+    /**
+     * Product proposed.
+     */
     @ManyToOne(optional = false)
     private Product product;
 

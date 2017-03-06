@@ -10,16 +10,28 @@ import java.sql.Timestamp;
 @Table(name = "LOG")
 public class Log {
 
+    /**
+     * Log's id.
+     */
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false)
     private int id;
 
+    /**
+     * Log's action description.
+     */
     @Column(nullable = false)
     private String action;
 
+    /**
+     * Log's date and time of action.
+     */
     @Column(nullable = false)
     private Timestamp datetime = new Timestamp(System.currentTimeMillis());
 
+    /**
+     * Employee responsible for this action.
+     */
     @ManyToOne(optional = false)
     private Employee employee;
 

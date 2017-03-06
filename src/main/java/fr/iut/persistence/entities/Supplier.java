@@ -11,25 +11,46 @@ import java.util.Set;
 @Table(name = "SUPPLIER")
 public class Supplier {
 
+    /**
+     * Supplier's id.
+     */
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false)
     private int id;
 
+    /**
+     * Supplier's name.
+     */
     @Column(nullable = false)
     private String name;
 
-    @Column
+    /**
+     * Supplier's phone number.
+     */
+    @Column(length = 11)
     private String phone;
 
+    /**
+     * Supplier's email.
+     */
     @Column
     private String email;
 
+    /**
+     * Supplier's website.
+     */
     @Column
     private String website;
 
+    /**
+     * Restockings made by this supplier.
+     */
     @OneToMany(mappedBy = "supplier")
     private Set<Restocking> restockings = new HashSet<>();
 
+    /**
+     * Product propositions by this supplier.
+     */
     @OneToMany(mappedBy = "supplier")
     private Set<SupplierProposeProduct> supplierProposeProducts = new HashSet<>();
 

@@ -12,22 +12,41 @@ import java.util.Set;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Location {
 
+    /**
+     * Locations's id.
+     */
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false)
     private int id;
 
+    /**
+     * Location's name.
+     */
     @Column
     private String name;
 
+    /**
+     * Location's x coordinate on map picture.
+     */
     @Column(nullable = false)
     private Double pointX;
 
+    /**
+     * Location's y coordinate on map picture.
+     */
     @Column(nullable = false)
     private Double pointY;
 
+
+    /**
+     * Tasks planned on this location.
+     */
     @OneToMany(mappedBy = "location")
     private Set<Task> tasks = new HashSet<>();
 
+    /**
+     * Problems encountered on this location.
+     */
     @ManyToMany(
             targetEntity=Problem.class,
             cascade={CascadeType.PERSIST, CascadeType.MERGE}
