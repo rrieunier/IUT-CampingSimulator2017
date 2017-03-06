@@ -2,7 +2,6 @@ package fr.iut.view;
 
 
 import fr.iut.controller.HomeController;
-import fr.iut.persistence.dao.impl.GenericDAOImpl;
 import fr.iut.persistence.entities.Product;
 import javafx.beans.NamedArg;
 import javafx.beans.value.ChangeListener;

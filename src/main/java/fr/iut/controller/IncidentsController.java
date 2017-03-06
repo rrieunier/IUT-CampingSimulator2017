@@ -1,32 +1,55 @@
 package fr.iut.controller;
 
-import fr.iut.persistence.dao.impl.GenericDAOImpl;
+import fr.iut.persistence.dao.GenericDAO;
 import fr.iut.persistence.entities.Problem;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Comparator;
+import java.util.Date;
 
 /**
  * Created by theo on 01/03/17.
  */
 public class IncidentsController {
 
+    /**
+     * instance of the controller
+     */
     HomeController homeController;
 
+    /**
+     * local list of problems
+     */
     ArrayList<Problem> stub = new ArrayList<>();
 
-    GenericDAOImpl<Problem, Integer> daoIncidents = new GenericDAOImpl<>(Problem.class);
+
+    /**
+     * DAO of Incidents
+     */
+    GenericDAO<Problem, Integer> daoIncidents = new GenericDAO<>(Problem.class);
 
     public IncidentsController(HomeController homeController) { this.homeController = homeController;}
 
+    /**
+     * get incidents of database and create in local
+     */
     public void createIncidents(){
         daoIncidents.open();
         stub = (ArrayList<Problem>) daoIncidents.findAll();
         daoIncidents.close();
     }
 
+    /**
+     * @param p resolve an incident
+     */
     public void resolveIncident(Problem p){
-        p.setResolved(true);
+        Calendar calendar = Calendar.getInstance();
+        Date now = calendar.getTime();
+        Timestamp currentTimestamp = new Timestamp(now.getTime());
+        p.setSolutionDatetime(currentTimestamp);
+
         stub.set(stub.indexOf(p), p);
 
         daoIncidents.open();
@@ -34,6 +57,9 @@ public class IncidentsController {
         daoIncidents.close();
     }
 
+    /**
+     * @param sort_options selected sort method to sort the problem list
+     */
     public void sortIncidents(int sort_options){
         stub.sort(new Comparator<Problem>() {
             @Override
@@ -64,7 +90,15 @@ public class IncidentsController {
         });
     }
 
+    /**
+     * @param problem create the incident and save it
+     */
     public void saveIncident(Problem problem){
+        Calendar calendar = Calendar.getInstance();
+        Date now = calendar.getTime();
+        Timestamp currentTimestamp = new Timestamp(now.getTime());
+        problem.setAppearanceDatetime(currentTimestamp);
+
         daoIncidents.open();
         daoIncidents.saveOrUpdate(problem);
         daoIncidents.close();

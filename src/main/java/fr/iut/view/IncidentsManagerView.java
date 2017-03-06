@@ -10,7 +10,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.SubScene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
@@ -22,9 +21,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import java.io.File;
-import java.sql.Timestamp;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 
@@ -33,16 +29,34 @@ import java.util.Optional;
  */
 public class IncidentsManagerView extends SubScene{
 
+    /**
+     * controller of the instance
+     */
     IncidentsController controller;
 
+    /**
+     * Differents textfields which are in details
+     */
     TextField description, appearanceDatetime, solutionDatetime;
 
+    /**
+     * boolean if the client can modif the incident
+     */
     Boolean editMode = false;
 
+    /**
+     * list of incidents
+     */
     VBox incidents;
 
+    /**
+     * if is selected, display only problems which are not resolved
+     */
     RadioButton resolved;
 
+    /**
+     * local value of the product selected
+     */
     Problem lastClickedValue;
 
     public IncidentsManagerView(IncidentsController controller){
@@ -118,11 +132,6 @@ public class IncidentsManagerView extends SubScene{
 
             Problem problem = new Problem();
             problem.setDescription(newIncident_result.get().get("Description"));
-
-            Calendar calendar = Calendar.getInstance();
-            Date now = calendar.getTime();
-            Timestamp currentTimestamp = new Timestamp(now.getTime());
-            problem.setAppearanceDatetime(currentTimestamp);
 
             controller.saveIncident(problem);
             createScroll(search_field.getText().toString());
@@ -211,11 +220,11 @@ public class IncidentsManagerView extends SubScene{
             editMode = !editMode;
         });
 
-        Button deleteButton = new Button("Incident résolu");
-        deleteButton.getStylesheets().add(new File("res/style.css").toURI().toString());
-        deleteButton.getStyleClass().add("record-sales");
-        deleteButton.setMinWidth(HomeView.TAB_CONTENT_W / 4);
-        deleteButton.setOnAction(actionEvent -> {
+        Button resolvedButton = new Button("Incident résolu");
+        resolvedButton.getStylesheets().add(new File("res/style.css").toURI().toString());
+        resolvedButton.getStyleClass().add("record-sales");
+        resolvedButton.setMinWidth(HomeView.TAB_CONTENT_W / 4);
+        resolvedButton.setOnAction(actionEvent -> {
             final Problem lastClikedCopy = lastClickedValue;
             controller.resolveIncident(lastClikedCopy);
             createScroll(search_field.getText().toString());
@@ -223,7 +232,7 @@ public class IncidentsManagerView extends SubScene{
         });
 
         buttonsWrap.setSpacing(10);
-        buttonsWrap.getChildren().addAll(editButton, deleteButton);
+        buttonsWrap.getChildren().addAll(editButton, resolvedButton);
 
         incidentDetailsWrapper.setPadding(new Insets(0,0,30,0));
         incidentDetailsWrapper.setTop(headerDetails);
@@ -237,7 +246,7 @@ public class IncidentsManagerView extends SubScene{
     private void updateDetail(Problem problem){
         description.setText(problem.getDescription());
         appearanceDatetime.setText(problem.getAppearanceDatetime().toString());
-        if(problem.isResolved())
+        if(problem.isSolved())
             solutionDatetime.setText(problem.getSolutionDatetime().toString());
         else
             solutionDatetime.setText("Date de résolution ...");
@@ -284,7 +293,7 @@ public class IncidentsManagerView extends SubScene{
         for (Problem problem : controller.getIncidents()) {
             if (problem.getDescription().toLowerCase().contains(search)) {
                 if(resolved.isSelected()){
-                    if(!problem.isResolved()){
+                    if(!problem.isSolved()){
                         createElement(problem, i);
                         i++;
                     }
