@@ -15,11 +15,18 @@ import java.util.Optional;
 
 public class HomeController implements ControllerInterface {
 
+    /**
+     * instance of the application
+     */
     private App app;
+    /**
+     * view of the application mainView
+     */
     private HomeView homeView;
+
     private NotificationsController notificationsController = new NotificationsController(this);
     private ClientsController clientsController = new ClientsController(this);
-    private StatisticsController statisticsController = new StatisticsController(this);
+    private StatisticsController statisticsController = new StatisticsController();
     private IncidentsController incidentsController = new IncidentsController(this);
 
     public HomeController(App app, String connectedUser) {
@@ -27,6 +34,9 @@ public class HomeController implements ControllerInterface {
         homeView = new HomeView(this, connectedUser);
     }
 
+    /**
+     * @return the whole list of products in database
+     */
     public ArrayList<Product> getProductsList() {
         GenericDAO<Product, Integer> dao = new GenericDAO<Product, Integer>(Product.class);
 
@@ -37,6 +47,9 @@ public class HomeController implements ControllerInterface {
         return products;
     }
 
+    /**
+     * add a newproduct in the database
+     */
     public void addNewProduct(){
         InputsListDialog newProductDialog = new InputsListDialog("Nouveau Produit");
         newProductDialog.addTextField("Nom");
@@ -63,6 +76,9 @@ public class HomeController implements ControllerInterface {
         return homeView;
     }
 
+    /**
+     * return to connection screen
+     */
     @Override
     public void finish() {
         app.switchState(State.CONNECTION);
@@ -72,9 +88,7 @@ public class HomeController implements ControllerInterface {
         return notificationsController;
     }
 
-    public StatisticsController getStatiscticsController() {
-        return statisticsController;
-    }
+    public StatisticsController getStatiscticsController() { return statisticsController; }
 
     public ClientsController getClientsController() {
         return clientsController;

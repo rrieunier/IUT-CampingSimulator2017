@@ -50,7 +50,6 @@ public class IncidentsController {
         p.setSolutionDatetime(currentTimestamp);
 
         stub.set(stub.indexOf(p), p);
-
         daoIncidents.open();
         daoIncidents.saveOrUpdate(p);
         daoIncidents.close();

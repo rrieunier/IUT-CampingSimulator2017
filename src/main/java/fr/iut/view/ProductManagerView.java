@@ -2,6 +2,7 @@ package fr.iut.view;
 
 
 import fr.iut.controller.HomeController;
+import fr.iut.controller.StatisticsController;
 import fr.iut.persistence.entities.Product;
 import javafx.beans.NamedArg;
 import javafx.beans.value.ChangeListener;

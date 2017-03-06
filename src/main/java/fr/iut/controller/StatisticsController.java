@@ -14,13 +14,6 @@ import java.util.Comparator;
 
 public class StatisticsController implements ControllerInterface {
 
-    private HomeController controller;
-
-    public StatisticsController(@NamedArg("controller") HomeController controller) {
-        this.controller = controller;
-    }
-
-
     @Override
     public Object getView() {
         return null;
@@ -31,7 +24,6 @@ public class StatisticsController implements ControllerInterface {
 
     }
 
-    // TODO: Implement other charts type (other than PieChart)
     public ChartView makeChart(@NamedArg("category") SelectedCategory category,
                                @NamedArg("selectedChart") int selectedChart,
                                @NamedArg("type") ChartType type) {
