@@ -54,12 +54,9 @@ public class ConnectionController implements ControllerInterface {
 
     @Override
     public void finish() {
-        //TODO REMOVE COMMENTS
-        /*
         if(app.doINeedToShowMapEditor())
             app.switchState(State.MAP_CREATOR);
         else
-        */
             app.switchState(State.HOME);
     }
 
