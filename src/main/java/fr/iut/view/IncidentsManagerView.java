@@ -21,6 +21,10 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import java.io.File;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 
@@ -202,18 +206,25 @@ public class IncidentsManagerView extends SubScene{
         editButton.setMinWidth(HomeView.TAB_CONTENT_W / 4);
 
         editButton.setOnAction(actionEvent -> {
+            final Problem lastClikedCopy = lastClickedValue;
             if(editMode) {
                 description.setDisable(true);
                 appearanceDatetime.setDisable(true);
                 solutionDatetime.setDisable(true);
                 editButton.setText("Modifier");
-                //TODO : saveOrUpdate de l'incident dans la BDD le lastClikedValue
+
+                controller.updateIncident(lastClikedCopy.getId(), description.getText().toString(),
+                        appearanceDatetime.getText().toString(), solutionDatetime.getText().toString());
+                createScroll(search_field.getText().toString());
+
+                //TODO : bug avec l'update
             }
 
             else {
                 description.setDisable(false);
                 appearanceDatetime.setDisable(false);
-                solutionDatetime.setDisable(false);
+                if(lastClikedCopy.isSolved())
+                    solutionDatetime.setDisable(false);
                 editButton.setText("Sauvegarder");
             }
 
@@ -226,9 +237,10 @@ public class IncidentsManagerView extends SubScene{
         resolvedButton.setMinWidth(HomeView.TAB_CONTENT_W / 4);
         resolvedButton.setOnAction(actionEvent -> {
             final Problem lastClikedCopy = lastClickedValue;
-            controller.resolveIncident(lastClikedCopy);
+            System.out.println(lastClikedCopy.getId());
+            controller.resolveIncident(lastClikedCopy.getId());
             createScroll(search_field.getText().toString());
-            // TODO : plusieurs bugs, exceptions ...
+            // TODO : bug avec l'update
         });
 
         buttonsWrap.setSpacing(10);
@@ -290,6 +302,7 @@ public class IncidentsManagerView extends SubScene{
         incidents.getChildren().clear();
 
         int i = 0;
+        controller.createIncidents();
         for (Problem problem : controller.getIncidents()) {
             if (problem.getDescription().toLowerCase().contains(search)) {
                 if(resolved.isSelected()){
