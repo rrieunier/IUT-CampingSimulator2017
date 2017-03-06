@@ -24,7 +24,6 @@ public class IncidentsController {
      */
     ArrayList<Problem> stub = new ArrayList<>();
 
-
     /**
      * DAO of Incidents
      */
