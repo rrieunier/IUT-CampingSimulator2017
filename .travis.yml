@@ -8,5 +8,5 @@ test:
   encoding: utf8
 
 before_install:
-  mysql -e "CREATE DATABASE IF NOT EXISTS CampingTest; DROP USER IF EXISTS camping; CREATE USER camping IDENTIFIED BY 'camping'; GRANT ALL PRIVILEGES ON CampingTest.* TO 'camping'@'%';"
+  mysql -e "CREATE DATABASE IF NOT EXISTS CampingTest; DROP USER camping; CREATE USER camping IDENTIFIED BY 'camping'; GRANT ALL PRIVILEGES ON CampingTest.* TO 'camping'@'%';"
 
