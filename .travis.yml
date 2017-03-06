@@ -1,4 +1,4 @@
 language:
   java
 before_install:
-  mysql -e 'CREATE DATABASE IF NOT EXISTS CampingTest;GRANT ALL PRIVILEGES ON CampingTest.* TO \'camping\'.\'%\';'
+  mysql -e 'CREATE DATABASE IF NOT EXISTS CampingTest;GRANT ALL PRIVILEGES ON CampingTest.* TO \'camping\'@\'%\';'
