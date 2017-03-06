@@ -7,17 +7,25 @@ import org.hibernate.cfg.Configuration;
  */
 public class HibernateUtil {
 
-    private static final SessionFactory sessionFactory = buildSessionFactory();
+    public enum Config {
+        PROD, TEST
+    }
 
-    private static SessionFactory buildSessionFactory() {
+    private static SessionFactory sessionFactory = buildSessionFactory(Config.PROD);
+
+    private static SessionFactory buildSessionFactory(Config config) {
         try {
-            // Create the SessionFactory from hibernate.cfg.xml
-            return new Configuration().configure().buildSessionFactory();
+            if (config == Config.TEST) {
+                return new Configuration().configure("hibernate-test.cfg.xml").buildSessionFactory();
+            } else if (config == Config.PROD) {
+                return new Configuration().configure().buildSessionFactory();
+            }
         } catch (Throwable ex) {
-            // Make sure you log the exception, as it might be swallowed
             System.err.println("Initial SessionFactory creation failed." + ex);
             throw new ExceptionInInitializerError(ex);
         }
+
+        return null;
     }
 
     public static SessionFactory getSessionFactory() {
@@ -25,8 +33,12 @@ public class HibernateUtil {
     }
 
     public static void shutdown() {
-        // Close caches and connection pools
         getSessionFactory().close();
+    }
+
+    public static void setConfig(Config config){
+        shutdown();
+        sessionFactory = buildSessionFactory(config);
     }
 
 }
