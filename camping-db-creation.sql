@@ -1,313 +1,314 @@
-  DROP DATABASE IF EXISTS Camping;
-  CREATE DATABASE Camping;
-  DROP USER IF EXISTS camping;
-  CREATE USER IF NOT EXISTS camping IDENTIFIED BY 'camping';
-  USE Camping;
+DROP DATABASE IF EXISTS Camping;
+CREATE DATABASE Camping;
+DROP USER IF EXISTS camping;
+CREATE USER IF NOT EXISTS camping
+  IDENTIFIED BY 'camping';
+USE Camping;
 
-    create table AUTHORIZATION (
-       label varchar(45) not null,
-        primary key (label)
-    );
+CREATE TABLE AUTHORIZATION (
+  label VARCHAR(45) NOT NULL,
+  PRIMARY KEY (label)
+);
 
-    create table CLIENT (
-       id integer not null AUTO_INCREMENT,
-        email varchar(45),
-        firstname varchar(45) not null,
-        lastname varchar(45) not null,
-        phone varchar(11),
-        primary key (id)
-    );
+CREATE TABLE CLIENT (
+  id        INTEGER     NOT NULL AUTO_INCREMENT,
+  email     VARCHAR(45),
+  firstname VARCHAR(45) NOT NULL,
+  lastname  VARCHAR(45) NOT NULL,
+  phone     VARCHAR(11),
+  PRIMARY KEY (id)
+);
 
-    create table CLIENT_PROBLEM (
-       client_id integer not null,
-        problem_id integer not null,
-        primary key (client_id, problem_id)
-    );
+CREATE TABLE CLIENT_PROBLEM (
+  client_id  INTEGER NOT NULL,
+  problem_id INTEGER NOT NULL,
+  PRIMARY KEY (client_id, problem_id)
+);
 
-    create table EMPLOYEE (
-       id integer not null AUTO_INCREMENT,
-        completeAddress varchar(255),
-        email varchar(45),
-        firstName varchar(255) not null,
-        lastName varchar(255) not null,
-        login varchar(20),
-        password varchar(255),
-        phone varchar(11),
-        primary key (id)
-    );
+CREATE TABLE EMPLOYEE (
+  id              INTEGER      NOT NULL AUTO_INCREMENT,
+  completeAddress VARCHAR(255),
+  email           VARCHAR(45),
+  firstName       VARCHAR(255) NOT NULL,
+  lastName        VARCHAR(255) NOT NULL,
+  login           VARCHAR(20),
+  password        VARCHAR(255),
+  phone           VARCHAR(11),
+  PRIMARY KEY (id)
+);
 
-    create table EMPLOYEE_AUTHORIZATION (
-       employee_id integer not null,
-        authorization_id varchar(45) not null,
-        primary key (employee_id, authorization_id)
-    );
+CREATE TABLE EMPLOYEE_AUTHORIZATION (
+  employee_id      INTEGER     NOT NULL,
+  authorization_id VARCHAR(45) NOT NULL,
+  PRIMARY KEY (employee_id, authorization_id)
+);
 
-    create table EMPLOYEE_NOTIFICATION (
-       employee_id integer not null,
-        notification_id integer not null,
-        primary key (employee_id, notification_id)
-    );
+CREATE TABLE EMPLOYEE_NOTIFICATION (
+  employee_id     INTEGER NOT NULL,
+  notification_id INTEGER NOT NULL,
+  PRIMARY KEY (employee_id, notification_id)
+);
 
-    create table LOCATION (
-       id integer not null AUTO_INCREMENT,
-        name varchar(255),
-        pointX double precision not null,
-        pointY double precision not null,
-        primary key (id)
-    );
+CREATE TABLE LOCATION (
+  id     INTEGER          NOT NULL AUTO_INCREMENT,
+  name   VARCHAR(255),
+  pointX DOUBLE PRECISION NOT NULL,
+  pointY DOUBLE PRECISION NOT NULL,
+  PRIMARY KEY (id)
+);
 
-    create table LOCATION_PROBLEM (
-       location_id integer not null,
-        problem_id integer not null,
-        primary key (location_id, problem_id)
-    );
+CREATE TABLE LOCATION_PROBLEM (
+  location_id INTEGER NOT NULL,
+  problem_id  INTEGER NOT NULL,
+  PRIMARY KEY (location_id, problem_id)
+);
 
-    create table LOG (
-       id integer not null AUTO_INCREMENT,
-        action varchar(255) not null,
-        datetime datetime not null,
-        employee_id integer not null,
-        primary key (id)
-    );
+CREATE TABLE LOG (
+  id          INTEGER      NOT NULL AUTO_INCREMENT,
+  action      VARCHAR(255) NOT NULL,
+  datetime    DATETIME     NOT NULL,
+  employee_id INTEGER      NOT NULL,
+  PRIMARY KEY (id)
+);
 
-    create table MAP (
-       id integer not null AUTO_INCREMENT,
-        image longblob not null,
-        primary key (id)
-    );
+CREATE TABLE MAP (
+  id    INTEGER  NOT NULL AUTO_INCREMENT,
+  image LONGBLOB NOT NULL,
+  PRIMARY KEY (id)
+);
 
-    create table NOTIFICATION (
-       id integer not null AUTO_INCREMENT,
-        content varchar(255) not null,
-        title varchar(45) not null,
-        primary key (id)
-    );
+CREATE TABLE NOTIFICATION (
+  id      INTEGER      NOT NULL AUTO_INCREMENT,
+  content VARCHAR(255) NOT NULL,
+  title   VARCHAR(45)  NOT NULL,
+  PRIMARY KEY (id)
+);
 
-    create table PROBLEM (
-       id integer not null AUTO_INCREMENT,
-        appearanceDatetime datetime not null,
-        description varchar(255) not null,
-        solutionDatetime datetime,
-        resolved bit not null,
-        primary key (id)
-    );
+CREATE TABLE PROBLEM (
+  id                 INTEGER      NOT NULL AUTO_INCREMENT,
+  appearanceDatetime DATETIME     NOT NULL,
+  description        VARCHAR(255) NOT NULL,
+  solutionDatetime   DATETIME,
+  PRIMARY KEY (id)
+);
 
-    create table PRODUCT (
-       id integer not null AUTO_INCREMENT,
-        criticalQuantity integer not null,
-        name varchar(255) not null,
-        sellPrice float not null,
-        stock integer not null,
-        primary key (id)
-    );
+CREATE TABLE PRODUCT (
+  id               INTEGER      NOT NULL AUTO_INCREMENT,
+  criticalQuantity INTEGER      NOT NULL,
+  name             VARCHAR(255) NOT NULL,
+  sellPrice        FLOAT        NOT NULL,
+  stock            INTEGER      NOT NULL,
+  PRIMARY KEY (id)
+);
 
-    create table PURCHASE (
-       id integer not null AUTO_INCREMENT,
-        datetime datetime not null,
-        quantity integer not null,
-        client_id integer not null,
-        product_id integer not null,
-        primary key (id)
-    );
+CREATE TABLE PURCHASE (
+  id         INTEGER  NOT NULL AUTO_INCREMENT,
+  datetime   DATETIME NOT NULL,
+  quantity   INTEGER  NOT NULL,
+  client_id  INTEGER  NOT NULL,
+  product_id INTEGER  NOT NULL,
+  PRIMARY KEY (id)
+);
 
-    create table RESERVATION (
-       id integer not null AUTO_INCREMENT,
-        clientComment varchar(255),
-        endtime datetime not null,
-        personCount integer not null,
-        reservationDate datetime not null,
-        starttime datetime not null,
-        client_id integer not null,
-        spot_id integer not null,
-        primary key (id)
-    );
+CREATE TABLE RESERVATION (
+  id              INTEGER  NOT NULL AUTO_INCREMENT,
+  clientComment   VARCHAR(255),
+  reduction       FLOAT    NOT NULL,
+  endtime         DATETIME NOT NULL,
+  personCount     INTEGER  NOT NULL,
+  reservationDate DATETIME NOT NULL,
+  starttime       DATETIME NOT NULL,
+  client_id       INTEGER  NOT NULL,
+  spot_id         INTEGER  NOT NULL,
+  PRIMARY KEY (id)
+);
 
-    create table RESTOCKING (
-       id integer not null AUTO_INCREMENT,
-        datetime datetime not null,
-        quantity integer not null,
-        product_id integer not null,
-        supplier_id integer not null,
-        primary key (id)
-    );
+CREATE TABLE RESTOCKING (
+  id          INTEGER  NOT NULL AUTO_INCREMENT,
+  datetime    DATETIME NOT NULL,
+  quantity    INTEGER  NOT NULL,
+  product_id  INTEGER  NOT NULL,
+  supplier_id INTEGER  NOT NULL,
+  PRIMARY KEY (id)
+);
 
-    create table SPOT (
-       capacity integer not null,
-        electricity bit not null,
-        pricePerDay float not null,
-        shadow bit not null,
-        water bit not null,
-        id integer not null,
-        primary key (id)
-    );
+CREATE TABLE SPOT (
+  capacity    INTEGER NOT NULL,
+  electricity BIT     NOT NULL,
+  pricePerDay FLOAT   NOT NULL,
+  shadow      BIT     NOT NULL,
+  water       BIT     NOT NULL,
+  id          INTEGER NOT NULL,
+  PRIMARY KEY (id)
+);
 
-    create table SUPPLIER (
-       id integer not null AUTO_INCREMENT,
-        email varchar(255),
-        name varchar(255) not null,
-        phone varchar(255),
-        website varchar(255),
-        primary key (id)
-    );
+CREATE TABLE SUPPLIER (
+  id      INTEGER      NOT NULL AUTO_INCREMENT,
+  email   VARCHAR(255),
+  name    VARCHAR(255) NOT NULL,
+  phone   VARCHAR(255),
+  website VARCHAR(255),
+  PRIMARY KEY (id)
+);
 
-    create table SUPPLIER_PROPOSE_PRODUCT (
-       id integer not null AUTO_INCREMENT,
-        sellPrice float not null,
-        product_id integer not null,
-        supplier_id integer not null,
-        primary key (id)
-    );
+CREATE TABLE SUPPLIER_PROPOSE_PRODUCT (
+  id          INTEGER NOT NULL AUTO_INCREMENT,
+  sellPrice   FLOAT   NOT NULL,
+  product_id  INTEGER NOT NULL,
+  supplier_id INTEGER NOT NULL,
+  PRIMARY KEY (id)
+);
 
-    create table TASK (
-       id integer not null AUTO_INCREMENT,
-        endtime datetime not null,
-        label varchar(255) not null,
-        starttime datetime not null,
-        employee_id integer not null,
-        location_id integer,
-        primary key (id)
-    );
+CREATE TABLE TASK (
+  id          INTEGER      NOT NULL AUTO_INCREMENT,
+  endtime     DATETIME     NOT NULL,
+  label       VARCHAR(255) NOT NULL,
+  starttime   DATETIME     NOT NULL,
+  employee_id INTEGER      NOT NULL,
+  location_id INTEGER,
+  PRIMARY KEY (id)
+);
 
-    alter table EMPLOYEE 
-       add constraint UK_7v1f89g44sb8vhqy4ok2bispy unique (login);
+ALTER TABLE EMPLOYEE
+  ADD CONSTRAINT UK_7v1f89g44sb8vhqy4ok2bispy UNIQUE (login);
 
-    alter table CLIENT_PROBLEM 
-       add constraint FKaro9e5vltrvgj9fvdhcf0pr7e 
-       foreign key (problem_id) 
-       references PROBLEM (id);
+ALTER TABLE CLIENT_PROBLEM
+  ADD CONSTRAINT FKaro9e5vltrvgj9fvdhcf0pr7e
+FOREIGN KEY (problem_id)
+REFERENCES PROBLEM (id);
 
-    alter table CLIENT_PROBLEM 
-       add constraint FKewlxful95rewo1oo2ank3wlhk 
-       foreign key (client_id) 
-       references CLIENT (id);
+ALTER TABLE CLIENT_PROBLEM
+  ADD CONSTRAINT FKewlxful95rewo1oo2ank3wlhk
+FOREIGN KEY (client_id)
+REFERENCES CLIENT (id);
 
-    alter table EMPLOYEE_AUTHORIZATION 
-       add constraint FKev1uq9wohdkyukiywc9kbqe8a 
-       foreign key (authorization_id) 
-       references AUTHORIZATION (label);
+ALTER TABLE EMPLOYEE_AUTHORIZATION
+  ADD CONSTRAINT FKev1uq9wohdkyukiywc9kbqe8a
+FOREIGN KEY (authorization_id)
+REFERENCES AUTHORIZATION (label);
 
-    alter table EMPLOYEE_AUTHORIZATION 
-       add constraint FKarrcc34wiu2p4gb2s2a0d4a3d 
-       foreign key (employee_id) 
-       references EMPLOYEE (id);
+ALTER TABLE EMPLOYEE_AUTHORIZATION
+  ADD CONSTRAINT FKarrcc34wiu2p4gb2s2a0d4a3d
+FOREIGN KEY (employee_id)
+REFERENCES EMPLOYEE (id);
 
-    alter table EMPLOYEE_NOTIFICATION 
-       add constraint FKqengm5re9clbresmu9n44b54r 
-       foreign key (notification_id) 
-       references NOTIFICATION (id);
+ALTER TABLE EMPLOYEE_NOTIFICATION
+  ADD CONSTRAINT FKqengm5re9clbresmu9n44b54r
+FOREIGN KEY (notification_id)
+REFERENCES NOTIFICATION (id);
 
-    alter table EMPLOYEE_NOTIFICATION 
-       add constraint FKagpevu1qohk7ofiwo2mq37ocv 
-       foreign key (employee_id) 
-       references EMPLOYEE (id);
+ALTER TABLE EMPLOYEE_NOTIFICATION
+  ADD CONSTRAINT FKagpevu1qohk7ofiwo2mq37ocv
+FOREIGN KEY (employee_id)
+REFERENCES EMPLOYEE (id);
 
-    alter table LOCATION_PROBLEM 
-       add constraint FK79huk0l77wvmuuq8dyupf70jb 
-       foreign key (problem_id) 
-       references PROBLEM (id);
+ALTER TABLE LOCATION_PROBLEM
+  ADD CONSTRAINT FK79huk0l77wvmuuq8dyupf70jb
+FOREIGN KEY (problem_id)
+REFERENCES PROBLEM (id);
 
-    alter table LOCATION_PROBLEM 
-       add constraint FK36wlscpqnnu7hfj0v9h5vybjj 
-       foreign key (location_id) 
-       references LOCATION (id);
+ALTER TABLE LOCATION_PROBLEM
+  ADD CONSTRAINT FK36wlscpqnnu7hfj0v9h5vybjj
+FOREIGN KEY (location_id)
+REFERENCES LOCATION (id);
 
-    alter table LOG 
-       add constraint FKlraml1cyoakihshtt0d2fwyem 
-       foreign key (employee_id) 
-       references EMPLOYEE (id);
+ALTER TABLE LOG
+  ADD CONSTRAINT FKlraml1cyoakihshtt0d2fwyem
+FOREIGN KEY (employee_id)
+REFERENCES EMPLOYEE (id);
 
-    alter table PURCHASE 
-       add constraint FKqgsswa6fm68e01npu6x82i4ys 
-       foreign key (client_id) 
-       references CLIENT (id);
+ALTER TABLE PURCHASE
+  ADD CONSTRAINT FKqgsswa6fm68e01npu6x82i4ys
+FOREIGN KEY (client_id)
+REFERENCES CLIENT (id);
 
-    alter table PURCHASE 
-       add constraint FKequxp5ih1ypinp91jtaaqp0jp 
-       foreign key (product_id) 
-       references PRODUCT (id);
+ALTER TABLE PURCHASE
+  ADD CONSTRAINT FKequxp5ih1ypinp91jtaaqp0jp
+FOREIGN KEY (product_id)
+REFERENCES PRODUCT (id);
 
-    alter table RESERVATION 
-       add constraint FK9fe9ikuq3uj2ivu2kj46k0pia 
-       foreign key (client_id) 
-       references CLIENT (id);
+ALTER TABLE RESERVATION
+  ADD CONSTRAINT FK9fe9ikuq3uj2ivu2kj46k0pia
+FOREIGN KEY (client_id)
+REFERENCES CLIENT (id);
 
-    alter table RESERVATION 
-       add constraint FK83mmgw4wy7137q65sf0tvged8 
-       foreign key (spot_id) 
-       references SPOT (id);
+ALTER TABLE RESERVATION
+  ADD CONSTRAINT FK83mmgw4wy7137q65sf0tvged8
+FOREIGN KEY (spot_id)
+REFERENCES SPOT (id);
 
-    alter table RESTOCKING 
-       add constraint FKlamw26gpk37jo3y5sxqu6q8jv 
-       foreign key (product_id) 
-       references PRODUCT (id);
+ALTER TABLE RESTOCKING
+  ADD CONSTRAINT FKlamw26gpk37jo3y5sxqu6q8jv
+FOREIGN KEY (product_id)
+REFERENCES PRODUCT (id);
 
-    alter table RESTOCKING 
-       add constraint FK88d4f0eol61ikqrf8s56hh96e 
-       foreign key (supplier_id) 
-       references SUPPLIER (id);
+ALTER TABLE RESTOCKING
+  ADD CONSTRAINT FK88d4f0eol61ikqrf8s56hh96e
+FOREIGN KEY (supplier_id)
+REFERENCES SUPPLIER (id);
 
-    alter table SPOT 
-       add constraint FKj92gxury8y6ro66t6310gxhyg 
-       foreign key (id) 
-       references LOCATION (id);
+ALTER TABLE SPOT
+  ADD CONSTRAINT FKj92gxury8y6ro66t6310gxhyg
+FOREIGN KEY (id)
+REFERENCES LOCATION (id);
 
-    alter table SUPPLIER_PROPOSE_PRODUCT 
-       add constraint FKioers9ycmbonyn3ylj3u950sf 
-       foreign key (product_id) 
-       references PRODUCT (id);
+ALTER TABLE SUPPLIER_PROPOSE_PRODUCT
+  ADD CONSTRAINT FKioers9ycmbonyn3ylj3u950sf
+FOREIGN KEY (product_id)
+REFERENCES PRODUCT (id);
 
-    alter table SUPPLIER_PROPOSE_PRODUCT 
-       add constraint FK6wr2xdori660ehg2hsxxmxopl 
-       foreign key (supplier_id) 
-       references SUPPLIER (id);
+ALTER TABLE SUPPLIER_PROPOSE_PRODUCT
+  ADD CONSTRAINT FK6wr2xdori660ehg2hsxxmxopl
+FOREIGN KEY (supplier_id)
+REFERENCES SUPPLIER (id);
 
-    alter table TASK 
-       add constraint FKcjcuvxpetiu28vecbdpiriwd5 
-       foreign key (employee_id) 
-       references EMPLOYEE (id);
+ALTER TABLE TASK
+  ADD CONSTRAINT FKcjcuvxpetiu28vecbdpiriwd5
+FOREIGN KEY (employee_id)
+REFERENCES EMPLOYEE (id);
 
-    alter table TASK 
-       add constraint FK9y4w10ihe6vms9vgb9th4n7na 
-       foreign key (location_id) 
-       references LOCATION (id);
+ALTER TABLE TASK
+  ADD CONSTRAINT FK9y4w10ihe6vms9vgb9th4n7na
+FOREIGN KEY (location_id)
+REFERENCES LOCATION (id);
 
-    INSERT INTO AUTHORIZATION (label) VALUES
-      ('CLIENT_READ'),
-      ('CLIENT_UPDATE'),
-      ('PROBLEM_READ'),
-      ('PROBLEM_UPDATE'),
-      ('EMPLOYEE_READ'),
-      ('EMPLOYEE_UPDATE'),
-      ('SUPPLIER_READ'),
-      ('SUPPLIER_UPDATE'),
-      ('PRODUCT_READ'),
-      ('PRODUCT_UPDATE'),
-      ('MAP_READ'),
-      ('MAP_UPDATE'),
-      ('RESERVATION_READ'),
-      ('RESERVATION_UPDATE');
-    COMMIT;
+INSERT INTO AUTHORIZATION (label) VALUES
+  ('CLIENT_READ'),
+  ('CLIENT_UPDATE'),
+  ('PROBLEM_READ'),
+  ('PROBLEM_UPDATE'),
+  ('EMPLOYEE_READ'),
+  ('EMPLOYEE_UPDATE'),
+  ('SUPPLIER_READ'),
+  ('SUPPLIER_UPDATE'),
+  ('PRODUCT_READ'),
+  ('PRODUCT_UPDATE'),
+  ('MAP_READ'),
+  ('MAP_UPDATE'),
+  ('RESERVATION_READ'),
+  ('RESERVATION_UPDATE');
+COMMIT;
 
-  REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'camping'@'%';
-  GRANT SELECT ON Camping.AUTHORIZATION TO 'camping'@'%';
-  GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.CLIENT TO 'camping'@'%';
-  GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.CLIENT_PROBLEM TO 'camping'@'%';
-  GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.EMPLOYEE TO 'camping'@'%';
-  GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.EMPLOYEE_AUTHORIZATION TO 'camping'@'%';
-  GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.EMPLOYEE_NOTIFICATION TO 'camping'@'%';
-  GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.EMPLOYEE_NOTIFICATION TO 'camping'@'%';
-  GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.LOCATION TO 'camping'@'%';
-  GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.LOCATION_PROBLEM TO 'camping'@'%';
-  GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.LOG TO 'camping'@'%';
-  GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.MAP TO 'camping'@'%';
-  GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.NOTIFICATION TO 'camping'@'%';
-  GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.PROBLEM TO 'camping'@'%';
-  GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.PRODUCT TO 'camping'@'%';
-  GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.PURCHASE TO 'camping'@'%';
-  GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.RESERVATION TO 'camping'@'%';
-  GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.RESTOCKING TO 'camping'@'%';
-  GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.SPOT TO 'camping'@'%';
-  GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.SUPPLIER TO 'camping'@'%';
-  GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.SUPPLIER_PROPOSE_PRODUCT TO 'camping'@'%';
-  GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.TASK TO 'camping'@'%';
+REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'camping'@'%';
+GRANT SELECT ON Camping.AUTHORIZATION TO 'camping'@'%';
+GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.CLIENT TO 'camping'@'%';
+GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.CLIENT_PROBLEM TO 'camping'@'%';
+GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.EMPLOYEE TO 'camping'@'%';
+GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.EMPLOYEE_AUTHORIZATION TO 'camping'@'%';
+GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.EMPLOYEE_NOTIFICATION TO 'camping'@'%';
+GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.EMPLOYEE_NOTIFICATION TO 'camping'@'%';
+GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.LOCATION TO 'camping'@'%';
+GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.LOCATION_PROBLEM TO 'camping'@'%';
+GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.LOG TO 'camping'@'%';
+GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.MAP TO 'camping'@'%';
+GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.NOTIFICATION TO 'camping'@'%';
+GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.PROBLEM TO 'camping'@'%';
+GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.PRODUCT TO 'camping'@'%';
+GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.PURCHASE TO 'camping'@'%';
+GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.RESERVATION TO 'camping'@'%';
+GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.RESTOCKING TO 'camping'@'%';
+GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.SPOT TO 'camping'@'%';
+GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.SUPPLIER TO 'camping'@'%';
+GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.SUPPLIER_PROPOSE_PRODUCT TO 'camping'@'%';
+GRANT SELECT, INSERT, UPDATE, DELETE ON Camping.TASK TO 'camping'@'%';
   
