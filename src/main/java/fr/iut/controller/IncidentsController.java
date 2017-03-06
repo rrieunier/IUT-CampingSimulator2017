@@ -1,7 +1,7 @@
 package fr.iut.controller;
 
+import fr.iut.persistence.dao.impl.GenericDAOImpl;
 import fr.iut.persistence.entities.Problem;
-import fr.iut.view.IncidentsManagerView;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -15,18 +15,23 @@ public class IncidentsController {
 
     ArrayList<Problem> stub = new ArrayList<>();
 
+    GenericDAOImpl<Problem, Integer> daoIncidents = new GenericDAOImpl<>(Problem.class);
+
     public IncidentsController(HomeController homeController) { this.homeController = homeController;}
 
     public void createIncidents(){
-        for (int i = 0; i < 50; i++) {
-            Problem problem = new Problem();
-            problem.setDescription("Description" + i);
-            if (i % 2 == 1)
-                problem.setState("Non résolu");
-            else
-                problem.setState("Résolu");
-            stub.add(problem);
-        }
+        daoIncidents.open();
+        stub = (ArrayList<Problem>) daoIncidents.findAll();
+        daoIncidents.close();
+    }
+
+    public void resolveIncident(Problem p){
+        p.setResolved(true);
+        stub.set(stub.indexOf(p), p);
+
+        daoIncidents.open();
+        daoIncidents.saveOrUpdate(p);
+        daoIncidents.close();
     }
 
     public void sortIncidents(int sort_options){
@@ -57,6 +62,13 @@ public class IncidentsController {
                 return result;
             }
         });
+    }
+
+    public void saveIncident(Problem problem){
+        daoIncidents.open();
+        daoIncidents.saveOrUpdate(problem);
+        daoIncidents.close();
+        stub.add(problem);
     }
 
     public ArrayList<Problem> getIncidents() {

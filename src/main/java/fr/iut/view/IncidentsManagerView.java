@@ -10,16 +10,23 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.SubScene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import java.io.File;
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Created by theo on 01/03/17.
@@ -28,13 +35,15 @@ public class IncidentsManagerView extends SubScene{
 
     IncidentsController controller;
 
-    TextField appearanceDatetime, solutionDatetime;
+    TextField description, appearanceDatetime, solutionDatetime;
 
     Boolean editMode = false;
 
     VBox incidents;
 
     RadioButton resolved;
+
+    Problem lastClickedValue;
 
     public IncidentsManagerView(IncidentsController controller){
         super(new BorderPane(), HomeView.TAB_CONTENT_W, HomeView.TAB_CONTENT_H);
@@ -103,7 +112,20 @@ public class IncidentsManagerView extends SubScene{
         newIncident.getStylesheets().add(new File("res/style.css").toURI().toString());
         newIncident.getStyleClass().add("record-sales");
         newIncident.setOnAction(event -> {
-            // TODO
+            InputsListDialog newIncidentDialog = new InputsListDialog("Nouvel incident");
+            newIncidentDialog.addTextField("Description");
+            Optional<Map<String, String>> newIncident_result = newIncidentDialog.showAndWait();
+
+            Problem problem = new Problem();
+            problem.setDescription(newIncident_result.get().get("Description"));
+
+            Calendar calendar = Calendar.getInstance();
+            Date now = calendar.getTime();
+            Timestamp currentTimestamp = new Timestamp(now.getTime());
+            problem.setAppearanceDatetime(currentTimestamp);
+
+            controller.saveIncident(problem);
+            createScroll(search_field.getText().toString());
         });
 
         HBox resolvedBox = new HBox();
@@ -111,6 +133,7 @@ public class IncidentsManagerView extends SubScene{
         resolvedBox.setAlignment(Pos.CENTER);
         Label resolved_label = new Label("Non résolu uniquement");
         resolved = new RadioButton();
+        resolved.setSelected(true);
         resolved.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -137,20 +160,27 @@ public class IncidentsManagerView extends SubScene{
         incidentDetailsWrapper.setStyle("-fx-background-color: grey;");
         HeaderView headerDetails = new HeaderView("Details");
 
-        VBox timesField = new VBox();
+        VBox detailsField = new VBox();
+
+        description = new TextField();
+        description.setPromptText("Description");
+        description.setDisable(true);
+        description.setMinHeight(HomeView.TAB_CONTENT_H/15);
+
         appearanceDatetime = new TextField();
-        appearanceDatetime.setPromptText("Date début ...");
+        appearanceDatetime.setPromptText("Date d'apparition ...");
         appearanceDatetime.setDisable(true);
         appearanceDatetime.setMinHeight(HomeView.TAB_CONTENT_H/15);
 
         solutionDatetime = new TextField();
-        solutionDatetime.setPromptText("Date fin ...");
+        solutionDatetime.setPromptText("Date de résolution ...");
         solutionDatetime.setDisable(true);
         solutionDatetime.setMinHeight(HomeView.TAB_CONTENT_H/15);
 
-        timesField.setSpacing(10);
-        timesField.setAlignment(Pos.CENTER);
-        timesField.getChildren().addAll(appearanceDatetime, solutionDatetime);
+        detailsField.setSpacing(10);
+        detailsField.setAlignment(Pos.CENTER);
+        detailsField.getChildren().addAll(description, appearanceDatetime, solutionDatetime);
+        VBox.setVgrow(description, Priority.ALWAYS);
         VBox.setVgrow(appearanceDatetime, Priority.ALWAYS);
         VBox.setVgrow(solutionDatetime, Priority.ALWAYS);
 
@@ -164,16 +194,18 @@ public class IncidentsManagerView extends SubScene{
 
         editButton.setOnAction(actionEvent -> {
             if(editMode) {
+                description.setDisable(true);
                 appearanceDatetime.setDisable(true);
                 solutionDatetime.setDisable(true);
                 editButton.setText("Modifier");
+                //TODO : saveOrUpdate de l'incident dans la BDD le lastClikedValue
             }
 
             else {
+                description.setDisable(false);
                 appearanceDatetime.setDisable(false);
                 solutionDatetime.setDisable(false);
                 editButton.setText("Sauvegarder");
-                //TODO : saveOrUpdate de l'incident dans la BDD
             }
 
             editMode = !editMode;
@@ -184,7 +216,10 @@ public class IncidentsManagerView extends SubScene{
         deleteButton.getStyleClass().add("record-sales");
         deleteButton.setMinWidth(HomeView.TAB_CONTENT_W / 4);
         deleteButton.setOnAction(actionEvent -> {
-            //TODO : supprimer dans la BD ou pas telle est la question
+            final Problem lastClikedCopy = lastClickedValue;
+            controller.resolveIncident(lastClikedCopy);
+            createScroll(search_field.getText().toString());
+            // TODO : plusieurs bugs, exceptions ...
         });
 
         buttonsWrap.setSpacing(10);
@@ -192,21 +227,40 @@ public class IncidentsManagerView extends SubScene{
 
         incidentDetailsWrapper.setPadding(new Insets(0,0,30,0));
         incidentDetailsWrapper.setTop(headerDetails);
-        incidentDetailsWrapper.setCenter(timesField);
+        incidentDetailsWrapper.setCenter(detailsField);
         incidentDetailsWrapper.setBottom(buttonsWrap);
-        BorderPane.setMargin(timesField, new Insets(20));
+        BorderPane.setMargin(detailsField, new Insets(20));
 
         root.setCenter(incidentDetailsWrapper);
     }
 
     private void updateDetail(Problem problem){
-        appearanceDatetime.setText(problem.getDescription());
-        solutionDatetime.setText(problem.getDescription());
+        description.setText(problem.getDescription());
+        appearanceDatetime.setText(problem.getAppearanceDatetime().toString());
+        if(problem.isResolved())
+            solutionDatetime.setText(problem.getSolutionDatetime().toString());
+        else
+            solutionDatetime.setText("Date de résolution ...");
     }
 
     private void createElement(Problem p, int i){
         HBox incidentsBox = new HBox();
-        incidentsBox.setOnMouseClicked(mouseEvent -> updateDetail(p));
+
+        incidentsBox.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                for (int j=0; j<incidents.getChildren().size(); j++) {
+                    if(j % 2 == 1)
+                        incidents.getChildren().get(j).setStyle("-fx-background-color: #336699;");
+                    else
+                        incidents.getChildren().get(j).setStyle("-fx-background-color: #0F355C;");
+                }
+
+                lastClickedValue = p;
+                updateDetail(p);
+                incidentsBox.setStyle("-fx-background-color: #ff6600;");
+            }
+        });
         incidentsBox.setMinWidth(HomeView.TAB_CONTENT_W / 4);
         incidentsBox.setPadding(new Insets(20));
 
@@ -230,7 +284,7 @@ public class IncidentsManagerView extends SubScene{
         for (Problem problem : controller.getIncidents()) {
             if (problem.getDescription().toLowerCase().contains(search)) {
                 if(resolved.isSelected()){
-                    if(problem.getState().toString() == "Non résolu"){
+                    if(!problem.isResolved()){
                         createElement(problem, i);
                         i++;
                     }
