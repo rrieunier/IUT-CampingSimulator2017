@@ -22,6 +22,8 @@ public class GenericDAOTest {
         client.setLastname("Felix");
 
         GenericDAO<Client, Integer> dao = new GenericDAO<>(Client.class);
+        dao.open();
+
         dao.saveOrUpdate(client);
         Client saved = dao.findById(client.getId());
 
@@ -30,5 +32,7 @@ public class GenericDAOTest {
         assertNotNull(saved.getLastname());
         assertEquals(client.getFirstname(), saved.getFirstname());
         assertEquals(client.getLastname(), saved.getLastname());
+
+        dao.close();
     }
 }
