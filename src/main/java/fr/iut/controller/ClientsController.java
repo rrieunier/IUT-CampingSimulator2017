@@ -1,14 +1,11 @@
 package fr.iut.controller;
 
-import fr.iut.persistence.dao.impl.GenericDAOImpl;
+import fr.iut.persistence.dao.GenericDAO;
 import fr.iut.persistence.entities.Client;
 import fr.iut.view.ClientManagerView;
-import fr.iut.view.InputsListDialog;
 import javafx.scene.SubScene;
 
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * Created by shellcode on 2/17/17.
@@ -17,7 +14,7 @@ public class ClientsController implements ControllerInterface {
 
     HomeController homeController;
     ClientManagerView clientManagerView = new ClientManagerView(this);
-    GenericDAOImpl<Client, Integer> daoClient = new GenericDAOImpl<>(Client.class);
+    GenericDAO<Client, Integer> daoClient = new GenericDAO<>(Client.class);
 
     public ClientsController(HomeController homeController) {
         this.homeController = homeController;

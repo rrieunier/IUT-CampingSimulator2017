@@ -2,7 +2,7 @@ package fr.iut.controller;
 
 import fr.iut.App;
 import fr.iut.State;
-import fr.iut.persistence.dao.impl.GenericDAOImpl;
+import fr.iut.persistence.dao.GenericDAO;
 import fr.iut.persistence.entities.Product;
 import fr.iut.view.HomeView;
 import fr.iut.view.InputsListDialog;
@@ -28,7 +28,7 @@ public class HomeController implements ControllerInterface {
     }
 
     public ArrayList<Product> getProductsList() {
-        GenericDAOImpl<Product, Integer> dao = new GenericDAOImpl<Product, Integer>(Product.class);
+        GenericDAO<Product, Integer> dao = new GenericDAO<Product, Integer>(Product.class);
 
         dao.open();
         ArrayList<Product> products = (ArrayList<Product>) dao.findAll();
@@ -52,7 +52,7 @@ public class HomeController implements ControllerInterface {
         product.setSellPrice(Float.parseFloat(newProduct_result.get().get("Prix (0.0)")));
 
 
-        GenericDAOImpl<Product, Integer> dao = new GenericDAOImpl<>(Product.class);
+        GenericDAO<Product, Integer> dao = new GenericDAO<>(Product.class);
         dao.open();
         dao.saveOrUpdate(product);
         dao.close();

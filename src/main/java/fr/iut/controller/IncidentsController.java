@@ -1,6 +1,6 @@
 package fr.iut.controller;
 
-import fr.iut.persistence.dao.impl.GenericDAOImpl;
+import fr.iut.persistence.dao.GenericDAO;
 import fr.iut.persistence.entities.Problem;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ public class IncidentsController {
 
     ArrayList<Problem> stub = new ArrayList<>();
 
-    GenericDAOImpl<Problem, Integer> daoIncidents = new GenericDAOImpl<>(Problem.class);
+    GenericDAO<Problem, Integer> daoIncidents = new GenericDAO<>(Problem.class);
 
     public IncidentsController(HomeController homeController) { this.homeController = homeController;}
 
