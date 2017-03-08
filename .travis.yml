@@ -17,3 +17,6 @@ before_script:
   - mysql -u root -e "CREATE USER camping IDENTIFIED BY 'camping';"
   - mysql -u root -e "GRANT ALL PRIVILEGES ON CampingTest.* TO 'camping'@'%';"
 
+notifications:
+  slack: campingsimulator2017:T0hFeFQiyWNUomDnH0afqEJR
+
