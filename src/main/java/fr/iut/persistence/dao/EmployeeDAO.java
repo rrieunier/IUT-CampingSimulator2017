@@ -14,12 +14,23 @@ import java.util.List;
  */
 public class EmployeeDAO extends GenericDAO<Employee, Integer> {
 
+    /**
+     * Connected user application wide.
+     */
     private static Employee connectedUser = null;
 
+    /**
+     * Constructor.
+     */
     public EmployeeDAO() {
         super(Employee.class);
     }
 
+    /**
+     * Find an Employee who is a user by is login.
+     * @param login Login of the Employee.
+     * @return The Employee with the matching login.
+     */
     @Transactional(rollbackOn = Exception.class)
     public Employee findByLogin(String login) {
 
@@ -34,6 +45,11 @@ public class EmployeeDAO extends GenericDAO<Employee, Integer> {
         }
     }
 
+    /**
+     * Find an Employee by his first name.
+     * @param firstName First name of the Employee.
+     * @return The Employee with the matching first name.
+     */
     public List<Employee> findByFirstName(String firstName) {
         String hql = "from Employee where firstName = :firstName";
         Query query = session.createQuery(hql);
@@ -42,6 +58,11 @@ public class EmployeeDAO extends GenericDAO<Employee, Integer> {
         return query.getResultList();
     }
 
+    /**
+     * Find an Employee by his last name.
+     * @param lastName Last name of the Employee.
+     * @return The Employee with the matching last name.
+     */
     public List<Employee> findByLastName(String lastName) {
         String hql = "from Employee where lastName = :lastName";
         Query query = session.createQuery(hql);
@@ -50,6 +71,13 @@ public class EmployeeDAO extends GenericDAO<Employee, Integer> {
         return query.getResultList();
     }
 
+    /**
+     * Update the current connected user.
+     * @param login
+     * @param password
+     * @return The connected Employee.
+     * @throws InvalidLoginPasswordException If the login/password is invalid.
+     */
     @Transactional(rollbackOn = Exception.class)
     public Employee connectUser(String login, String password) throws InvalidLoginPasswordException {
 
@@ -60,16 +88,24 @@ public class EmployeeDAO extends GenericDAO<Employee, Integer> {
             newConnectionLog("CONNECTED");
             return connectedUser;
         } else {
+            connectedUser = null;
             throw new InvalidLoginPasswordException();
         }
     }
 
+    /**
+     * Disconnects the current connected user.
+     */
     public void disconnectUser() {
 
         newConnectionLog("DISCONNECTED");
         connectedUser = null;
     }
 
+    /**
+     * Creates a new log concerning a connection/disconnection.
+     * @param action e.g. : CONNECTED, DISCONNECTED, ...
+     */
     private void newConnectionLog(String action) {
 
         Log log = new Log();
@@ -79,6 +115,9 @@ public class EmployeeDAO extends GenericDAO<Employee, Integer> {
         session.saveOrUpdate(log);
     }
 
+    /**
+     * @return the current connected Employee.
+     */
     public static Employee getConnectedUser() {
         return connectedUser;
     }
