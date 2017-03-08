@@ -1,12 +1,19 @@
-language:
-  java
+language: java
+jdk:
+  - oraclejdk8
+services:
+  - mysql
+dist: jessie
+sudo: required
+addons:
+  apt:
+    packages:
+    - mysql-server-5.7
+    - mysql-client-core-5.7
+    - mysql-core-5.7
 
-test:
-  adapter: mysql2
-  database: CampingTest
-  username: root
-  encoding: utf8
-
-before_install:
-  mysql -e "CREATE DATABASE IF NOT EXISTS CampingTest; DROP USER camping; CREATE USER camping IDENTIFIED BY 'camping'; GRANT ALL PRIVILEGES ON CampingTest.* TO 'camping'@'%';"
+before_script:
+  - mysql -u root -e "CREATE DATABASE CampingTest;"
+  - mysql -u root -e "CREATE USER camping IDENTIFIED BY 'camping';"
+  - mysql -u root -e "GRANT ALL PRIVILEGES ON CampingTest.* TO 'camping'@'%';"
 
