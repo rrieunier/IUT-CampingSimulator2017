@@ -11,10 +11,12 @@ import static org.junit.Assert.assertNotNull;
  */
 public class GenericDAOTest {
 
+    public GenericDAOTest() {
+        HibernateUtil.setConfig(HibernateUtil.Config.TEST);
+    }
+
     @Test
     public void testPersistence() throws Exception {
-
-        HibernateUtil.setConfig(HibernateUtil.Config.TEST);
 
         Client client = new Client();
         client.setId(12345678);
@@ -32,6 +34,37 @@ public class GenericDAOTest {
         assertNotNull(saved.getLastname());
         assertEquals(client.getFirstname(), saved.getFirstname());
         assertEquals(client.getLastname(), saved.getLastname());
+
+        dao.close();
+    }
+
+    @Test
+    public void testUpdate() throws Exception {
+
+        HibernateUtil.setConfig(HibernateUtil.Config.TEST);
+
+        Client client = new Client();
+        client.setId(67906);
+        client.setFirstname("Hervé");
+        client.setLastname("Bebert");
+
+        GenericDAO<Client, Integer> dao = new GenericDAO<>(Client.class);
+        dao.open();
+
+        dao.saveOrUpdate(client);
+
+        Client saved = dao.findById(client.getId());
+
+        saved.setFirstname("Patrick");
+        dao.saveOrUpdate(saved);
+
+        Client updated = dao.findById(saved.getId());
+        
+        assertNotNull(updated);
+        assertNotNull(updated.getFirstname());
+        assertNotNull(updated.getId());
+        assertEquals(saved.getFirstname(), updated.getFirstname());
+        assertEquals(saved.getId(), updated.getId());
 
         dao.close();
     }
