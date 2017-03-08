@@ -1,4 +1,6 @@
 package fr.iut.persistence.dao;
+import fr.iut.persistence.entities.Employee;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
@@ -11,7 +13,7 @@ public class HibernateUtil {
         PROD, TEST
     }
 
-    private static SessionFactory sessionFactory = buildSessionFactory(Config.PROD);
+    private static SessionFactory sessionFactory = null;
 
     private static SessionFactory buildSessionFactory(Config config) {
         try {
@@ -37,8 +39,20 @@ public class HibernateUtil {
     }
 
     public static void setConfig(Config config){
-        shutdown();
         sessionFactory = buildSessionFactory(config);
+
+        if(config == Config.TEST){
+            Session session = sessionFactory.openSession();
+
+            Employee employee = new Employee();
+            employee.setFirstName("test");
+            employee.setLastName("test");
+            employee.setLogin("test");
+            employee.setPassword("test");
+
+            session.saveOrUpdate(employee);
+            session.close();
+        }
     }
 
 }

@@ -23,6 +23,7 @@ public class MapDao extends GenericDAO<Map, Integer> {
 
     @Transactional(rollbackOn = Exception.class)
     public void setMap(Map map){
+
         removeAll();
         saveOrUpdate(map);
     }
