@@ -9,12 +9,23 @@ import org.hibernate.cfg.Configuration;
  */
 public class HibernateUtil {
 
+    /**
+     * Configs that can be used.
+     */
     public enum Config {
         PROD, TEST
     }
 
+    /**
+     * Hibernate's SessionFactory.
+     */
     private static SessionFactory sessionFactory = null;
 
+    /**
+     * Initialize the sessionFactory field.
+     * @param config Confiig to use.
+     * @return the sessionFactory created.
+     */
     private static SessionFactory buildSessionFactory(Config config) {
         try {
             if (config == Config.TEST) {
@@ -30,14 +41,24 @@ public class HibernateUtil {
         return null;
     }
 
+    /**
+     * @return the session factory.
+     */
     public static SessionFactory getSessionFactory() {
         return sessionFactory;
     }
 
+    /**
+     * Close the session factory.
+     */
     public static void shutdown() {
         getSessionFactory().close();
     }
 
+    /**
+     * Call buildSessionFactory with a specified config.
+     * @param config Config to use.
+     */
     public static void setConfig(Config config){
         sessionFactory = buildSessionFactory(config);
 

@@ -10,10 +10,16 @@ import java.util.List;
  */
 public class MapDao extends GenericDAO<Map, Integer> {
 
+    /**
+     * Constructor.
+     */
     public MapDao() {
         super(Map.class);
     }
 
+    /**
+     * @return The Map stored in database.
+     */
     @Transactional(rollbackOn = Exception.class)
     public Map getMap(){
         List<Map> all = findAll();
@@ -21,6 +27,9 @@ public class MapDao extends GenericDAO<Map, Integer> {
         return (all.isEmpty() ? null : all.get(0));
     }
 
+    /**
+     * @param map Update the map stored in database.
+     */
     @Transactional(rollbackOn = Exception.class)
     public void setMap(Map map){
 
@@ -28,6 +37,9 @@ public class MapDao extends GenericDAO<Map, Integer> {
         saveOrUpdate(map);
     }
 
+    /**
+     * Removes the Map from database.
+     */
     @Transactional(rollbackOn = Exception.class)
     public void remove(){
         removeAll();

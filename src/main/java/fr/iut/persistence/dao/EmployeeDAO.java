@@ -70,7 +70,7 @@ public class EmployeeDAO extends GenericDAO<Employee, Integer> {
         connectedUser = null;
     }
 
-    public void newConnectionLog(String action) {
+    private void newConnectionLog(String action) {
 
         Log log = new Log();
         log.setAction(action);
