@@ -8,14 +8,14 @@ import java.sql.Timestamp;
  */
 @Entity
 @Table(name = "LOG")
-public class Log {
+public class Log extends EntityModel<Integer> {
 
     /**
      * Log's id.
      */
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false)
-    private int id;
+    private Integer id;
 
     /**
      * Log's action description.
@@ -35,7 +35,7 @@ public class Log {
     @ManyToOne(optional = false)
     private Employee employee;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -51,7 +51,7 @@ public class Log {
         return datetime;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

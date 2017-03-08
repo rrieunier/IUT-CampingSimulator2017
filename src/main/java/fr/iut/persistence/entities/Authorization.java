@@ -9,7 +9,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "AUTHORIZATION")
-public class Authorization {
+public class Authorization extends EntityModel<String> {
     /**
      * authorization label
      */
@@ -41,5 +41,10 @@ public class Authorization {
 
     public void setEmployees(Set<Employee> employees) {
         this.employees = employees;
+    }
+
+    @Override
+    public String getId() {
+        return label;
     }
 }

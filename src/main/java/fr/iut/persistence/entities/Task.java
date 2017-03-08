@@ -8,14 +8,14 @@ import java.sql.Timestamp;
  */
 @Entity
 @Table(name = "TASK")
-public class Task {
+public class Task extends EntityModel<Integer> {
 
     /**
      * Task's id.
      */
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false)
-    private int id;
+    private Integer id;
 
     /**
      * Task's start date and time.
@@ -47,7 +47,7 @@ public class Task {
     @ManyToOne
     private Location location;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -71,7 +71,7 @@ public class Task {
         return location;
     }
 
-    public void setId(int idTask) {
+    public void setId(Integer idTask) {
         this.id = idTask;
     }
 

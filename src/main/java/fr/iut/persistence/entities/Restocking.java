@@ -8,14 +8,15 @@ import java.sql.Timestamp;
  */
 @Entity
 @Table(name = "RESTOCKING")
-public class Restocking {
+public class Restocking extends EntityModel<Integer> {
 
     /**
      * Restocking's id.
      */
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false)
-    private int id;
+    private Integer id;
 
     /**
      * Quantity restocked.
@@ -41,7 +42,7 @@ public class Restocking {
     @ManyToOne(optional = false)
     private Supplier supplier;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -61,7 +62,7 @@ public class Restocking {
         return supplier;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

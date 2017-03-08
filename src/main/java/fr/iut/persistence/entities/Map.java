@@ -7,14 +7,14 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "MAP")
-public class Map {
+public class Map extends EntityModel<Integer> {
 
     /**
      * Map's id
      */
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false)
-    private int id;
+    private Integer id;
 
     /**
      * Map's image.
@@ -22,11 +22,11 @@ public class Map {
     @Column(nullable = false)
     private byte[] image;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

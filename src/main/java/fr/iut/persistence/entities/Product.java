@@ -9,14 +9,14 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "PRODUCT")
-public class Product {
+public class Product extends EntityModel<Integer> {
 
     /**
      * Product's id.
      */
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false)
-    private int id;
+    private Integer id;
 
     /**
      * Product's stock.
@@ -60,7 +60,7 @@ public class Product {
     @OneToMany(mappedBy = "product")
     private Set<SupplierProposeProduct> supplierProposeProducts = new HashSet<>();
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -92,7 +92,7 @@ public class Product {
         return supplierProposeProducts;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

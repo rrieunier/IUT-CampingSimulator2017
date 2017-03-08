@@ -9,14 +9,14 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "EMPLOYEE")
-public class Employee {
+public class Employee extends EntityModel<Integer> {
 
     /**
      * Employee's id.
      */
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false)
-    private int id;
+    private Integer id;
 
     /**
      * Employee's firstname.
@@ -98,7 +98,7 @@ public class Employee {
     @OneToMany(mappedBy = "employee" )
     private Set<Log> logs = new HashSet<>();
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -146,7 +146,7 @@ public class Employee {
         return logs;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
