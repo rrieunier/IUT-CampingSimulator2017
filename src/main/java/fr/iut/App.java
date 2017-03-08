@@ -3,6 +3,7 @@ package fr.iut;
 import fr.iut.controller.ConnectionController;
 import fr.iut.controller.HomeController;
 import fr.iut.controller.MapController;
+import fr.iut.persistence.dao.HibernateUtil;
 import fr.iut.view.ConnectionView;
 import fr.iut.view.HomeView;
 import fr.iut.view.MapCreatorView;
@@ -12,6 +13,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import org.hibernate.Hibernate;
 
 import java.awt.*;
 
@@ -42,12 +44,15 @@ public class App extends Application {
         primaryStage.setScene(connectionController.getView());
         primaryStage.setResizable(false);
 
+        HibernateUtil.setConfig(HibernateUtil.Config.PROD);
+
         primaryStage.show();
     }
 
     @Override
     public void stop(){
         System.out.println("Stopping...");
+        HibernateUtil.shutdown();
         Platform.exit();
         System.exit(0);
     }
