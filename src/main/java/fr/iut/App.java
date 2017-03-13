@@ -44,8 +44,8 @@ public class App extends Application {
         stage = primaryStage;
         primaryStage.setTitle("Camping Simulator 2017");
 
-        InscriptionController inscriptionController = new InscriptionController(this);
-        primaryStage.setScene(inscriptionController.getView());
+        //InscriptionController inscriptionController = new InscriptionController(this);
+        primaryStage.setScene(connectionController.getView());
         primaryStage.setResizable(false);
 
 
