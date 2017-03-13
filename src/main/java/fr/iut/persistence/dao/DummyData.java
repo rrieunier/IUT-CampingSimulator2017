@@ -1,6 +1,7 @@
 package fr.iut.persistence.dao;
 
 import fr.iut.persistence.entities.Client;
+import fr.iut.persistence.entities.Employee;
 import fr.iut.persistence.entities.Reservation;
 import fr.iut.persistence.entities.Spot;
 
@@ -51,6 +52,19 @@ public class DummyData {
             reservation.setPersonCount(1);
             dao.saveOrUpdate(reservation);
         }
-
+        GenericDAO<Employee, Integer> daoEmployee = new GenericDAO<>(Employee.class);
+        for (int i = 0; i < 50; i++) {
+            Employee employee = new Employee();
+            employee.setFirstName("prenom" + i);
+            employee.setLastName("nom" + i);
+            employee.setCompleteAddress(i + " rue des Flots Blancs");
+            employee.setPhone("06000000" + i);
+            if (i % 2 == 0) {
+                employee.setEmail(employee.getFirstName() + "." + employee.getLastName() + "@camping.simulator");
+                employee.setLogin(employee.getFirstName().charAt(0) + employee.getLastName());
+                employee.setPassword("Employee" + i);
+            }
+            daoEmployee.saveOrUpdate(employee);
+        }
     }
 }
