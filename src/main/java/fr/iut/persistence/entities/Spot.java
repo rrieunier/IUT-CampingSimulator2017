@@ -1,6 +1,11 @@
 package fr.iut.persistence.entities;
 
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.CascadeType;
+
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -46,6 +51,7 @@ public class Spot extends Location {
      * Reservations made to this spot.
      */
     @OneToMany(mappedBy = "spot")
+    @Cascade(CascadeType.ALL)
     private Set<Reservation> reservations = new HashSet<>();
 
     public float getPricePerDay() {

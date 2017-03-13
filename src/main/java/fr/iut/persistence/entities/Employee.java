@@ -1,6 +1,11 @@
 package fr.iut.persistence.entities;
 
+import org.hibernate.annotations.*;
+
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -89,13 +94,15 @@ public class Employee extends EntityModel<Integer> {
     /**
      * Tasks attributed to this employee.
      */
-    @OneToMany(mappedBy = "employee" )
+    @OneToMany(mappedBy = "employee")
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private Set<Task> tasks = new HashSet<>();
 
     /**
      * Logs made by this employee if it's a user.
      */
-    @OneToMany(mappedBy = "employee" )
+    @OneToMany(mappedBy = "employee")
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private Set<Log> logs = new HashSet<>();
 
     public Integer getId() {
