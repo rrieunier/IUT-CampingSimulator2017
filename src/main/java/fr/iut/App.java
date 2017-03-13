@@ -2,6 +2,7 @@ package fr.iut;
 
 import fr.iut.controller.ConnectionController;
 import fr.iut.controller.HomeController;
+import fr.iut.controller.InscriptionController;
 import fr.iut.controller.MapController;
 import fr.iut.persistence.dao.HibernateUtil;
 import fr.iut.view.ConnectionView;
@@ -43,7 +44,8 @@ public class App extends Application {
         stage = primaryStage;
         primaryStage.setTitle("Camping Simulator 2017");
 
-        primaryStage.setScene(connectionController.getView());
+        InscriptionController inscriptionController = new InscriptionController(this);
+        primaryStage.setScene(inscriptionController.getView());
         primaryStage.setResizable(false);
 
 

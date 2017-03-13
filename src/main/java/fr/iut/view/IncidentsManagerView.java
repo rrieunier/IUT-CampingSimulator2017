@@ -36,32 +36,32 @@ public class IncidentsManagerView extends SubScene{
     /**
      * controller of the instance
      */
-    IncidentsController controller;
+    private IncidentsController controller;
 
     /**
      * Differents textfields which are in details
      */
-    TextField description, appearanceDatetime, solutionDatetime;
+    private TextField description, appearanceDatetime, solutionDatetime;
 
     /**
      * boolean if the client can modif the incident
      */
-    Boolean editMode = false;
+    private Boolean editMode = false;
 
     /**
      * list of incidents
      */
-    VBox incidents;
+    private VBox incidents;
 
     /**
      * if is selected, display only problems which are not resolved
      */
-    RadioButton resolved;
+    private RadioButton resolved;
 
     /**
      * local value of the product selected
      */
-    Problem lastClickedValue;
+    private Problem lastClickedValue;
 
     public IncidentsManagerView(IncidentsController controller){
         super(new BorderPane(), HomeView.TAB_CONTENT_W, HomeView.TAB_CONTENT_H);
@@ -213,7 +213,7 @@ public class IncidentsManagerView extends SubScene{
                 solutionDatetime.setDisable(true);
                 editButton.setText("Modifier");
 
-                controller.updateIncident(lastClikedCopy.getId(), description.getText().toString(),
+                controller.updateIncident(lastClikedCopy, description.getText().toString(),
                         appearanceDatetime.getText().toString(), solutionDatetime.getText().toString());
                 createScroll(search_field.getText().toString());
 
@@ -238,7 +238,7 @@ public class IncidentsManagerView extends SubScene{
         resolvedButton.setOnAction(actionEvent -> {
             final Problem lastClikedCopy = lastClickedValue;
             System.out.println(lastClikedCopy.getId());
-            controller.resolveIncident(lastClikedCopy.getId());
+            controller.resolveIncident(lastClikedCopy);
             createScroll(search_field.getText().toString());
             // TODO : bug avec l'update
         });

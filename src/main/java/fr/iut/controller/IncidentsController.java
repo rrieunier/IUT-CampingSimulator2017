@@ -48,7 +48,11 @@ public class IncidentsController {
         p.setSolutionDatetime(currentTimestamp);
 
         stub.set(stub.indexOf(p), p);
-        daoIncidents.save(p);
+        daoIncidents.update(p);
+    }
+
+    public void updateIncident(Problem p, String description, String apperanceDateTime, String solutionDateTime){
+
     }
 
     /**

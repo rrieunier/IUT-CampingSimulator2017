@@ -64,7 +64,7 @@ public class DummyData {
                 employee.setLogin(employee.getFirstName().charAt(0) + employee.getLastName());
                 employee.setPassword("Employee" + i);
             }
-            daoEmployee.saveOrUpdate(employee);
+            daoEmployee.save(employee);
         }
     }
 }
