@@ -1,5 +1,5 @@
 package fr.iut.persistence.dao;
-import fr.iut.persistence.entities.Employee;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -17,23 +17,23 @@ public class HibernateUtil {
     }
 
     /**
-     * Hibernate's SessionFactory.
+     * Hibernate's Session.
      */
-    private static SessionFactory sessionFactory = null;
+    private static Session session = null;
 
     /**
-     * Initialize the sessionFactory field.
-     * @param config Confiig to use.
+     * Initialize a sessionFactory.
+     * @param config Config to use.
      * @return the sessionFactory created.
      */
-    private static SessionFactory buildSessionFactory(Config config) {
+   private static SessionFactory buildSessionFactory(Config config) {
         try {
             if (config == Config.TEST) {
                 return new Configuration().configure("hibernate-test.cfg.xml").buildSessionFactory();
             } else if (config == Config.PROD) {
                 return new Configuration().configure().buildSessionFactory();
             }
-        } catch (Throwable ex) {
+        } catch (Exception ex) {
             System.err.println("Initial SessionFactory creation failed." + ex);
             throw new ExceptionInInitializerError(ex);
         }
@@ -41,39 +41,12 @@ public class HibernateUtil {
         return null;
     }
 
-    /**
-     * @return the session factory.
-     */
-    public static SessionFactory getSessionFactory() {
-        return sessionFactory;
+    public static Session openSession(Config config){
+        session = buildSessionFactory(config).openSession();
+        return session;
     }
 
-    /**
-     * Close the session factory.
-     */
-    public static void shutdown() {
-        getSessionFactory().close();
+    public static Session getSession(){
+        return session;
     }
-
-    /**
-     * Call buildSessionFactory with a specified config.
-     * @param config Config to use.
-     */
-    public static void setConfig(Config config){
-        sessionFactory = buildSessionFactory(config);
-
-        if(config == Config.TEST){
-            Session session = sessionFactory.openSession();
-
-            Employee employee = new Employee();
-            employee.setFirstName("test");
-            employee.setLastName("test");
-            employee.setLogin("test");
-            employee.setPassword("test");
-
-            session.saveOrUpdate(employee);
-            session.close();
-        }
-    }
-
 }
