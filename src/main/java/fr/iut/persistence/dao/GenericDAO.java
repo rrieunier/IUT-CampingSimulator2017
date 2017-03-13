@@ -20,7 +20,7 @@ public class GenericDAO<T extends EntityModel, Id> {
     /**
      * Hibernate session.
      */
-    protected Session session = null;
+    protected Session session = HibernateUtil.getSession();
 
     /**
      * Constructor.
@@ -31,26 +31,11 @@ public class GenericDAO<T extends EntityModel, Id> {
     }
 
     /**
-     * Opens a new session.
-     */
-    public void open() {
-        session = HibernateUtil.getSessionFactory().openSession();
-    }
-
-    /**
-     * Closes the session.
-     */
-    public void close() {
-
-        session.close();
-    }
-
-    /**
      * Inserts or update an entity in database.
      * @param entity already existing or new entity.
      */
     @Transactional(rollbackOn = Exception.class)
-    public void saveOrUpdate(T entity) {
+    public T saveOrUpdate(T entity) {
         String action = "INSERTED or UPDATED";
 
         session.saveOrUpdate(entity);
@@ -59,6 +44,7 @@ public class GenericDAO<T extends EntityModel, Id> {
             newLog(entity, action);
         }
 
+        return entity;
     }
 
     /**

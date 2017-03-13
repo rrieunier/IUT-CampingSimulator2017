@@ -40,9 +40,7 @@ public class HomeController implements ControllerInterface {
     public ArrayList<Product> getProductsList() {
         GenericDAO<Product, Integer> dao = new GenericDAO<Product, Integer>(Product.class);
 
-        dao.open();
         ArrayList<Product> products = (ArrayList<Product>) dao.findAll();
-        dao.close();
 
         return products;
     }
@@ -66,9 +64,7 @@ public class HomeController implements ControllerInterface {
 
 
         GenericDAO<Product, Integer> dao = new GenericDAO<>(Product.class);
-        dao.open();
         dao.saveOrUpdate(product);
-        dao.close();
     }
 
     /**
@@ -90,9 +86,7 @@ public class HomeController implements ControllerInterface {
         product.setSellPrice(Float.parseFloat(newProduct_result.get().get("Prix (0.0)")));
 
         GenericDAO<Product, Integer> dao = new GenericDAO<Product, Integer>(Product.class);
-        dao.open();
         dao.saveOrUpdate(product);
-        dao.close();
     }
 
     @Override
