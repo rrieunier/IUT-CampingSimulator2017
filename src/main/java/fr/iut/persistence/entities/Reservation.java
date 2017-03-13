@@ -8,14 +8,14 @@ import java.sql.Timestamp;
  */
 @Entity
 @Table(name = "RESERVATION")
-public class Reservation {
+public class Reservation extends EntityModel<Integer> {
 
     /**
      * Reservation's id.
      */
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false)
-    private int id;
+    private Integer id;
 
 
     /**
@@ -66,7 +66,7 @@ public class Reservation {
     @ManyToOne(optional = false)
     private Spot spot;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -102,7 +102,7 @@ public class Reservation {
         return reduction;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

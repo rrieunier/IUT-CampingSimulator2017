@@ -10,14 +10,14 @@ import java.util.Set;
 @Entity
 @Table(name = "LOCATION")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Location {
+public class Location extends EntityModel<Integer> {
 
     /**
      * Locations's id.
      */
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false)
-    private int id;
+    private Integer id;
 
     /**
      * Location's name.
@@ -57,7 +57,7 @@ public class Location {
     )
     private Set<Problem> problems = new HashSet<>();
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -81,7 +81,7 @@ public class Location {
         return problems;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

@@ -71,6 +71,30 @@ public class HomeController implements ControllerInterface {
         dao.close();
     }
 
+    /**
+     * @param ancientProduct
+     * update informations of a product
+     */
+    public void modifyProduct(Product ancientProduct){
+        InputsListDialog modifyProductDialog = new InputsListDialog("Modifier le produit");
+        modifyProductDialog.addTextField(ancientProduct.getName());
+        modifyProductDialog.addTextField(String.valueOf(ancientProduct.getStock()));
+        modifyProductDialog.addTextField(String.valueOf(ancientProduct.getSellPrice()));
+        modifyProductDialog.addTextField(String.valueOf(ancientProduct.getCriticalQuantity()));
+        Optional<Map<String, String>> newProduct_result = modifyProductDialog.showAndWait();
+
+        Product product = new Product();
+        product.setName(newProduct_result.get().get("Nom"));
+        product.setStock(Integer.parseInt(newProduct_result.get().get("Quantité en stock")));
+        product.setCriticalQuantity(Integer.parseInt(newProduct_result.get().get("Quantité limite")));
+        product.setSellPrice(Float.parseFloat(newProduct_result.get().get("Prix (0.0)")));
+
+        GenericDAO<Product, Integer> dao = new GenericDAO<Product, Integer>(Product.class);
+        dao.open();
+        dao.saveOrUpdate(product);
+        dao.close();
+    }
+
     @Override
     public Scene getView() {
         return homeView;

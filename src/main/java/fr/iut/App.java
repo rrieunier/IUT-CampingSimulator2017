@@ -3,6 +3,7 @@ package fr.iut;
 import fr.iut.controller.ConnectionController;
 import fr.iut.controller.HomeController;
 import fr.iut.controller.MapController;
+import fr.iut.persistence.dao.HibernateUtil;
 import fr.iut.view.ConnectionView;
 import fr.iut.view.HomeView;
 import fr.iut.view.MapCreatorView;
@@ -12,6 +13,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import org.hibernate.Hibernate;
 
 import java.awt.*;
 
@@ -31,16 +33,19 @@ public class App extends Application {
     private HomeController homeController;
 
     public static void main(String[] args) {
+        HibernateUtil.setConfig(HibernateUtil.Config.PROD);
         launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception{
+
         stage = primaryStage;
         primaryStage.setTitle("Camping Simulator 2017");
 
         primaryStage.setScene(connectionController.getView());
         primaryStage.setResizable(false);
+
 
         primaryStage.show();
     }
@@ -48,6 +53,7 @@ public class App extends Application {
     @Override
     public void stop(){
         System.out.println("Stopping...");
+        HibernateUtil.shutdown();
         Platform.exit();
         System.exit(0);
     }

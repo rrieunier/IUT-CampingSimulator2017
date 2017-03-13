@@ -7,14 +7,14 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "SUPPLIER_PROPOSE_PRODUCT")
-public class SupplierProposeProduct {
+public class SupplierProposeProduct extends EntityModel<Integer> {
 
     /**
      * Id of this proposition.
      */
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false)
-    private int id;
+    private Integer id;
 
     /**
      * Sell price for this proposition.
@@ -34,7 +34,7 @@ public class SupplierProposeProduct {
     @ManyToOne(optional = false)
     private Product product;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -50,7 +50,7 @@ public class SupplierProposeProduct {
         return product;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

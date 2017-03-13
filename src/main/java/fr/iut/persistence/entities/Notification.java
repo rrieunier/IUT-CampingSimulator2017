@@ -9,14 +9,14 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "NOTIFICATION")
-public class Notification {
+public class Notification extends EntityModel<Integer> {
 
     /**
      * Notification's id.
      */
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false)
-    private int id;
+    private Integer id;
 
     /**
      * Notification's title.
@@ -40,7 +40,7 @@ public class Notification {
     )
     private Set<Employee> employees = new HashSet<>();
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -56,7 +56,7 @@ public class Notification {
         return employees;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
