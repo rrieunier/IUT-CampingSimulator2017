@@ -29,7 +29,7 @@ public class EmployeeDAOTest {
             employee.setPassword(DAOTestUtils.randomString());
 
             EmployeeDAO employeeDAO = new EmployeeDAO();
-            employeeDAO.saveOrUpdate(employee);
+            employeeDAO.save(employee);
 
             assert employeeDAO.connectUser(employee.getLogin(), employee.getPassword())!= null;
         }
@@ -46,7 +46,7 @@ public class EmployeeDAOTest {
         employee.setLogin(DAOTestUtils.randomString());
         employee.setPassword(DAOTestUtils.randomString());
 
-        employeeDAO.saveOrUpdate(employee);
+        employeeDAO.save(employee);
 
         Employee found = employeeDAO.findByLogin(employee.getLogin());
 
@@ -68,7 +68,7 @@ public class EmployeeDAOTest {
         employee.setLogin(DAOTestUtils.randomString());
         employee.setPassword(DAOTestUtils.randomString());
 
-        employeeDAO.saveOrUpdate(employee);
+        employeeDAO.save(employee);
 
         Employee connected = employeeDAO.connectUser(employee.getLogin(), employee.getPassword());
 
@@ -91,7 +91,7 @@ public class EmployeeDAOTest {
         employee.setLogin(DAOTestUtils.randomString());
         employee.setPassword(DAOTestUtils.randomString());
 
-        employeeDAO.saveOrUpdate(employee);
+        employeeDAO.save(employee);
 
         List<Employee> matches = employeeDAO.findByFirstName(employee.getFirstName());
         assertEquals(1, matches.size());
@@ -117,7 +117,7 @@ public class EmployeeDAOTest {
         employee.setLogin(DAOTestUtils.randomString());
         employee.setPassword(DAOTestUtils.randomString());
 
-        employeeDAO.saveOrUpdate(employee);
+        employeeDAO.save(employee);
 
         List<Employee> matches = employeeDAO.findByLastName(employee.getLastName());
         assertEquals(1, matches.size());
