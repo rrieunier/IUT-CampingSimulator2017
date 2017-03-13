@@ -31,9 +31,7 @@ public class ConnectionController implements ControllerInterface {
         if(username.length() == 0 || password.length() == 0)
             return false;
 
-        daoEmployee.open();
         List<Employee> employees = daoEmployee.findAll();
-        daoEmployee.close();
 
         Employee employee = null;
 

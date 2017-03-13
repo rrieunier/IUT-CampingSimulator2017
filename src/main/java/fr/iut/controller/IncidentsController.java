@@ -35,9 +35,7 @@ public class IncidentsController {
      * get incidents of database and create in local
      */
     public void createIncidents(){
-        daoIncidents.open();
         stub = (ArrayList<Problem>) daoIncidents.findAll();
-        daoIncidents.close();
     }
 
     /**
@@ -50,9 +48,7 @@ public class IncidentsController {
         p.setSolutionDatetime(currentTimestamp);
 
         stub.set(stub.indexOf(p), p);
-        daoIncidents.open();
         daoIncidents.saveOrUpdate(p);
-        daoIncidents.close();
     }
 
     /**
@@ -97,9 +93,7 @@ public class IncidentsController {
         Timestamp currentTimestamp = new Timestamp(now.getTime());
         problem.setAppearanceDatetime(currentTimestamp);
 
-        daoIncidents.open();
         daoIncidents.saveOrUpdate(problem);
-        daoIncidents.close();
         stub.add(problem);
     }
 

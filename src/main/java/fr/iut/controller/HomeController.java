@@ -40,9 +40,7 @@ public class HomeController implements ControllerInterface {
     public ArrayList<Product> getProductsList() {
         GenericDAO<Product, Integer> dao = new GenericDAO<Product, Integer>(Product.class);
 
-        dao.open();
         ArrayList<Product> products = (ArrayList<Product>) dao.findAll();
-        dao.close();
 
         return products;
     }
@@ -66,9 +64,7 @@ public class HomeController implements ControllerInterface {
 
 
         GenericDAO<Product, Integer> dao = new GenericDAO<>(Product.class);
-        dao.open();
         dao.saveOrUpdate(product);
-        dao.close();
     }
 
     /**
@@ -84,7 +80,6 @@ public class HomeController implements ControllerInterface {
         Optional<Map<String, String>> newProduct_result = modifyProductDialog.showAndWait();
 
         GenericDAO<Product, Integer> dao = new GenericDAO<Product, Integer>(Product.class);
-        dao.open();
 
         Product product = dao.findById(ancientProduct.getId());
         product.setName(newProduct_result.get().get(ancientProduct.getName()).isEmpty()
@@ -100,9 +95,7 @@ public class HomeController implements ControllerInterface {
                 ? ancientProduct.getSellPrice()
                 : Float.parseFloat(newProduct_result.get().get(String.valueOf(ancientProduct.getSellPrice()))));
 
-
         dao.saveOrUpdate(product);
-        dao.close();
     }
 
     public void deleteProduct(Product lastClickedValue) {

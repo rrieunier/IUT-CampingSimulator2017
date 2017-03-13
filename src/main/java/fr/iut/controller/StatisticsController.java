@@ -55,7 +55,6 @@ public class StatisticsController implements ControllerInterface {
         switch (selectedChart) {
             case 0: // emplacements les plus réservés
                 dao = new GenericDAO<>(Spot.class);
-                dao.open();
                 ArrayList<Spot> spots = (ArrayList<Spot>) dao.findAll();
 
                 spots.sort(new Comparator<Spot>() {
@@ -81,13 +80,11 @@ public class StatisticsController implements ControllerInterface {
 
                 chartView = new ChartView(ChartType.PIE, objects, comparative,
                         "Emplacements les plus réservés", "Nom", "Nombre de rés.");
-                dao.close();
                 break;
 
             case 1: // emplacements les moins réservés
 
                 dao = new GenericDAO<>(Spot.class);
-                dao.open();
                 spots = (ArrayList<Spot>) dao.findAll();
 
                 spots.sort(new Comparator<Spot>() {
@@ -113,7 +110,6 @@ public class StatisticsController implements ControllerInterface {
 
                 chartView = new ChartView(type, objects, comparative,
                         "Emplacements les moins réservés\n\t\t(1/nb de res.)", "Nom", "Nombre de rés.");
-                dao.close();
                 break;
 
             default:
@@ -131,7 +127,6 @@ public class StatisticsController implements ControllerInterface {
         switch (selectedChart) {
             case 0: // clients les plus fidèles
                 dao = new GenericDAO<>(Client.class);
-                dao.open();
                 ArrayList<Client> clients = (ArrayList<Client>) dao.findAll();
 
                 clients.sort(new Comparator<Client>() {
@@ -158,12 +153,11 @@ public class StatisticsController implements ControllerInterface {
                 chartView = new ChartView(ChartType.PIE, objects, comparative,
                         "Clients les plus fidèles", "Nom", "Nombre de rés.");
                 chartView.setLegendSide(Side.BOTTOM);
-                dao.close();
                 break;
 
             case 1:// clients les plus plaintifs
                 dao = new GenericDAO<>(Client.class);
-                dao.open();
+                
                 clients = (ArrayList<Client>) dao.findAll();
 
                 clients.sort(new Comparator<Client>() {
@@ -190,13 +184,13 @@ public class StatisticsController implements ControllerInterface {
                 chartView = new ChartView(ChartType.PIE, objects, comparative,
                         "Clients ayant reportés \nle plus de problèmes", "Nom", "Nombre de prob.");
                 chartView.setLegendSide(Side.BOTTOM);
-                dao.close();
+                
 
                 break;
 
             case 2: // clients les moins fidèles
                 dao = new GenericDAO<>(Client.class);
-                dao.open();
+                
                 clients = (ArrayList<Client>) dao.findAll();
 
                 clients.sort(new Comparator<Client>() {
@@ -223,12 +217,12 @@ public class StatisticsController implements ControllerInterface {
                 chartView = new ChartView(ChartType.PIE, objects, comparative,
                         "Clients ayant reportés \nle moins de problèmes", "Nom", "Nombre de prob.");
                 chartView.setLegendSide(Side.BOTTOM);
-                dao.close();
+                
                 break;
 
             case 3:// clients achetant le plus
                 dao = new GenericDAO<>(Client.class);
-                dao.open();
+                
                 clients = (ArrayList<Client>) dao.findAll();
 
                 clients.sort(new Comparator<Client>() {
@@ -255,7 +249,7 @@ public class StatisticsController implements ControllerInterface {
                 chartView = new ChartView(type, objects, comparative,
                         "Clients ayant acheté le plus", "Nom", "Nombre d'achats");
                 chartView.setLegendSide(Side.BOTTOM);
-                dao.close();
+                
                 break;
         }
 
@@ -270,7 +264,7 @@ public class StatisticsController implements ControllerInterface {
         switch (selectedChart) {
             case 0: // produit le plus vendu
                 dao = new GenericDAO<>(Product.class);
-                dao.open();
+                
                 ArrayList<Product> products = (ArrayList<Product>) dao.findAll();
 
                 ArrayList<String> objects = new ArrayList<>();
@@ -306,12 +300,12 @@ public class StatisticsController implements ControllerInterface {
                 chartView = new ChartView(ChartType.PIE, objects, comparative,
                         "Produits les plus achetés", "Nom", "Nombre de ventes");
                 chartView.setLegendSide(Side.BOTTOM);
-                dao.close();
+                
                 break;
 
             case 1: // produits les moins vendus
                 dao = new GenericDAO<>(Product.class);
-                dao.open();
+                
                 products = (ArrayList<Product>) dao.findAll();
 
                 objects = new ArrayList<>();
@@ -347,7 +341,7 @@ public class StatisticsController implements ControllerInterface {
                 chartView = new ChartView(type, objects, comparative,
                         "Produits les moins achetés", "Nom", "Nombre de ventes");
                 chartView.setLegendSide(Side.BOTTOM);
-                dao.close();
+                
                 break;
 
             default:
@@ -365,7 +359,7 @@ public class StatisticsController implements ControllerInterface {
         switch (selectedChart) {
             case 0:
                 dao = new GenericDAO<>(Employee.class);
-                dao.open();
+                
                 ArrayList<Employee> employees = (ArrayList<Employee>) dao.findAll();
 
                 employees.sort(new Comparator<Employee>() {
@@ -404,7 +398,7 @@ public class StatisticsController implements ControllerInterface {
                 chartView = new ChartView(type, objects, comparative,
                         "Employés travaillant le plus", "Nom", "Nombre d'heures de travail");
                 chartView.setLegendSide(Side.BOTTOM);
-                dao.close();
+                
                 break;
 
             default:
@@ -422,7 +416,6 @@ public class StatisticsController implements ControllerInterface {
         switch (selectedChart) {
             case 0:
                 dao_client = new GenericDAO<>(Client.class);
-                dao_client.open();
                 ArrayList<Client> clients = (ArrayList<Client>) dao_client.findAll();
 
                 clients.sort(new Comparator<Client>() {
@@ -449,13 +442,11 @@ public class StatisticsController implements ControllerInterface {
                 chartView = new ChartView(ChartType.PIE, objects, comparative,
                         "Clients ayant reportés \nle plus de problèmes", "Nom", "Nombre de prob.");
                 chartView.setLegendSide(Side.BOTTOM);
-                dao_client.close();
 
                 break;
 
             case 1:
                 dao_location = new GenericDAO<>(Location.class);
-                dao_location.open();
                 ArrayList<Location> locations = (ArrayList<Location>) dao_location.findAll();
 
                 locations.sort(new Comparator<Location>() {
@@ -482,7 +473,6 @@ public class StatisticsController implements ControllerInterface {
                 chartView = new ChartView(ChartType.PIE, objects, comparative,
                         "Lieu ayant le plus de problèmes", "Nom", "Nombre de prob.");
                 chartView.setLegendSide(Side.BOTTOM);
-                dao_location.close();
                 break;
         }
         return chartView;
@@ -495,7 +485,7 @@ public class StatisticsController implements ControllerInterface {
 
         switch (selectedChart) {
             case 0:
-                dao.open();
+                
                 ArrayList<Employee> employees = (ArrayList<Employee>) dao.findAll();
 
                 employees.sort(new Comparator<Employee>() {
@@ -522,7 +512,7 @@ public class StatisticsController implements ControllerInterface {
                 chartView = new ChartView(ChartType.PIE, objects, comparative,
                         "Employés se connectant le plus", "Nom", "Nombre de connections");
                 chartView.setLegendSide(Side.BOTTOM);
-                dao.close();
+                
                 break;
 
             default:

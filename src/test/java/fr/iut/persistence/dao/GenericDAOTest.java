@@ -2,7 +2,9 @@ package fr.iut.persistence.dao;
 
 import fr.iut.persistence.dao.exception.InvalidLoginPasswordException;
 import fr.iut.persistence.entities.Client;
+import fr.iut.persistence.entities.Employee;
 import fr.iut.persistence.entities.Log;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -14,14 +16,26 @@ import static org.junit.Assert.assertNotNull;
 public class GenericDAOTest {
 
 
+    @BeforeClass
+    public static void initDaoIfNeeded() throws InvalidLoginPasswordException {
+        if(HibernateUtil.getSession() == null){
+            HibernateUtil.openSession(HibernateUtil.Config.TEST);
+
+            Employee employee = new Employee();
+            employee.setFirstName(DAOTestUtils.randomString());
+            employee.setLastName(DAOTestUtils.randomString());
+            employee.setLogin(DAOTestUtils.randomString());
+            employee.setPassword(DAOTestUtils.randomString());
+
+            EmployeeDAO employeeDAO = new EmployeeDAO();
+            employeeDAO.saveOrUpdate(employee);
+
+            assert employeeDAO.connectUser(employee.getLogin(), employee.getPassword())!= null;
+        }
+    }
+
     public GenericDAOTest() throws InvalidLoginPasswordException {
 
-        HibernateUtil.setConfig(HibernateUtil.Config.TEST);
-
-        EmployeeDAO employeeDAO = new EmployeeDAO();
-        employeeDAO.open();
-        assert employeeDAO.connectUser("test","test") != null;
-        employeeDAO.close();
     }
 
     @Test
@@ -29,11 +43,10 @@ public class GenericDAOTest {
 
         Client client = new Client();
         client.setId(12345678);
-        client.setFirstname("Patrick");
-        client.setLastname("Felix");
+        client.setFirstname(DAOTestUtils.randomString());
+        client.setLastname(DAOTestUtils.randomString());
 
         GenericDAO<Client, Integer> dao = new GenericDAO<>(Client.class);
-        dao.open();
 
         dao.saveOrUpdate(client);
         Client saved = dao.findById(client.getId());
@@ -44,21 +57,17 @@ public class GenericDAOTest {
         assertEquals(client.getFirstname(), saved.getFirstname());
         assertEquals(client.getLastname(), saved.getLastname());
 
-        dao.close();
     }
 
     @Test
     public void testUpdate() throws Exception {
 
-        HibernateUtil.setConfig(HibernateUtil.Config.TEST);
-
         Client client = new Client();
         client.setId(67906);
-        client.setFirstname("Hervé");
-        client.setLastname("Bebert");
+        client.setFirstname(DAOTestUtils.randomString());
+        client.setLastname(DAOTestUtils.randomString());
 
         GenericDAO<Client, Integer> dao = new GenericDAO<>(Client.class);
-        dao.open();
 
         dao.saveOrUpdate(client);
 
@@ -75,28 +84,21 @@ public class GenericDAOTest {
         assertEquals(saved.getFirstname(), updated.getFirstname());
         assertEquals(saved.getId(), updated.getId());
 
-        dao.close();
     }
 
     @Test
     public void testLogCreation() throws Exception {
 
         GenericDAO<Log, Integer> logDao = new GenericDAO<>(Log.class);
-        logDao.open();
         int initialLogCount = logDao.findAll().size();
-        logDao.close();
 
         Client client = new Client();
-        client.setFirstname("azertyu");
-        client.setLastname("azertyu");
+        client.setFirstname(DAOTestUtils.randomString());
+        client.setLastname(DAOTestUtils.randomString());
 
         GenericDAO<Client, Integer> clientDao = new GenericDAO<>(Client.class);
-        clientDao.open();
         clientDao.saveOrUpdate(client);
-        clientDao.close();
 
-        logDao.open();
         assertEquals(initialLogCount + 1, logDao.findAll().size());
-        logDao.close();
     }
 }
