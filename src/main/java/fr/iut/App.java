@@ -33,18 +33,19 @@ public class App extends Application {
     private HomeController homeController;
 
     public static void main(String[] args) {
+        HibernateUtil.setConfig(HibernateUtil.Config.PROD);
         launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception{
+
         stage = primaryStage;
         primaryStage.setTitle("Camping Simulator 2017");
 
         primaryStage.setScene(connectionController.getView());
         primaryStage.setResizable(false);
 
-        HibernateUtil.setConfig(HibernateUtil.Config.PROD);
 
         primaryStage.show();
     }
