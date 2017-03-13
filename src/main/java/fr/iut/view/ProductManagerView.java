@@ -15,6 +15,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.SubScene;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -131,7 +132,8 @@ public class ProductManagerView extends SubScene {
 
         HBox buttons = new HBox();
         buttons.setSpacing(HomeView.TAB_CONTENT_W / 8);
-        for (int i = 0; i < 2; i++) {
+
+        for (int i = 0; i < 3; i++) {
             Button button = new Button();
             if (i == 0) {
                 button.setText("Gérer fournisseurs");
@@ -141,12 +143,25 @@ public class ProductManagerView extends SubScene {
                         // TODO
                     }
                 });
-            } else {
+            } else if (i == 1){
                 button.setText("Réaprovisionner");
                 button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
                         // TODO
+                    }
+                });
+            } else {
+                button.setText("Modifier");
+                button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        controller.modifyProduct(lastClickedValue);
+                        buildProductsList(0, "", true);
+                        lastClicked = (StackPane) products_box.getChildren().get(0);
+                        lastClicked.setStyle("-fx-background-color: #ff6600;");
+                        lastClickedValue = shown_list.get(0);
+                        actualiseDetails();
                     }
                 });
             }
@@ -297,10 +312,12 @@ public class ProductManagerView extends SubScene {
                 products_box.getChildren().add(pane);
             }
         }
-        lastClicked = (StackPane) products_box.getChildren().get(0);
-        lastClicked.setStyle("-fx-background-color: #ff6600;");
-        lastClickedValue = shown_list.get(0);
-        actualiseDetails();
+        if (!products_box.getChildren().isEmpty()) {
+            lastClicked = (StackPane) products_box.getChildren().get(0);
+            lastClicked.setStyle("-fx-background-color: #ff6600;");
+            lastClickedValue = shown_list.get(0);
+            actualiseDetails();
+        }
     }
 
     /**
