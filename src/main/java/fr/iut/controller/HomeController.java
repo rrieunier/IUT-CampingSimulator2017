@@ -83,15 +83,32 @@ public class HomeController implements ControllerInterface {
         modifyProductDialog.addTextField(String.valueOf(ancientProduct.getCriticalQuantity()));
         Optional<Map<String, String>> newProduct_result = modifyProductDialog.showAndWait();
 
-        Product product = new Product();
-        product.setName(newProduct_result.get().get("Nom"));
-        product.setStock(Integer.parseInt(newProduct_result.get().get("Quantité en stock")));
-        product.setCriticalQuantity(Integer.parseInt(newProduct_result.get().get("Quantité limite")));
-        product.setSellPrice(Float.parseFloat(newProduct_result.get().get("Prix (0.0)")));
-
         GenericDAO<Product, Integer> dao = new GenericDAO<Product, Integer>(Product.class);
         dao.open();
+
+        Product product = dao.findById(ancientProduct.getId());
+        product.setName(newProduct_result.get().get(ancientProduct.getName()).isEmpty()
+                ? ancientProduct.getName()
+                : newProduct_result.get().get(ancientProduct.getName()));
+        product.setStock(newProduct_result.get().get(String.valueOf(ancientProduct.getStock())).isEmpty()
+                ? ancientProduct.getStock()
+                : Integer.parseInt(newProduct_result.get().get(String.valueOf(ancientProduct.getStock()))));
+        product.setCriticalQuantity(newProduct_result.get().get(String.valueOf(ancientProduct.getCriticalQuantity())).isEmpty()
+                ? ancientProduct.getCriticalQuantity()
+                : Integer.parseInt(newProduct_result.get().get(String.valueOf(ancientProduct.getCriticalQuantity()))));
+        product.setSellPrice(newProduct_result.get().get(String.valueOf(ancientProduct.getSellPrice())).isEmpty()
+                ? ancientProduct.getSellPrice()
+                : Float.parseFloat(newProduct_result.get().get(String.valueOf(ancientProduct.getSellPrice()))));
+
+
         dao.saveOrUpdate(product);
+        dao.close();
+    }
+
+    public void deleteProduct(Product lastClickedValue) {
+        GenericDAO<Product, Integer> dao = new GenericDAO<Product, Integer>(Product.class);
+        dao.open();
+        dao.remove(lastClickedValue);
         dao.close();
     }
 
