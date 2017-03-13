@@ -64,7 +64,7 @@ public class HomeController implements ControllerInterface {
 
 
         GenericDAO<Product, Integer> dao = new GenericDAO<>(Product.class);
-        dao.saveOrUpdate(product);
+        dao.save(product);
     }
 
     /**
@@ -86,7 +86,7 @@ public class HomeController implements ControllerInterface {
         product.setSellPrice(Float.parseFloat(newProduct_result.get().get("Prix (0.0)")));
 
         GenericDAO<Product, Integer> dao = new GenericDAO<Product, Integer>(Product.class);
-        dao.saveOrUpdate(product);
+        dao.save(product);
     }
 
     @Override

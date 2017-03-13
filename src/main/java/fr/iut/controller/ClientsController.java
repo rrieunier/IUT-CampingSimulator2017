@@ -47,6 +47,6 @@ public class ClientsController implements ControllerInterface {
     }
 
     public void saveClient(Client client) {
-        daoClient.saveOrUpdate(client);
+        daoClient.save(client);
     }
 }

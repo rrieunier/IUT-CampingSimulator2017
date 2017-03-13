@@ -51,9 +51,9 @@ public class MapController implements ControllerInterface {
         System.out.println("Done !");
         currentMap = map;
 
-        locations.forEach(daoLocation::saveOrUpdate);
+        locations.forEach(daoLocation::save);
 
-        //TODO : saveOrUpdate map and locations in the bdd
+        //TODO : save map and locations in the bdd
     }
 
     @Override

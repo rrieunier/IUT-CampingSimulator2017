@@ -2,7 +2,6 @@ package fr.iut.persistence.dao;
 
 import fr.iut.persistence.dao.exception.InvalidLoginPasswordException;
 import fr.iut.persistence.entities.Employee;
-import fr.iut.persistence.entities.Log;
 import org.hibernate.query.Query;
 
 import javax.persistence.NoResultException;
@@ -85,7 +84,6 @@ public class EmployeeDAO extends GenericDAO<Employee, Integer> {
 
         if (byLogin != null && byLogin.getPassword().equals(password)) {
             connectedUser = byLogin;
-            newConnectionLog("CONNECTED");
             return connectedUser;
         } else {
             connectedUser = null;
@@ -97,22 +95,7 @@ public class EmployeeDAO extends GenericDAO<Employee, Integer> {
      * Disconnects the current connected user.
      */
     public void disconnectUser() {
-
-        newConnectionLog("DISCONNECTED");
         connectedUser = null;
-    }
-
-    /**
-     * Creates a new log concerning a connection/disconnection.
-     * @param action e.g. : CONNECTED, DISCONNECTED, ...
-     */
-    private void newConnectionLog(String action) {
-
-        Log log = new Log();
-        log.setAction(action);
-        log.setEmployee(EmployeeDAO.getConnectedUser());
-
-        session.saveOrUpdate(log);
     }
 
     /**

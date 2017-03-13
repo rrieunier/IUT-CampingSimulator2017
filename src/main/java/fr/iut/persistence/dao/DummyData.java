@@ -26,7 +26,7 @@ public class DummyData {
             spot.setCapacity(2);
             spot.setPointX((double) i);
             spot.setPointY((double) i);
-            daoSpot.saveOrUpdate(spot);
+            daoSpot.save(spot);
         }
         ArrayList<Spot> spots = new ArrayList<>();
         spots.addAll(daoSpot.findAll());
@@ -37,7 +37,7 @@ public class DummyData {
             client.setLastname("nom" + i);
             client.setPhone("06000000" + i);
             client.setEmail("reservation" + i + "@camping.oklm");
-            daoClient.saveOrUpdate(client);
+            daoClient.save(client);
         }
         ArrayList<Client> clients = new ArrayList<>();
         clients.addAll(daoClient.findAll());
@@ -49,7 +49,7 @@ public class DummyData {
             reservation.setStarttime(new Timestamp(System.currentTimeMillis()));
             reservation.setEndtime(new Timestamp(System.currentTimeMillis() + 1));
             reservation.setPersonCount(1);
-            dao.saveOrUpdate(reservation);
+            dao.save(reservation);
         }
 
     }

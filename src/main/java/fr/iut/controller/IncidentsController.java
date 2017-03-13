@@ -48,7 +48,7 @@ public class IncidentsController {
         p.setSolutionDatetime(currentTimestamp);
 
         stub.set(stub.indexOf(p), p);
-        daoIncidents.saveOrUpdate(p);
+        daoIncidents.save(p);
     }
 
     /**
@@ -93,7 +93,7 @@ public class IncidentsController {
         Timestamp currentTimestamp = new Timestamp(now.getTime());
         problem.setAppearanceDatetime(currentTimestamp);
 
-        daoIncidents.saveOrUpdate(problem);
+        daoIncidents.save(problem);
         stub.add(problem);
     }
 
