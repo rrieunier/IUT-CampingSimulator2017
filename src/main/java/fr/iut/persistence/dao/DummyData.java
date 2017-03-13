@@ -19,7 +19,6 @@ public class DummyData {
 
         //Crete and persist your dummy datas for test here
         GenericDAO<Spot, Integer> daoSpot = new GenericDAO<>(Spot.class);
-        daoSpot.open();
         daoSpot.removeAll();
         for (int i = 0; i < 50; i++) {
             Spot spot = new Spot();
@@ -31,9 +30,7 @@ public class DummyData {
         }
         ArrayList<Spot> spots = new ArrayList<>();
         spots.addAll(daoSpot.findAll());
-        daoSpot.close();
         GenericDAO<Client, Integer> daoClient = new GenericDAO<>(Client.class);
-        daoClient.open();
         for (int i = 0; i < 50; i++) {
             Client client = new Client();
             client.setFirstname("pre " + i);
@@ -44,9 +41,7 @@ public class DummyData {
         }
         ArrayList<Client> clients = new ArrayList<>();
         clients.addAll(daoClient.findAll());
-        daoClient.close();
         GenericDAO<Reservation, Integer> dao = new GenericDAO<>(Reservation.class);
-        dao.open();
         for (int i = 0; i < 50; i++) {
             Reservation reservation = new Reservation();
             reservation.setSpot(spots.get(i));
@@ -56,7 +51,6 @@ public class DummyData {
             reservation.setPersonCount(1);
             dao.saveOrUpdate(reservation);
         }
-        dao.close();
 
     }
 }
