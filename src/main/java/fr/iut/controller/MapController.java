@@ -27,9 +27,7 @@ public class MapController implements ControllerInterface {
 
     public MapController(App app) {
         this.app = app;
-        daoMap.open();
         currentMap = daoMap.getMap();
-        daoMap.close();
     }
 
     @Override
@@ -38,7 +36,6 @@ public class MapController implements ControllerInterface {
     }
 
     public void store(File mapFile, ArrayList<Location> locations) {
-        daoMap.open();
 
         Map map = new Map();
 
@@ -46,7 +43,6 @@ public class MapController implements ControllerInterface {
             map.setImage(Files.readAllBytes(Paths.get(mapFile.getAbsolutePath())));
         } catch (IOException e) {
             e.printStackTrace();
-            daoMap.close();
             return;
         }
 
@@ -55,13 +51,9 @@ public class MapController implements ControllerInterface {
         System.out.println("Done !");
         currentMap = map;
 
-        daoMap.close();
+        locations.forEach(daoLocation::save);
 
-        daoLocation.open();
-        locations.forEach(daoLocation::saveOrUpdate);
-        daoLocation.close();
-
-        //TODO : saveOrUpdate map and locations in the bdd
+        //TODO : save map and locations in the bdd
     }
 
     @Override

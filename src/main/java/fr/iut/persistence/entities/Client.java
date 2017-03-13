@@ -1,6 +1,11 @@
 package fr.iut.persistence.entities;
 
+import org.hibernate.annotations.*;
+
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -59,12 +64,14 @@ public class Client extends EntityModel<Integer> {
      * Reservations made by the client.
      */
     @OneToMany(mappedBy = "client")
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private Set<Reservation> reservations = new HashSet<>();
 
     /**
      * Purchases made by the client.
      */
     @OneToMany(mappedBy = "client")
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private Set<Purchase> purchases = new HashSet<>();
 
     public Integer getId() {

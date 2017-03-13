@@ -1,6 +1,11 @@
 package fr.iut.persistence.entities;
 
+import org.hibernate.annotations.*;
+
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -42,6 +47,7 @@ public class Location extends EntityModel<Integer> {
      * Tasks planned on this location.
      */
     @OneToMany(mappedBy = "location")
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private Set<Task> tasks = new HashSet<>();
 
     /**

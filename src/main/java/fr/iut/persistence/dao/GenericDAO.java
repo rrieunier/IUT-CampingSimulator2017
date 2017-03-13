@@ -1,7 +1,6 @@
 package fr.iut.persistence.dao;
 
 import fr.iut.persistence.entities.EntityModel;
-import fr.iut.persistence.entities.Log;
 import org.hibernate.Session;
 
 import javax.persistence.criteria.CriteriaQuery;
@@ -20,45 +19,40 @@ public class GenericDAO<T extends EntityModel, Id> {
     /**
      * Hibernate session.
      */
-    protected Session session = null;
+    protected Session session = HibernateUtil.getSession();
 
     /**
      * Constructor.
-     * @param persistentClass Entity class to handle byt he instance.
+     * @param persistentClass Entity class to handle by the instance.
      */
     public GenericDAO(Class<T> persistentClass) {
         this.persistentClass = persistentClass;
     }
 
     /**
-     * Opens a new session.
-     */
-    public void open() {
-        session = HibernateUtil.getSessionFactory().openSession();
-    }
-
-    /**
-     * Closes the session.
-     */
-    public void close() {
-
-        session.close();
-    }
-
-    /**
-     * Inserts or update an entity in database.
-     * @param entity already existing or new entity.
+     * Inserts an entity in database.
+     * @param entity new entity.
+     * @return entity inserted
      */
     @Transactional(rollbackOn = Exception.class)
-    public void saveOrUpdate(T entity) {
-        String action = "INSERTED or UPDATED";
+    public T save(T entity) {
 
-        session.saveOrUpdate(entity);
+        session.save(entity);
 
-        if (EmployeeDAO.getConnectedUser() != null) {
-            newLog(entity, action);
-        }
+        return entity;
+    }
 
+    /**
+     * Updates an entity in database
+     * @param entity entity to update
+     * @return entity updated
+     */
+    @Transactional(rollbackOn = Exception.class)
+    public T update(T entity) {
+
+        session.merge(entity);
+
+        return entity;
     }
 
     /**
@@ -67,26 +61,37 @@ public class GenericDAO<T extends EntityModel, Id> {
      */
     @Transactional(rollbackOn = Exception.class)
     public void remove(T entity) {
-        session.remove(entity);
 
-        if (EmployeeDAO.getConnectedUser() != null) {
-            newLog(entity, "REMOVED");
+        session.beginTransaction();
+
+        try{
+            session.delete(entity);
+            session.getTransaction().commit();
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            session.getTransaction().rollback();
         }
+
     }
 
     /**
      * Removes all entities from database.
-     */
-    @Transactional(rollbackOn = Exception.class)
+     */     
     public void removeAll() {
-        List<T> all = findAll();
-        for (T i : all)
-            session.remove(i);
 
-        if (EmployeeDAO.getConnectedUser() != null) {
-            newLog("REMOVED ALL ENTITIES");
+        session.beginTransaction();
+
+        try {
+            List<T> all = findAll();
+            all.forEach(session::delete);
+            session.getTransaction().commit();
+
+        } catch(Exception e) {
+            e.printStackTrace();
+            session.getTransaction().rollback();
         }
-
     }
 
     /**
@@ -108,43 +113,5 @@ public class GenericDAO<T extends EntityModel, Id> {
         criteria.select(criteria.from(persistentClass));
 
         return session.createQuery(criteria).getResultList();
-    }
-
-    /**
-     * Creates a new log concerning an entity.
-     * @param entity Entity concerned.
-     * @param action Action applied to this entity (e.g. : INSERTED, UPDATED, ...).
-     */
-    protected void newLog(T entity, String action) {
-        StringBuilder logSB = new StringBuilder();
-        logSB.append(action).append(" ")
-                .append(" on ").append(persistentClass.toString())
-                .append(" entity with id ").append(entity.getId());
-
-        Log log = new Log();
-        log.setAction(logSB.toString());
-        log.setEmployee(EmployeeDAO.getConnectedUser());
-
-        session.saveOrUpdate(log);
-
-        System.out.println(log.getAction());
-    }
-
-    /**
-     * Creates a new log.
-     * @param action Action to log (e.g. : REMOVED ALL, ....)
-     */
-    protected void newLog(String action) {
-        StringBuilder logSB = new StringBuilder();
-        logSB.append(action).append(" ")
-                .append(" on ").append(persistentClass.toString());
-
-        Log log = new Log();
-        log.setAction(logSB.toString());
-        log.setEmployee(EmployeeDAO.getConnectedUser());
-
-        session.saveOrUpdate(log);
-
-        System.out.println(log.getAction());
     }
 }

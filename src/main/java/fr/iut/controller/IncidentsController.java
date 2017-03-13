@@ -4,8 +4,6 @@ import fr.iut.persistence.dao.GenericDAO;
 import fr.iut.persistence.entities.Problem;
 
 import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
@@ -37,47 +35,22 @@ public class IncidentsController {
      * get incidents of database and create in local
      */
     public void createIncidents(){
-        daoIncidents.open();
         stub = (ArrayList<Problem>) daoIncidents.findAll();
-        daoIncidents.close();
     }
 
     /**
-     * @param id id of the incident to resolve
+     * @param p resolve an incident
      */
-    public void resolveIncident(int id){
-        daoIncidents.open();
+    public void resolveIncident(Problem p){
         Calendar calendar = Calendar.getInstance();
         Date now = calendar.getTime();
         Timestamp currentTimestamp = new Timestamp(now.getTime());
-        Problem p = daoIncidents.findById(id);
         p.setSolutionDatetime(currentTimestamp);
-        daoIncidents.saveOrUpdate(p);
-        daoIncidents.close();
+
+        stub.set(stub.indexOf(p), p);
+        daoIncidents.save(p);
     }
 
-    public void updateIncident(int id, String description, String appeareance, String solution){
-        daoIncidents.open();
-        Problem p = daoIncidents.findById(id);
-        p.setDescription(description);
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
-        try {
-            Date parsedAppearanceDate = dateFormat.parse(appeareance);
-            Timestamp timestamp = new Timestamp(parsedAppearanceDate.getTime());
-            p.setAppearanceDatetime(timestamp);
-            if(p.isSolved()){
-                Date parsedSolutionDate = dateFormat.parse(solution);
-                timestamp = new Timestamp(parsedSolutionDate.getTime());
-                p.setSolutionDatetime(timestamp);
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        daoIncidents.saveOrUpdate(p);
-        daoIncidents.close();
-    }
     /**
      * @param sort_options selected sort method to sort the problem list
      */
@@ -120,9 +93,7 @@ public class IncidentsController {
         Timestamp currentTimestamp = new Timestamp(now.getTime());
         problem.setAppearanceDatetime(currentTimestamp);
 
-        daoIncidents.open();
-        daoIncidents.saveOrUpdate(problem);
-        daoIncidents.close();
+        daoIncidents.save(problem);
         stub.add(problem);
     }
 

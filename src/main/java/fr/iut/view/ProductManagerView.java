@@ -2,7 +2,6 @@ package fr.iut.view;
 
 
 import fr.iut.controller.HomeController;
-import fr.iut.controller.StatisticsController;
 import fr.iut.persistence.entities.Product;
 import javafx.beans.NamedArg;
 import javafx.beans.value.ChangeListener;
@@ -15,7 +14,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.SubScene;
 import javafx.scene.control.*;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -74,7 +72,6 @@ public class ProductManagerView extends SubScene {
         VBox wrapper = (VBox) getRoot();
         wrapper.setMaxSize(HomeView.TAB_CONTENT_W, HomeView.TAB_CONTENT_H);
         wrapper.setBorder(new Border(new BorderStroke(Color.DARKGRAY, BorderStrokeStyle.SOLID, new CornerRadii(2), new BorderWidths(5))));
-
         wrapper.setStyle("-fx-background-color: rgb(12, 27, 51);");
 
         HeaderView header = new HeaderView("Gestion des stocks");
@@ -131,9 +128,9 @@ public class ProductManagerView extends SubScene {
         grid.getStyleClass().add("stock-grid");
 
         HBox buttons = new HBox();
-        buttons.setSpacing(HomeView.TAB_CONTENT_W / 8);
+        buttons.setSpacing(HomeView.TAB_CONTENT_W / 15);
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 4; i++) {
             Button button = new Button();
             if (i == 0) {
                 button.setText("Gérer fournisseurs");
@@ -143,12 +140,27 @@ public class ProductManagerView extends SubScene {
                         // TODO
                     }
                 });
-            } else if (i == 1){
+            } else if (i == 1) {
                 button.setText("Réaprovisionner");
                 button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
                         // TODO
+                    }
+                });
+            } else if (i == 2) {
+                button.setText("Supprimer");
+                button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        controller.deleteProduct(lastClickedValue);
+                        buildProductsList(0, "", true);
+                        if (!products_list.isEmpty()) {
+                            lastClicked = (StackPane) products_box.getChildren().get(0);
+                            lastClicked.setStyle("-fx-background-color: #ff6600;");
+                            lastClickedValue = shown_list.get(0);
+                        }
+                        actualiseDetails();
                     }
                 });
             } else {
@@ -165,14 +177,16 @@ public class ProductManagerView extends SubScene {
                     }
                 });
             }
-            button.setPrefWidth(HomeView.TAB_CONTENT_W / 6);
+
+            button.setPrefWidth(HomeView.TAB_CONTENT_W / 3);
             button.getStylesheets().add(new File("res/style.css").toURI().toString());
             button.getStyleClass().add("record-sales");
             buttons.getChildren().add(button);
         }
 
+        details.setAlignment(Pos.CENTER);
         details.getChildren().addAll(details_header, grid, buttons);
-        VBox.setMargin(buttons, new Insets(HomeView.TAB_CONTENT_H / 15, 0, 0, HomeView.TAB_CONTENT_W / 9));
+        VBox.setMargin(buttons, new Insets(HomeView.TAB_CONTENT_H / 15, 0, 0, 0));
 
         buildProductsList(0, "", true);
 
@@ -217,7 +231,6 @@ public class ProductManagerView extends SubScene {
         wrapper.getChildren().addAll(header, body);
 
         buildDetails();
-
     }
 
     /**
@@ -291,17 +304,19 @@ public class ProductManagerView extends SubScene {
 
                 pane.getChildren().add(product_wrapper);
 
-                if (products_box.getChildren().size() % 2 == 1)
+                if (products_box.getChildren().size() % 2 == 1) {
                     pane.setStyle("-fx-background-color: #336699;");
-                else
+                } else {
                     pane.setStyle("-fx-background-color: #0F355C;");
+                }
 
                 pane.setOnMouseClicked(event -> {
                     if (lastClicked != null) {
-                        if (products_box.getChildren().indexOf(lastClicked) % 2 == 1)
+                        if (products_box.getChildren().indexOf(lastClicked) % 2 == 1) {
                             lastClicked.setStyle("-fx-background-color: #336699;");
-                        else
+                        } else {
                             lastClicked.setStyle("-fx-background-color: #0F355C;");
+                        }
                     }
                     pane.setStyle("-fx-background-color: #ff6600;");
                     lastClicked = pane;

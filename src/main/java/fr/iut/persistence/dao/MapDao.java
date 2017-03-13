@@ -34,7 +34,7 @@ public class MapDao extends GenericDAO<Map, Integer> {
     public void setMap(Map map){
 
         removeAll();
-        saveOrUpdate(map);
+        save(map);
     }
 
     /**

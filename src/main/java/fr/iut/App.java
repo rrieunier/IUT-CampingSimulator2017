@@ -33,7 +33,7 @@ public class App extends Application {
     private HomeController homeController;
 
     public static void main(String[] args) {
-        HibernateUtil.setConfig(HibernateUtil.Config.PROD);
+        HibernateUtil.openSession(HibernateUtil.Config.TEST);
         launch(args);
     }
 
@@ -53,7 +53,6 @@ public class App extends Application {
     @Override
     public void stop(){
         System.out.println("Stopping...");
-        HibernateUtil.shutdown();
         Platform.exit();
         System.exit(0);
     }
