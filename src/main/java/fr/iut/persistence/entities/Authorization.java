@@ -1,50 +1,21 @@
 package fr.iut.persistence.entities;
 
-import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * Created by Sydpy on 2/15/17.
  */
-@Entity
-@Table(name = "AUTHORIZATION")
-public class Authorization extends EntityModel<String> {
-    /**
-     * authorization label
-     */
-    @Id
-    @Column(nullable = false, length = 45)
-    private String label;
-
-    /**
-     * employees having this authorization
-     */
-    @ManyToMany(
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
-            mappedBy = "authorizations",
-            targetEntity = Employee.class
-    )
-    private Set<Employee> employees = new HashSet<>();
-
-    public String getLabel() {
-        return label;
-    }
-
-    public Set<Employee> getEmployees() {
-        return employees;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public void setEmployees(Set<Employee> employees) {
-        this.employees = employees;
-    }
-
-    @Override
-    public String getId() {
-        return label;
-    }
+public enum Authorization {
+    CLIENT_READ,
+    CLIENT_UPDATE,
+    PROBLEM_READ,
+    PROBLEM_UPDATE,
+    EMPLOYEE_READ,
+    EMPLOYEE_UPDATE,
+    SUPPLIER_READ,
+    SUPPLIER_UPDATE,
+    PRODUCT_READ,
+    PRODUCT_UPDATE,
+    MAP_READ,
+    MAP_UPDATE,
+    RESERVATION_READ,
+    RESERVATION_UPDATE
 }

@@ -13,13 +13,14 @@ import java.util.Set;
  * Created by Sydpy on 2/15/17.
  */
 @Entity
-@Table(name = "EMPLOYEE")
+@Table
 public class Employee extends EntityModel<Integer> {
 
     /**
      * Employee's id.
      */
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false)
     private Integer id;
 
@@ -68,26 +69,21 @@ public class Employee extends EntityModel<Integer> {
     /**
      * Authorizations granted to this employee if it's a user.
      */
-    @ManyToMany(
-            targetEntity=Authorization.class,
-            cascade={CascadeType.PERSIST, CascadeType.MERGE}
-    )
-    @JoinTable(
-            joinColumns=@JoinColumn(name="employee_id"),
-            inverseJoinColumns=@JoinColumn(name="authorization_id")
-    )
+    @Column
+    @ElementCollection
+    @Enumerated(EnumType.STRING)
     private Set<Authorization> authorizations = new HashSet<>();
 
     /**
      * Notifications sent to this employee if it's a user.
      */
     @ManyToMany(
-            targetEntity=Notification.class,
-            cascade={CascadeType.PERSIST, CascadeType.MERGE}
+            targetEntity = Notification.class,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE}
     )
     @JoinTable(
-            joinColumns=@JoinColumn(name="employee_id"),
-            inverseJoinColumns=@JoinColumn(name="notification_id")
+            joinColumns = @JoinColumn(name = "employee_id"),
+            inverseJoinColumns = @JoinColumn(name = "notification_id")
     )
     private Set<Notification> notifications = new HashSet<>();
 
