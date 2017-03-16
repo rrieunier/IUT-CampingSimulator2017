@@ -35,6 +35,9 @@ public class Spot extends Location {
     @Column(nullable = false)
     private boolean water = false;
 
+    @Column(nullable = false)
+    private float coucilTaxPersonDay = 1.20f;
+
     /**
      * Does this spot has electricity.
      */
@@ -74,6 +77,10 @@ public class Spot extends Location {
         return shadow;
     }
 
+    public float getCoucilTaxPersonDay() {
+        return coucilTaxPersonDay;
+    }
+
     public Set<Reservation> getReservations() {
         return reservations;
     }
@@ -96,6 +103,10 @@ public class Spot extends Location {
 
     public void setShadow(boolean shadow) {
         this.shadow = shadow;
+    }
+
+    public void setCoucilTaxPersonDay(float coucilTaxPersonDay) {
+        this.coucilTaxPersonDay = coucilTaxPersonDay;
     }
 
     public void setReservations(Set<Reservation> reservations) {

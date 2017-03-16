@@ -133,12 +133,13 @@ CREATE TABLE RESTOCKING (
 );
 
 CREATE TABLE SPOT (
-  capacity    INTEGER NOT NULL,
-  electricity BIT     NOT NULL,
-  pricePerDay FLOAT   NOT NULL,
-  shadow      BIT     NOT NULL,
-  water       BIT     NOT NULL,
-  id          INTEGER NOT NULL,
+  capacity            INTEGER NOT NULL,
+  electricity         BIT     NOT NULL,
+  pricePerDay         FLOAT   NOT NULL,
+  ccoucilTaxPersonDay FLOAT   NOT NULL,
+  shadow              BIT     NOT NULL,
+  water               BIT     NOT NULL,
+  id                  INTEGER NOT NULL,
   PRIMARY KEY (id)
 );
 
