@@ -28,6 +28,8 @@ public class HomeController implements ControllerInterface {
     private ClientsController clientsController = new ClientsController(this);
     private StatisticsController statisticsController = new StatisticsController();
     private IncidentsController incidentsController = new IncidentsController(this);
+    private EmployeesController employeesController = new EmployeesController(this);
+    private SupplierController supplierController = new SupplierController(this);
 
     public HomeController(App app, String connectedUser) {
         this.app = app;
@@ -126,6 +128,10 @@ public class HomeController implements ControllerInterface {
     }
 
     public IncidentsController getIncidentsController() { return incidentsController; }
+
+    public EmployeesController getEmployeesController() { return  employeesController; }
+
+    public SupplierController getSupplierController() { return  supplierController; }
 
     public void OnWindowIsClosing() {
         notificationsController.stopQuerying();

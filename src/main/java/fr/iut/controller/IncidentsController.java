@@ -24,7 +24,7 @@ public class IncidentsController {
     /**
      * local list of problems
      */
-    private ArrayList<Problem> stub = new ArrayList<>();
+    private ArrayList<Problem> problems = new ArrayList<>();
 
     /**
      * DAO of Incidents
@@ -37,7 +37,7 @@ public class IncidentsController {
      * get incidents of database and create in local
      */
     public void createIncidents(){
-        stub = (ArrayList<Problem>) daoIncidents.findAll();
+        problems = (ArrayList<Problem>) daoIncidents.findAll();
     }
 
     /**
@@ -79,7 +79,7 @@ public class IncidentsController {
      * @param sort_options selected sort method to sort the problem list
      */
     public void sortIncidents(int sort_options){
-        stub.sort(new Comparator<Problem>() {
+        problems.sort(new Comparator<Problem>() {
             @Override
             public int compare(Problem o1, Problem o2) {
                 int result = 0;
@@ -121,6 +121,6 @@ public class IncidentsController {
     }
 
     public ArrayList<Problem> getIncidents() {
-        return stub;
+        return problems;
     }
 }
