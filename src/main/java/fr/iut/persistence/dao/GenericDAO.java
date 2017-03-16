@@ -46,10 +46,17 @@ public class GenericDAO<T extends EntityModel, Id> {
      * @param entity entity to update
      * @return entity updated
      */
-    @Transactional(rollbackOn = Exception.class)
     public T update(T entity) {
 
-        session.merge(entity);
+        session.beginTransaction();
+
+        try {
+            session.update(entity);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            session.getTransaction().rollback();
+        }
 
         return entity;
     }
