@@ -6,7 +6,7 @@ import javax.persistence.*;
  * Created by Sydpy on 2/17/17.
  */
 @Entity
-@Table(name = "SUPPLIER_PROPOSE_PRODUCT")
+@Table
 public class SupplierProposeProduct extends EntityModel<Integer> {
 
     /**

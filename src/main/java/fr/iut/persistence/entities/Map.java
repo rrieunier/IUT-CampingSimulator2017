@@ -6,7 +6,7 @@ import javax.persistence.*;
  * Created by Sydpy on 2/15/17.
  */
 @Entity
-@Table(name = "MAP")
+@Table
 public class Map extends EntityModel<Integer> {
 
     /**

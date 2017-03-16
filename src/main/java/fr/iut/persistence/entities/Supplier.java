@@ -10,7 +10,7 @@ import java.util.Set;
  * Created by Sydpy on 2/15/17.
  */
 @Entity
-@Table(name = "SUPPLIER")
+@Table
 public class Supplier extends EntityModel<Integer> {
 
     /**

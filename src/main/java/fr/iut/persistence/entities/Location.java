@@ -13,7 +13,7 @@ import java.util.Set;
  * Created by Sydpy on 2/15/17.
  */
 @Entity
-@Table(name = "LOCATION")
+@Table
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Location extends EntityModel<Integer> {
 

@@ -7,7 +7,7 @@ import java.sql.Timestamp;
  * Created by Sydpy on 2/15/17.
  */
 @Entity
-@Table(name = "LOG")
+@Table
 public class Log extends EntityModel<Integer> {
 
     /**

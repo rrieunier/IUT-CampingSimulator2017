@@ -13,7 +13,7 @@ import java.util.Set;
  * Created by Sydpy on 2/15/17.
  */
 @Entity
-@Table(name = "SPOT")
+@Table
 @PrimaryKeyJoinColumn(name = "id", referencedColumnName = "id")
 public class Spot extends Location {
 

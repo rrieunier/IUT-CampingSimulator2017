@@ -1,19 +1,25 @@
 package fr.iut.persistence.entities;
 
+import fr.iut.persistence.dao.GenericDAO;
+import fr.iut.persistence.exception.EmployeeAlreadyAssigned;
+import fr.iut.persistence.exception.StartAfterEndException;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * Created by Sydpy on 2/15/17.
  */
 @Entity
-@Table(name = "TASK")
+@Table
 public class Task extends EntityModel<Integer> {
 
     /**
      * Task's id.
      */
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false)
     private Integer id;
 
@@ -93,5 +99,30 @@ public class Task extends EntityModel<Integer> {
 
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    @PrePersist
+    @PreUpdate
+    void prePersistUpdate() throws StartAfterEndException, EmployeeAlreadyAssigned {
+        if (starttime.getTime() > endtime.getTime()) {
+            throw new StartAfterEndException();
+        }
+
+        GenericDAO<Task, Integer> dao = new GenericDAO<>(Task.class);
+
+        List<Task> all = dao.findAll();
+
+        boolean isEmployeeAlreadyAssigned = false;
+
+        for (Task task : all) {
+            if(task.getEmployee().getId() == getEmployee().getId()){
+                isEmployeeAlreadyAssigned = true;
+                break;
+            }
+        }
+
+        if(isEmployeeAlreadyAssigned) {
+            throw new EmployeeAlreadyAssigned();
+        }
     }
 }

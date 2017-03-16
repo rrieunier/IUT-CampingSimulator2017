@@ -1,5 +1,7 @@
 package fr.iut.persistence.entities;
 
+import fr.iut.persistence.dao.GenericDAO;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.HashSet;
@@ -9,7 +11,7 @@ import java.util.Set;
  * Created by Sydpy on 2/15/17.
  */
 @Entity
-@Table(name = "PROBLEM")
+@Table
 public class Problem extends EntityModel<Integer> {
 
     /**
@@ -107,5 +109,14 @@ public class Problem extends EntityModel<Integer> {
 
     public boolean isSolved(){
         return solutionDatetime != null;
+    }
+
+    @PostUpdate
+    @PostPersist
+    void postPersistUpdate() {
+
+        Notification notification = new Notification();
+
+        GenericDAO<Notification, Integer> dao = new GenericDAO<>(Notification.class);
     }
 }
