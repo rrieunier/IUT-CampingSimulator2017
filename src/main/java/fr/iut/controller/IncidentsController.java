@@ -4,6 +4,8 @@ import fr.iut.persistence.dao.GenericDAO;
 import fr.iut.persistence.entities.Problem;
 
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
@@ -17,17 +19,17 @@ public class IncidentsController {
     /**
      * instance of the controller
      */
-    HomeController homeController;
+    private HomeController homeController;
 
     /**
      * local list of problems
      */
-    ArrayList<Problem> stub = new ArrayList<>();
+    private ArrayList<Problem> stub = new ArrayList<>();
 
     /**
      * DAO of Incidents
      */
-    GenericDAO<Problem, Integer> daoIncidents = new GenericDAO<>(Problem.class);
+    private GenericDAO<Problem, Integer> daoIncidents = new GenericDAO<>(Problem.class);
 
     public IncidentsController(HomeController homeController) { this.homeController = homeController;}
 
@@ -47,12 +49,30 @@ public class IncidentsController {
         Timestamp currentTimestamp = new Timestamp(now.getTime());
         p.setSolutionDatetime(currentTimestamp);
 
-        stub.set(stub.indexOf(p), p);
         daoIncidents.update(p);
     }
 
-    public void updateIncident(Problem p, String description, String apperanceDateTime, String solutionDateTime){
+    public void updateIncident(Problem p, String desc, String app, String sol){
+        p.setDescription(desc);
 
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+        Date parsedDate = null;
+        try {
+            parsedDate = dateFormat.parse(app);
+            Timestamp timestamp = new java.sql.Timestamp(parsedDate.getTime());
+            p.setAppearanceDatetime(timestamp);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        try {
+            parsedDate = dateFormat.parse(sol);
+            Timestamp timestamp = new java.sql.Timestamp(parsedDate.getTime());
+            p.setSolutionDatetime(timestamp);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        daoIncidents.update(p);
     }
 
     /**
@@ -98,7 +118,6 @@ public class IncidentsController {
         problem.setAppearanceDatetime(currentTimestamp);
 
         daoIncidents.save(problem);
-        stub.add(problem);
     }
 
     public ArrayList<Problem> getIncidents() {
