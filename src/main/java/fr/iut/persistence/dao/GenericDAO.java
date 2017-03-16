@@ -4,7 +4,6 @@ import fr.iut.persistence.entities.EntityModel;
 import org.hibernate.Session;
 
 import javax.persistence.criteria.CriteriaQuery;
-import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -36,7 +35,15 @@ public class GenericDAO<T extends EntityModel, Id> {
      */
     public T save(T entity) {
 
-        session.save(entity);
+        session.beginTransaction();
+
+        try{
+            session.save(entity);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            session.getTransaction().rollback();
+        }
 
         return entity;
     }
@@ -65,7 +72,6 @@ public class GenericDAO<T extends EntityModel, Id> {
      * Removes an existing entity from database.
      * @param entity Entity to remove.
      */
-    @Transactional(rollbackOn = Exception.class)
     public void remove(T entity) {
 
         session.beginTransaction();
@@ -105,7 +111,6 @@ public class GenericDAO<T extends EntityModel, Id> {
      * @param id Id of the Entity to find.
      * @return Entity with the matching Id.
      */
-    @Transactional(rollbackOn = Exception.class)
     public T findById(Id id) {
         return session.find(persistentClass, id);
     }
@@ -113,7 +118,6 @@ public class GenericDAO<T extends EntityModel, Id> {
     /**
      * @return List of all the entities.
      */
-    @Transactional(rollbackOn = Exception.class)
     public List<T> findAll() {
         CriteriaQuery<T> criteria = session.getCriteriaBuilder().createQuery(persistentClass);
         criteria.select(criteria.from(persistentClass));
