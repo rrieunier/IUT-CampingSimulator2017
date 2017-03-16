@@ -6,6 +6,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.SubScene;
 import javafx.scene.control.Button;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
@@ -22,11 +23,12 @@ import java.util.Optional;
  */
 public class EmployeeManagerView extends SubScene {
 
+    private final VBox employees;
     EmployeesController controller;
 
     boolean editMode = false;
 
-    TextField firstname, name, email, phone;
+    TextField firstname, name, email, phone, login, password, confirm;
 
     Employee currentEmployee = null;
 
@@ -44,43 +46,27 @@ public class EmployeeManagerView extends SubScene {
         VBox wrapper1 = new VBox();
         wrapper1.setSpacing(10);
         BorderPane.setMargin(wrapper1, new Insets(20));
-        VBox employees = new VBox();
+        employees = new VBox();
         employees.setSpacing(3);
         ScrollPane employeesScroll = new ScrollPane(employees);
         employeesScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         employeesScroll.setMaxWidth(HomeView.TAB_CONTENT_W / 4);
 
-        int i = 0;
-        for(Employee employee : controller.getEmployees()) {
-            HBox employeeBox = new HBox();
-            employeeBox.setOnMouseClicked(mouseEvent -> updateDetail(employee));
+        reloadList();
 
-            employeeBox.setMinWidth(HomeView.TAB_CONTENT_W / 4);
-            employeeBox.setPadding(new Insets(20));
-
-            Text employeeText = new Text(employee.getFirstName() + " " + employee.getLastName());
-            employeeText.setFont(new Font(16));
-            employeeText.setFill(Color.WHITE);
-            employeeBox.getChildren().add(employeeText);
-
-            if(i++ % 2 == 1)
-                employeeBox.setStyle("-fx-background-color: #336699;");
-            else
-                employeeBox.setStyle("-fx-background-color: #0F355C;");
-
-            employees.getChildren().add(employeeBox);
-        }
-
-        Button newEmployee = new Button("Nouveau Employee");
+        Button newEmployee = new Button("Nouvel employé");
         newEmployee.getStylesheets().add(new File("res/style.css").toURI().toString());
         newEmployee.getStyleClass().add("record-sales");
         newEmployee.setMinWidth(HomeView.TAB_CONTENT_W / 4);
         newEmployee.setOnAction(event -> {
-            InputsListDialog newEmployeeDialog = new InputsListDialog("Nouveau Employee");
+            InputsListDialog newEmployeeDialog = new InputsListDialog("Nouvel employé");
             newEmployeeDialog.addTextField("Nom");
             newEmployeeDialog.addTextField("Prénom");
             newEmployeeDialog.addTextField("Téléphone");
             newEmployeeDialog.addTextField("Mail");
+            newEmployeeDialog.addTextField("Identifiant");
+            newEmployeeDialog.addTextField("Mot de passe");
+            newEmployeeDialog.addTextField("Retapez le mot de passe");
             Optional<Map<String, String>> newEmployee_result = newEmployeeDialog.showAndWait();
 
             Employee employee = new Employee();
@@ -88,8 +74,12 @@ public class EmployeeManagerView extends SubScene {
             employee.setLastName(newEmployee_result.get().get("Nom"));
             employee.setPhone(newEmployee_result.get().get("Téléphone"));
             employee.setEmail(newEmployee_result.get().get("Mail"));
+            employee.setLogin(newEmployee_result.get().get("Identifiant"));
+            if (newEmployee_result.get().get("Identifiant") == newEmployee_result.get().get("Retapez le mot de passe"))
+                employee.setPassword(newEmployee_result.get().get("Mot de passe"));
 
             controller.saveEmployee(employee);
+            reloadList();
         });
 
 
@@ -131,6 +121,28 @@ public class EmployeeManagerView extends SubScene {
         phone.setDisable(true);
         phone.setMinHeight(HomeView.TAB_CONTENT_H / 15);
 
+        login = new TextField();
+        login.setPromptText("Identifiant...");
+        login.setDisable(true);
+        login.setMinHeight(HomeView.TAB_CONTENT_H / 15);
+
+        HBox passField = new HBox();
+        password = new PasswordField();
+        password.setPromptText("Mot de passe...");
+        password.setDisable(true);
+        password.setMinHeight(HomeView.TAB_CONTENT_H / 15);
+
+        confirm = new PasswordField();
+        confirm.setPromptText("Retapez le mot de passe...");
+        confirm.setDisable(true);
+        confirm.setMinHeight(HomeView.TAB_CONTENT_H / 15);
+
+        passField.setSpacing(10);
+        passField.setAlignment(Pos.CENTER);
+        passField.getChildren().addAll(password, confirm);
+        HBox.setHgrow(password, Priority.ALWAYS);
+        HBox.setHgrow(confirm, Priority.ALWAYS);
+
         HBox buttonsWrap1 = new HBox();
         HBox buttonsWrap2 = new HBox();
         VBox wrapWrappers = new VBox(buttonsWrap1, buttonsWrap2);
@@ -148,23 +160,38 @@ public class EmployeeManagerView extends SubScene {
         editButton.setMinWidth(HomeView.TAB_CONTENT_W / 4);
 
         editButton.setOnAction(actionEvent -> {
-            if(editMode) {
+            if (editMode) {
                 firstname.setDisable(true);
                 name.setDisable(true);
                 email.setDisable(true);
                 phone.setDisable(true);
-                editButton.setText("Modifier");
-            }
+                login.setDisable(true);
+                password.setDisable(true);
+                confirm.setDisable(true);
 
-            else {
+                Employee employee = new Employee();
+                employee.setFirstName(firstname.getText());
+                employee.setLastName(name.getText());
+                employee.setEmail(email.getText());
+                employee.setPhone(phone.getText());
+                employee.setLogin(login.getText());
+                if (password.getText() == confirm.getText())
+                    employee.setPassword(password.getText());
+                controller.updateEmployee(employee);
+
+                editButton.setText("Modifier");
+            } else {
                 firstname.setDisable(false);
                 name.setDisable(false);
                 email.setDisable(false);
                 phone.setDisable(false);
+                login.setDisable(false);
+                password.setDisable(false);
+                confirm.setDisable(false);
                 editButton.setText("Sauvegarder");
-                //TODO : saveOrUpdate du employee dans la BDD
             }
 
+            reloadList();
             editMode = !editMode;
         });
 
@@ -178,28 +205,7 @@ public class EmployeeManagerView extends SubScene {
 
         buttonsWrap1.getChildren().addAll(editButton, bookingButton);
 
-        Button billButton = new Button("Facturer");
-        billButton.getStylesheets().add(new File("res/style.css").toURI().toString());
-        billButton.getStyleClass().add("record-sales");
-        billButton.setMinWidth(HomeView.TAB_CONTENT_W / 4);
-
-        billButton.setOnAction(actionEvent -> {
-            //TODO : générer facture
-        });
-
-        Button reducButton = new Button("Réductions...");
-        reducButton.getStylesheets().add(new File("res/style.css").toURI().toString());
-        reducButton.getStyleClass().add("record-sales");
-        reducButton.setMinWidth(HomeView.TAB_CONTENT_W / 4);
-
-        reducButton.setOnAction(actionEvent -> {
-            Optional<Map<String, Integer>> permissions_result = new ReductionsDialog().showAndWait();
-            //TODO : stocker la reduction qqpart
-        });
-
-        buttonsWrap2.getChildren().addAll(billButton, reducButton);
-
-        detailsWrapper.getChildren().addAll(namesField, email, phone);
+        detailsWrapper.getChildren().addAll(namesField, email, phone, login, passField);
         detailsWrapper.setSpacing(HomeView.TAB_CONTENT_H / 15);
 
         BorderPane.setMargin(detailsWrapper, new Insets(30));
@@ -211,11 +217,37 @@ public class EmployeeManagerView extends SubScene {
         root.setCenter(employeeDetailsWrapper);
     }
 
+    private void reloadList() {
+        employees.getChildren().removeAll();
+        int i = 0;
+        for (Employee employee : controller.getEmployees()) {
+            HBox employeeBox = new HBox();
+            employeeBox.setOnMouseClicked(mouseEvent -> updateDetail(employee));
+
+            employeeBox.setMinWidth(HomeView.TAB_CONTENT_W / 4);
+            employeeBox.setPadding(new Insets(20));
+
+            Text employeeText = new Text(employee.getFirstName() + " " + employee.getLastName());
+            employeeText.setFont(new Font(16));
+            employeeText.setFill(Color.WHITE);
+            employeeBox.getChildren().add(employeeText);
+
+            if (i++ % 2 == 1)
+                employeeBox.setStyle("-fx-background-color: #336699;");
+            else
+                employeeBox.setStyle("-fx-background-color: #0F355C;");
+
+            employees.getChildren().add(employeeBox);
+        }
+    }
+
     private void updateDetail(Employee employee) {
         firstname.setText(employee.getFirstName());
         name.setText(employee.getLastName());
         email.setText(employee.getEmail());
         phone.setText(employee.getPhone());
+        login.setText(employee.getLogin());
+        password.setText(employee.getPassword());
 
         currentEmployee = employee;
         editMode = false;

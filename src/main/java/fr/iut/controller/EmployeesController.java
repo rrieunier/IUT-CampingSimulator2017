@@ -38,4 +38,8 @@ public class EmployeesController implements ControllerInterface {
     public void saveEmployee(Employee employee) {
         daoEmployee.save(employee);
     }
+
+    public void updateEmployee(Employee employee) {
+        daoEmployee.update(employee);
+    }
 }

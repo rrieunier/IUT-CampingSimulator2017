@@ -216,8 +216,6 @@ public class IncidentsManagerView extends SubScene{
                 controller.updateIncident(lastClikedCopy, description.getText().toString(),
                         appearanceDatetime.getText().toString(), solutionDatetime.getText().toString());
                 createScroll(search_field.getText().toString());
-
-                //TODO : bug avec l'update
             }
 
             else {
@@ -237,10 +235,8 @@ public class IncidentsManagerView extends SubScene{
         resolvedButton.setMinWidth(HomeView.TAB_CONTENT_W / 4);
         resolvedButton.setOnAction(actionEvent -> {
             final Problem lastClikedCopy = lastClickedValue;
-            System.out.println(lastClikedCopy.getId());
             controller.resolveIncident(lastClikedCopy);
             createScroll(search_field.getText().toString());
-            // TODO : bug avec l'update
         });
 
         buttonsWrap.setSpacing(10);
