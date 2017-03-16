@@ -34,7 +34,6 @@ public class GenericDAO<T extends EntityModel, Id> {
      * @param entity new entity.
      * @return entity inserted
      */
-    @Transactional(rollbackOn = Exception.class)
     public T save(T entity) {
 
         session.save(entity);

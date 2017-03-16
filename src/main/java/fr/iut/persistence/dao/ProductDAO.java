@@ -2,6 +2,8 @@ package fr.iut.persistence.dao;
 
 import fr.iut.persistence.entities.Product;
 
+import javax.transaction.Transactional;
+
 /**
  * Created by Sydpy on 3/16/17.
  */
@@ -17,6 +19,7 @@ public class ProductDAO extends GenericDAO<Product, Integer> {
 
 
     @Override
+    @Transactional(rollbackOn = Exception.class)
     public Product update(Product entity) {
 
         String query = "update Product set " +
