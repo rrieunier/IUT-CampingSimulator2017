@@ -2,11 +2,10 @@ package fr.iut.view;
 
 import fr.iut.App;
 import fr.iut.controller.HomeController;
+import fr.iut.controller.NotificationsController;
 import javafx.animation.*;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.SubScene;
@@ -21,7 +20,6 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 import java.io.File;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -40,6 +38,7 @@ public class HomeView extends Scene {
 
     private ToggleButton selectedTab = null;
     private Timeline blinkAnimation;
+    private Text notification_text;
 
     public HomeView(HomeController controller, String username) {
         super(new BorderPane(), App.SCREEN_W, App.SCREEN_H);
@@ -56,11 +55,10 @@ public class HomeView extends Scene {
 
         Tab tabManagment = new Tab(), tabMap = new Tab();
         buildManagmentTab(tabManagment);
-        buildMapTab(tabMap);
+        buildReservationsTab(tabMap);
 
         tabPane.getTabs().addAll(tabManagment, tabMap);
         components.setCenter(tabPane);
-        //borderPane.setMinWidth(App.SCREEN_W);
 
         buildFooter();
     }
@@ -76,7 +74,6 @@ public class HomeView extends Scene {
         verticalTabs.getStylesheets().add(new File("res/style.css").toURI().toString());
         verticalTabs.getStyleClass().add("horizontalTabs");
         verticalTabs.setSpacing(30);
-        //BorderPane.setMargin(verticalTabs, new Insets(50, 0, 0, LEFT_PADDING_TAB));
 
         BorderPane borderPane = new BorderPane();
 
@@ -137,16 +134,11 @@ public class HomeView extends Scene {
         tab.setContent(container);
     }
 
-    private void buildMapTab(Tab tab) {
+
+    private void buildReservationsTab(Tab tab) {
         tab.setText("Carte");
 
-        GridPane container = new GridPane();
-        container.setStyle("-fx-background-color: rgb(12, 27, 51);");
-
-
-        //TODO : ajouter la carte au GridPane
-
-        tab.setContent(container);
+        tab.setContent(controller.getMapController().getView());
     }
 
     private void buildFooter() {
@@ -182,15 +174,25 @@ public class HomeView extends Scene {
 
         HBox.setMargin(alertIcon, new Insets(0, 20, 0, 0));
 
-        int notifs_count = controller.getNotificationsController().getNotifications().size();
-        Text notification_text = new Text("Vous avez " + notifs_count + " notifications en attente.");
-        notification_text.setFont(new Font(20));
+        NotificationsController notificationsController = controller.getNotificationsController();
+        notificationsController.setOnUnsolvedNotificationsCountChangedListener(count -> {
 
-        if(notifs_count > 0) {
+            notification_text.setText("Vous avez " + count + " notifications en attente.");
+
+            if(count > 0 && blinkAnimation == null) {
+                blinkAnimation = createBlinker(notification_text);
+                blinkAnimation.play();
+            }
+        });
+
+        notification_text = new Text("Vous avez " + notificationsController.getNotificationsCount() + " notifications en attente.");
+
+        if(notificationsController.getNotificationsCount() > 0 && blinkAnimation == null) {
             blinkAnimation = createBlinker(notification_text);
             blinkAnimation.play();
         }
 
+        notification_text.setFont(new Font(20));
         notification_text.setFill(Color.WHITE);
         notification_text.applyCss();
 
@@ -199,7 +201,7 @@ public class HomeView extends Scene {
         notification_wrapper.setOnMouseClicked(mouseEvent -> {
             Optional<Integer> result = controller.getNotificationsController().getView().showAndWait();
 
-            result.ifPresent(value -> notification_text.setText("Vous avez " + controller.getNotificationsController().getNotifications().size() + " notifications en attente.")); //TODO
+            //result.ifPresent(value -> notification_text.setText("Vous avez " + controller.getNotificationsController().getNotifications().size() + " notifications en attente.")); //TODO
         });
 
         notification_wrapper.getChildren().addAll(alertIcon, notification_text);

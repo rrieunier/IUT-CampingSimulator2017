@@ -10,7 +10,7 @@ import java.util.ArrayList;
 /**
  * Created by shellcode on 2/17/17.
  */
-public class ClientsController implements ControllerInterface {
+public class ClientsController {
 
     HomeController homeController;
     ClientManagerView clientManagerView = new ClientManagerView(this);
@@ -20,14 +20,8 @@ public class ClientsController implements ControllerInterface {
         this.homeController = homeController;
     }
 
-    @Override
     public SubScene getView() {
         return clientManagerView;
-    }
-
-    @Override
-    public void finish() {
-
     }
 
     public ArrayList<Client> getClients() {

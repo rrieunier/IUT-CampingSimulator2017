@@ -1,9 +1,7 @@
 package fr.iut.persistence.dao;
 
-import fr.iut.persistence.entities.Client;
-import fr.iut.persistence.entities.Employee;
-import fr.iut.persistence.entities.Reservation;
-import fr.iut.persistence.entities.Spot;
+import fr.iut.controller.ConnectionController;
+import fr.iut.persistence.entities.*;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -60,9 +58,28 @@ public class DummyData {
             if (i % 2 == 0) {
                 employee.setEmail(employee.getFirstName() + "." + employee.getLastName() + "@camping.simulator");
                 employee.setLogin(employee.getFirstName().charAt(0) + employee.getLastName());
-                employee.setPassword("Employee" + i);
+                employee.setPassword(ConnectionController.hash("Employee" + i));
             }
             daoEmployee.save(employee);
+        }
+
+        Employee employee = new Employee();
+        employee.setFirstName("test");
+        employee.setLastName("test");
+        employee.setCompleteAddress("42 rue des Flots Blancs");
+        employee.setPhone("060000042");
+        employee.setEmail(employee.getFirstName() + "." + employee.getLastName() + "@camping.simulator");
+        employee.setLogin("test");
+        employee.setPassword(ConnectionController.hash("test"));
+        daoEmployee.save(employee);
+
+        GenericDAO<Notification, Integer> daoNotifications = new GenericDAO<>(Notification.class);
+
+        for (int i = 0; i < 50; i++) {
+            Notification notification = new Notification();
+            notification.setTitle("Notification " + i);
+            notification.setContent("Coucou je suis la notification ! :)");
+            daoNotifications.save(notification);
         }
     }
 }

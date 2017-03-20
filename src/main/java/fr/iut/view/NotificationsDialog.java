@@ -71,6 +71,11 @@ public class NotificationsDialog extends Dialog<Integer> {
             borderPane.setLeft(notifBox);
             borderPane.setRight(button);
             notificationsWrapper.getChildren().add(borderPane);
+
+            button.setOnAction(action -> {
+                controller.solve(notification);
+                notificationsWrapper.getChildren().remove(borderPane);
+            });
         }
 
         dialogPane.getButtonTypes().addAll(new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE));
@@ -83,7 +88,5 @@ public class NotificationsDialog extends Dialog<Integer> {
         dialogPane.applyCss();
         HBox hbox = (HBox) dialogPane.lookup(".container");
         hbox.getChildren().add(spacer);
-
-        setResultConverter((ButtonType dialogButton) -> 0);
     }
 }

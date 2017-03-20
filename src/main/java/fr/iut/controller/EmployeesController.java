@@ -10,7 +10,7 @@ import java.util.ArrayList;
 /**
  * Created by shellcode on 2/17/17.
  */
-public class EmployeesController implements ControllerInterface {
+public class EmployeesController {
 
     GenericDAO<Employee, Integer> daoEmployee = new GenericDAO<>(Employee.class);
     private HomeController homeController;
@@ -20,14 +20,8 @@ public class EmployeesController implements ControllerInterface {
         this.homeController = homeController;
     }
 
-    @Override
     public SubScene getView() {
         return employeeManagerView;
-    }
-
-    @Override
-    public void finish() {
-
     }
 
     public ArrayList<Employee> getEmployees() {
