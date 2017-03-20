@@ -3,6 +3,7 @@ package fr.iut;
 import fr.iut.controller.ConnectionController;
 import fr.iut.controller.HomeController;
 import fr.iut.controller.MapController;
+import fr.iut.persistence.dao.HibernateUtil;
 import fr.iut.view.ConnectionView;
 import fr.iut.view.MapCreatorView;
 import javafx.application.Application;
@@ -45,6 +46,7 @@ public class App extends Application {
     @Override
     public void stop() {
         System.out.println("Stopping...");
+        HibernateUtil.shutdown();
         Platform.exit();
         System.exit(0);
     }
