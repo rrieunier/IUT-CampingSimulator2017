@@ -2,7 +2,6 @@ package fr.iut.persistence.dao;
 
 import fr.iut.persistence.TestUtils;
 import fr.iut.persistence.entities.Client;
-import fr.iut.persistence.exception.InvalidLoginPasswordException;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -11,10 +10,6 @@ import static org.junit.Assert.*;
  * Created by Sydpy on 3/6/17.
  */
 public class GenericDAOTest {
-
-    public GenericDAOTest() throws InvalidLoginPasswordException {
-
-    }
 
     @Test
     public void testPersistence() throws Exception {
