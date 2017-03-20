@@ -22,6 +22,7 @@ public class GenericDAO<T extends EntityModel, Id> {
 
     /**
      * Constructor.
+     *
      * @param persistentClass Entity class to handle by the instance.
      */
     public GenericDAO(Class<T> persistentClass) {
@@ -30,84 +31,58 @@ public class GenericDAO<T extends EntityModel, Id> {
 
     /**
      * Inserts an entity in database.
+     *
      * @param entity new entity.
      * @return entity inserted
      */
     public T save(T entity) {
 
-        session.beginTransaction();
-
-        try{
-            session.save(entity);
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-            session.getTransaction().rollback();
-        }
+        session.save(entity);
 
         return entity;
     }
 
     /**
      * Updates an entity in database
+     *
      * @param entity entity to update
      * @return entity updated
      */
     public T update(T entity) {
 
-        session.beginTransaction();
-
-        try {
-            session.update(entity);
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-            session.getTransaction().rollback();
-        }
+        session.update(entity);
 
         return entity;
     }
 
     /**
      * Removes an existing entity from database.
+     *
      * @param entity Entity to remove.
      */
     public void remove(T entity) {
-
-        session.beginTransaction();
-
-        try{
-            session.delete(entity);
-            session.getTransaction().commit();
-
-        } catch (Exception e) {
-
-            e.printStackTrace();
-            session.getTransaction().rollback();
-        }
-
+        session.remove(entity);
     }
 
     /**
      * Removes all entities from database.
-     */     
+     */
     public void removeAll() {
-
         session.beginTransaction();
 
         try {
-            List<T> all = findAll();
-            all.forEach(session::delete);
+            session.createQuery("delete from " + persistentClass.getName() + " where 1 = 1").executeUpdate();
             session.getTransaction().commit();
-
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             session.getTransaction().rollback();
         }
+
     }
 
     /**
      * Finds an entity by its id.
+     *
      * @param id Id of the Entity to find.
      * @return Entity with the matching Id.
      */
@@ -123,5 +98,16 @@ public class GenericDAO<T extends EntityModel, Id> {
         criteria.select(criteria.from(persistentClass));
 
         return session.createQuery(criteria).getResultList();
+    }
+
+    /**
+     * @return the number of entities T in database
+     */
+    public int count() {
+
+        String query = "select count(e.id) from " + persistentClass.getName() + " e";
+
+        return session.createQuery(query)
+                .getFirstResult();
     }
 }

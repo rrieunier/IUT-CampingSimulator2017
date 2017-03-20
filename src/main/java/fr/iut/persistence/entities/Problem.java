@@ -1,5 +1,6 @@
 package fr.iut.persistence.entities;
 
+import fr.iut.persistence.dao.EmployeeDAO;
 import fr.iut.persistence.dao.GenericDAO;
 
 import javax.persistence.*;
@@ -12,7 +13,7 @@ import java.util.Set;
  */
 @Entity
 @Table
-public class Problem extends EntityModel<Integer> {
+public class Problem implements EntityModel<Integer> {
 
     /**
      * Problem's id
@@ -43,7 +44,6 @@ public class Problem extends EntityModel<Integer> {
      * Locations affected by the problem.
      */
     @ManyToMany(
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             mappedBy = "problems",
             targetEntity = Location.class
     )
@@ -53,7 +53,6 @@ public class Problem extends EntityModel<Integer> {
      * Clients affected by the problems.
      */
     @ManyToMany(
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             mappedBy = "problems",
             targetEntity = Client.class
     )
@@ -115,8 +114,16 @@ public class Problem extends EntityModel<Integer> {
     @PostPersist
     void postPersistUpdate() {
 
-        Notification notification = new Notification();
+        EmployeeDAO employeeDAO = new EmployeeDAO();
+        Set<Employee> allWithAuthorization =
+                employeeDAO.findAllWithAuthorization(Authorization.PROBLEM_READ);
 
-        GenericDAO<Notification, Integer> dao = new GenericDAO<>(Notification.class);
+        Notification notification = new Notification();
+        notification.setTitle("Nouveau problem ! ID : " + getId());
+        notification.setEmployees(allWithAuthorization);
+        notification.setContent("Description : \n" + getDescription());
+
+        GenericDAO<Notification, Integer> notificationDAO = new GenericDAO<>(Notification.class);
+        notificationDAO.save(notification);
     }
 }

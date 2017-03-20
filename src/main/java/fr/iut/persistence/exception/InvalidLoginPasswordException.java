@@ -1,4 +1,4 @@
-package fr.iut.persistence.dao.exception;
+package fr.iut.persistence.exception;
 
 /**
  * Created by Sydpy on 3/8/17.

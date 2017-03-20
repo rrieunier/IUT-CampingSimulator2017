@@ -9,7 +9,7 @@ import java.util.Set;
  */
 @Entity
 @Table
-public class Notification extends EntityModel<Integer> {
+public class Notification implements EntityModel<Integer> {
 
     /**
      * Notification's id.
@@ -34,7 +34,6 @@ public class Notification extends EntityModel<Integer> {
      * Employees concerned about this notification.
      */
     @ManyToMany(
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             mappedBy = "notifications",
             targetEntity = Employee.class
     )

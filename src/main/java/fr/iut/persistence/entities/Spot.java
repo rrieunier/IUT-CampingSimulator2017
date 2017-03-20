@@ -16,7 +16,6 @@ import java.util.Set;
 @Table
 @PrimaryKeyJoinColumn(name = "id", referencedColumnName = "id")
 public class Spot extends Location {
-
     /**
      * Spot's price per day.
      */

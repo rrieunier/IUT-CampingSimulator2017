@@ -1,12 +1,6 @@
 package fr.iut.persistence.entities;
 
-import org.hibernate.annotations.*;
-
 import javax.persistence.*;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -14,7 +8,7 @@ import java.util.Set;
  */
 @Entity
 @Table
-public class Employee extends EntityModel<Integer> {
+public class Employee implements EntityModel<Integer> {
 
     /**
      * Employee's id.
@@ -72,34 +66,31 @@ public class Employee extends EntityModel<Integer> {
     @Column
     @ElementCollection
     @Enumerated(EnumType.STRING)
-    private Set<Authorization> authorizations = new HashSet<>();
+    private Set<Authorization> authorizations;
 
     /**
      * Notifications sent to this employee if it's a user.
      */
     @ManyToMany(
-            targetEntity = Notification.class,
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE}
+            targetEntity = Notification.class
     )
     @JoinTable(
             joinColumns = @JoinColumn(name = "employee_id"),
             inverseJoinColumns = @JoinColumn(name = "notification_id")
     )
-    private Set<Notification> notifications = new HashSet<>();
+    private Set<Notification> notifications;
 
     /**
      * Tasks attributed to this employee.
      */
-    @OneToMany(mappedBy = "employee")
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
-    private Set<Task> tasks = new HashSet<>();
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+    private Set<Task> tasks;
 
     /**
      * Logs made by this employee if it's a user.
      */
-    @OneToMany(mappedBy = "employee")
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
-    private Set<Log> logs = new HashSet<>();
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+    private Set<Log> logs;
 
     public Integer getId() {
         return id;

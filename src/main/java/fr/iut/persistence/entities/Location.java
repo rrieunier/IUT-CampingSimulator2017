@@ -1,12 +1,6 @@
 package fr.iut.persistence.entities;
 
-import org.hibernate.annotations.*;
-
 import javax.persistence.*;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -15,7 +9,7 @@ import java.util.Set;
 @Entity
 @Table
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Location extends EntityModel<Integer> {
+public class Location implements EntityModel<Integer> {
 
     /**
      * Locations's id.
@@ -46,22 +40,20 @@ public class Location extends EntityModel<Integer> {
     /**
      * Tasks planned on this location.
      */
-    @OneToMany(mappedBy = "location")
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
-    private Set<Task> tasks = new HashSet<>();
+    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL)
+    private Set<Task> tasks;
 
     /**
      * Problems encountered on this location.
      */
     @ManyToMany(
-            targetEntity=Problem.class,
-            cascade={CascadeType.PERSIST, CascadeType.MERGE}
+            targetEntity=Problem.class
     )
     @JoinTable(
             joinColumns=@JoinColumn(name="location_id"),
             inverseJoinColumns=@JoinColumn(name="problem_id")
     )
-    private Set<Problem> problems = new HashSet<>();
+    private Set<Problem> problems;
 
     public Integer getId() {
         return id;
