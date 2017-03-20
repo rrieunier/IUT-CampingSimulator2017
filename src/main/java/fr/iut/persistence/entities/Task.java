@@ -3,8 +3,12 @@ package fr.iut.persistence.entities;
 import fr.iut.persistence.dao.GenericDAO;
 import fr.iut.persistence.exception.EmployeeAlreadyAssigned;
 import fr.iut.persistence.exception.StartAfterEndException;
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
@@ -46,12 +50,14 @@ public class Task implements EntityModel<Integer> {
      * Employee who is attributed to this task.
      */
     @ManyToOne(optional = false)
+    @Cascade(CascadeType.ALL)
     private Employee employee;
 
     /**
      * Location on which the task is planned.
      */
     @ManyToOne(optional = true)
+    @Cascade(CascadeType.ALL)
     private Location location;
 
     public Integer getId() {

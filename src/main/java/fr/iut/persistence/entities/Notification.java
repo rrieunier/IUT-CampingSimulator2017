@@ -34,7 +34,6 @@ public class Notification implements EntityModel<Integer> {
      * Employees concerned about this notification.
      */
     @ManyToMany(
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             mappedBy = "notifications",
             targetEntity = Employee.class
     )

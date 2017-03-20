@@ -44,7 +44,6 @@ public class Problem implements EntityModel<Integer> {
      * Locations affected by the problem.
      */
     @ManyToMany(
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             mappedBy = "problems",
             targetEntity = Location.class
     )
@@ -54,7 +53,6 @@ public class Problem implements EntityModel<Integer> {
      * Clients affected by the problems.
      */
     @ManyToMany(
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             mappedBy = "problems",
             targetEntity = Client.class
     )

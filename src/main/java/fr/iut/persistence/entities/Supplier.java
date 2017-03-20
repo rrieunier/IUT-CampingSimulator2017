@@ -1,7 +1,5 @@
 package fr.iut.persistence.entities;
 
-import org.hibernate.annotations.Cascade;
-
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -47,15 +45,13 @@ public class Supplier implements EntityModel<Integer> {
     /**
      * Restockings made by this supplier.
      */
-    @OneToMany(mappedBy = "supplier")
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL)
     private Set<Restocking> restockings = new HashSet<>();
 
     /**
      * Product propositions by this supplier.
      */
-    @OneToMany(mappedBy = "supplier")
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL)
     private Set<SupplierProposeProduct> supplierProposeProducts = new HashSet<>();
 
     public Integer getId() {
