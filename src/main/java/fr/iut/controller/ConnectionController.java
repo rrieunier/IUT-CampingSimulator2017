@@ -31,7 +31,6 @@ public class ConnectionController {
 
     public boolean tryLogin(String username, String password) {
 
-        /*
         if(username.length() == 0 || password.length() == 0)
             return false;
 
@@ -43,8 +42,7 @@ public class ConnectionController {
             return false;
 
         connectedUser = employee.getLogin();
-*/
-        connectedUser = "test"; //TODO : remove
+
         return true;
     }
 

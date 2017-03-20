@@ -63,6 +63,16 @@ public class DummyData {
             daoEmployee.save(employee);
         }
 
+        Employee employee = new Employee();
+        employee.setFirstName("test");
+        employee.setLastName("test");
+        employee.setCompleteAddress("42 rue des Flots Blancs");
+        employee.setPhone("060000042");
+        employee.setEmail(employee.getFirstName() + "." + employee.getLastName() + "@camping.simulator");
+        employee.setLogin("test");
+        employee.setPassword(ConnectionController.hash("test"));
+        daoEmployee.save(employee);
+
         GenericDAO<Notification, Integer> daoNotifications = new GenericDAO<>(Notification.class);
 
         for (int i = 0; i < 50; i++) {
