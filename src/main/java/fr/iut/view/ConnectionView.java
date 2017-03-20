@@ -2,17 +2,24 @@ package fr.iut.view;
 
 import fr.iut.App;
 import fr.iut.controller.ConnectionController;
+import fr.iut.persistence.entities.Client;
+import fr.iut.persistence.entities.Reservation;
+import fr.iut.persistence.entities.Spot;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Map;
 
 import java.io.File;
@@ -131,7 +138,43 @@ public class ConnectionView extends Scene {
         wrapper.setPrefWidth(LOGIN_WIDTH);
         wrapper.getChildren().addAll(header, fields, radio_buttons);
 
-        components.getChildren().addAll(wrapper, confirm, password_shown);
+        // TODO REMOVE =============================================
+        Button toRemoveButton = new Button("A ENLEVER");
+
+        Client client = new Client();
+        client.setId(10);
+        client.setFirstname("Thierry");
+        client.setLastname("Lhermitte");
+
+        Spot spot= new Spot();
+        spot.setCapacity(5);
+        spot.setElectricity(true);
+        spot.setPricePerDay(30);
+        spot.setShadow(true);
+        spot.setWater(true);
+
+        Reservation reservation = new Reservation();
+        reservation.setId(10);
+        reservation.setClient(client);
+        reservation.setClientComment("C'était vraiment génial tellement de barres avec Nico mdr! Je reviendrais wallah!");
+        reservation.setPersonCount(5);
+        reservation.setStarttime(new Timestamp(0));
+        reservation.setEndtime(new Timestamp(604800000));
+        reservation.setReduction(10);
+        reservation.setSpot(spot);
+
+        FactureSummaryView facture = new FactureSummaryView(reservation);
+
+        toRemoveButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                facture.show();
+            }
+        });
+
+        // TODO ====================================================
+
+        components.getChildren().addAll(wrapper, confirm, password_shown/*, toRemoveButton*/);
     }
 
     private void connectionButtonAction(String username, String password) {

@@ -32,6 +32,9 @@ public class HomeController {
     private EmployeesController employeesController = new EmployeesController(this);
     private SupplierController supplierController = new SupplierController(this);
 
+    private GenericDAO<Product, Integer> dao = new GenericDAO<>(Product.class);
+
+
     public HomeController(App app, String connectedUser) {
         this.app = app;
         homeView = new HomeView(this, connectedUser);
@@ -41,7 +44,6 @@ public class HomeController {
      * @return the whole list of products in database
      */
     public ArrayList<Product> getProductsList() {
-        GenericDAO<Product, Integer> dao = new GenericDAO<Product, Integer>(Product.class);
 
         ArrayList<Product> products = (ArrayList<Product>) dao.findAll();
 
@@ -66,7 +68,6 @@ public class HomeController {
         product.setSellPrice(Float.parseFloat(newProduct_result.get().get("Prix (0.0)")));
 
 
-        GenericDAO<Product, Integer> dao = new GenericDAO<>(Product.class);
         dao.save(product);
     }
 
@@ -82,26 +83,29 @@ public class HomeController {
         modifyProductDialog.addTextField(String.valueOf(ancientProduct.getCriticalQuantity()));
         Optional<Map<String, String>> newProduct_result = modifyProductDialog.showAndWait();
 
-        GenericDAO<Product, Integer> dao = new GenericDAO<Product, Integer>(Product.class);
+        System.out.println(ancientProduct.getId());
 
         Product product = dao.findById(ancientProduct.getId());
         product.setName(newProduct_result.get().get(ancientProduct.getName()).isEmpty()
                 ? ancientProduct.getName()
                 : newProduct_result.get().get(ancientProduct.getName()));
+
         product.setStock(newProduct_result.get().get(String.valueOf(ancientProduct.getStock())).isEmpty()
                 ? ancientProduct.getStock()
                 : Integer.parseInt(newProduct_result.get().get(String.valueOf(ancientProduct.getStock()))));
+
         product.setCriticalQuantity(newProduct_result.get().get(String.valueOf(ancientProduct.getCriticalQuantity())).isEmpty()
                 ? ancientProduct.getCriticalQuantity()
                 : Integer.parseInt(newProduct_result.get().get(String.valueOf(ancientProduct.getCriticalQuantity()))));
+
         product.setSellPrice(newProduct_result.get().get(String.valueOf(ancientProduct.getSellPrice())).isEmpty()
                 ? ancientProduct.getSellPrice()
                 : Float.parseFloat(newProduct_result.get().get(String.valueOf(ancientProduct.getSellPrice()))));
 
+        dao.update(product);
     }
 
     public void deleteProduct(Product lastClickedValue) {
-        GenericDAO<Product, Integer> dao = new GenericDAO<Product, Integer>(Product.class);
         dao.remove(lastClickedValue);
     }
 
