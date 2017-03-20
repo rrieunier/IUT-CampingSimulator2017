@@ -1,12 +1,15 @@
 package fr.iut.persistence.dao;
 
-import fr.iut.persistence.dao.exception.InvalidLoginPasswordException;
+import fr.iut.persistence.entities.Authorization;
 import fr.iut.persistence.entities.Employee;
+import fr.iut.persistence.exception.InvalidLoginPasswordException;
 import org.hibernate.query.Query;
 
 import javax.persistence.NoResultException;
 import javax.transaction.Transactional;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Sydpy on 2/28/17.
@@ -89,6 +92,25 @@ public class EmployeeDAO extends GenericDAO<Employee, Integer> {
             connectedUser = null;
             throw new InvalidLoginPasswordException();
         }
+    }
+
+    /**
+     * @param authorization Authorization the Employee has to be granted
+     * @return the set of Employees which has the authorization provided in first arg
+     */
+    public Set<Employee> findAllWithAuthorization(Authorization authorization){
+
+        Set<Employee> withAuthorization = new HashSet<>();
+
+        List<Employee> all = findAll();
+
+        for (Employee employee : all) {
+            if(employee.getAuthorizations().contains(authorization)) {
+                withAuthorization.add(employee);
+            }
+        }
+
+        return withAuthorization;
     }
 
     /**
