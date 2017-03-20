@@ -7,7 +7,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table
-public class SupplierProposeProduct extends EntityModel<Integer> {
+public class SupplierProposeProduct implements EntityModel<Integer> {
 
     /**
      * Id of this proposition.

@@ -11,7 +11,7 @@ import java.util.Set;
  */
 @Entity
 @Table
-public class Product extends EntityModel<Integer> {
+public class Product implements EntityModel<Integer> {
 
     /**
      * Product's id.

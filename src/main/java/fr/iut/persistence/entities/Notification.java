@@ -9,7 +9,7 @@ import java.util.Set;
  */
 @Entity
 @Table
-public class Notification extends EntityModel<Integer> {
+public class Notification implements EntityModel<Integer> {
 
     /**
      * Notification's id.

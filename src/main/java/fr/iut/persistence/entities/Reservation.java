@@ -8,7 +8,7 @@ import java.sql.Timestamp;
  */
 @Entity
 @Table
-public class Reservation extends EntityModel<Integer> {
+public class Reservation implements EntityModel<Integer> {
 
     /**
      * Reservation's id.

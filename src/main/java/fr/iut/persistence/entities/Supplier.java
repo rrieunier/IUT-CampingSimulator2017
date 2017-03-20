@@ -11,7 +11,7 @@ import java.util.Set;
  */
 @Entity
 @Table
-public class Supplier extends EntityModel<Integer> {
+public class Supplier implements EntityModel<Integer> {
 
     /**
      * Supplier's id.
