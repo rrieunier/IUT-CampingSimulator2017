@@ -87,6 +87,6 @@ public class GenericDAOTest {
 
         clientDao.removeAll();
 
-        assertEquals(0, clientDao.findAll().size());
+        assertEquals(0, clientDao.count());
     }
 }

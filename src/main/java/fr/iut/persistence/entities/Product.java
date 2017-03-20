@@ -1,7 +1,5 @@
 package fr.iut.persistence.entities;
 
-import org.hibernate.annotations.Cascade;
-
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -47,22 +45,19 @@ public class Product implements EntityModel<Integer> {
     /**
      * Purchases made for this product.
      */
-    @OneToMany(mappedBy = "product")
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
-    private Set<Purchase> purchases = new HashSet<>();
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private Set<Purchase> purchases;
 
     /**
      * Restocking made for this product.
      */
-    @OneToMany(mappedBy = "product")
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
-    private Set<Restocking> restockings = new HashSet<>();
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private Set<Restocking> restockings;
 
     /**
      * Relations between suppliers and this product.
      */
-    @OneToMany(mappedBy = "product")
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private Set<SupplierProposeProduct> supplierProposeProducts = new HashSet<>();
 
     public Integer getId() {

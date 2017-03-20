@@ -1,12 +1,8 @@
 package fr.iut.persistence.entities;
 
-import org.hibernate.annotations.*;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -51,28 +47,26 @@ public class Client implements EntityModel<Integer> {
      * Problems encountered by the client.
      */
     @ManyToMany(
-            targetEntity=Problem.class,
-            cascade={CascadeType.PERSIST, CascadeType.MERGE}
+            targetEntity=Problem.class
     )
     @JoinTable(
             joinColumns=@JoinColumn(name="client_id"),
             inverseJoinColumns=@JoinColumn(name="problem_id")
     )
-    private Set<Problem> problems = new HashSet<>();
+    private Set<Problem> problems;
 
     /**
      * Reservations made by the client.
      */
-    @OneToMany(mappedBy = "client")
+    @OneToMany(mappedBy = "client", cascade = {CascadeType.ALL})
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
-    private Set<Reservation> reservations = new HashSet<>();
+    private Set<Reservation> reservations;
 
     /**
      * Purchases made by the client.
      */
-    @OneToMany(mappedBy = "client")
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
-    private Set<Purchase> purchases = new HashSet<>();
+    @OneToMany(mappedBy = "client", cascade = {CascadeType.ALL})
+    private Set<Purchase> purchases;
 
     public Integer getId() {
         return id;
