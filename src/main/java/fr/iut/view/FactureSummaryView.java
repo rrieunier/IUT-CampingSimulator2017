@@ -1,9 +1,10 @@
 package fr.iut.view;
 
 import fr.iut.App;
+import fr.iut.controller.ReservationController;
 import fr.iut.persistence.entities.Purchase;
 import fr.iut.persistence.entities.Reservation;
-import javafx.collections.ObservableList;
+import javafx.beans.NamedArg;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -18,26 +19,65 @@ import javafx.stage.Window;
 import org.apache.pdfbox.pdmodel.PDDocument;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Timestamp;
 
 
 public class FactureSummaryView extends Dialog<Void> {
 
+    /**
+     * width of the facture preview window
+     */
     public static final double FACTURE_SUMMARY_WIDTH = App.SCREEN_W/1.5;
+    /**
+     * height of the facture preview window
+     */
     public static final double FACTURE_SUMMARY_HEIGHT = App.SCREEN_H/1.3;
-
+    /**
+     * main container
+     */
     private VBox wrapper = new VBox();
+    /**
+     * body of the window
+     */
     private HBox content = new HBox();
+    /**
+     * header of the window
+     */
     private HeaderView header = new HeaderView("Aperçu de la facture");
-
+    /**
+     * facture details grid
+     */
     private GridPane grid = new GridPane();
-
+    /**
+     * reservation related to the facture
+     */
     private Reservation reservation;
+    /**
+     * instance of the controller
+     */
+    private ReservationController controller;
+    /**
+     * pdf facture of the reservation
+     */
+    private PDDocument facturePDF;
 
-    public FactureSummaryView(Reservation reservation) {
+    /**
+     * @param reservation
+     * create view of the facture related to reservation
+     */
+    public FactureSummaryView(@NamedArg("reservation") Reservation reservation,
+                              @NamedArg("controller") ReservationController controller) {
         setTitle("Aperçu de la facture");
 
         this.reservation = reservation;
+        this.controller = controller;
+
+        try {
+            facturePDF = controller.makeFacturePDF(reservation);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         // on cross clicked
         Window window = getDialogPane().getScene().getWindow();
@@ -54,7 +94,7 @@ public class FactureSummaryView extends Dialog<Void> {
         grid.setGridLinesVisible(true);
 
         // content ===========================
-        String[] factureFields = {"Date de d'arrivée", "Date de départ", "Taxe habitation", "Prix/jour", "Cumul achats", "Réduction", "Total"};
+        String[] factureFields = {"Date de d'arrivée", "Date de départ", "Taxe de séjour", "Prix/jour", "Cumul achats", "Réduction", "Total"};
 
         //build grid
         for (int i = 0; i < 2; i++) {
@@ -133,6 +173,12 @@ public class FactureSummaryView extends Dialog<Void> {
         exportButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                try {
+                    facturePDF.save("facture_"+reservation.getId());
+                    facturePDF.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -143,6 +189,11 @@ public class FactureSummaryView extends Dialog<Void> {
         printButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                try {
+                    facturePDF.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -150,7 +201,17 @@ public class FactureSummaryView extends Dialog<Void> {
         okButton.setPrefWidth(FACTURE_SUMMARY_WIDTH / 5);
         okButton.getStylesheets().add(new File("res/style.css").toURI().toString());
         okButton.getStyleClass().add("record-sales");
-        okButton.setOnMouseClicked(event -> window.hide());
+        okButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                try {
+                    facturePDF.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                window.hide();
+            }
+        });
 
         VBox exportAndPrintBox = new VBox();
         exportAndPrintBox.getChildren().addAll(exportButton, printButton);
