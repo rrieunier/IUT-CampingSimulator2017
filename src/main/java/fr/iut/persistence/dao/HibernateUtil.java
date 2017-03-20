@@ -10,43 +10,29 @@ import org.hibernate.cfg.Configuration;
 public class HibernateUtil {
 
     /**
-     * Configs that can be used.
-     */
-    public enum Config {
-        PROD, TEST
-    }
-
-    /**
      * Hibernate's Session.
      */
-    private static Session session = null;
+    private static Session session = buildSessionFactory().openSession();
 
     /**
      * Initialize a sessionFactory.
-     * @param config Config to use.
+     *
      * @return the sessionFactory created.
      */
-   private static SessionFactory buildSessionFactory(Config config) {
+    private static SessionFactory buildSessionFactory() {
         try {
-            if (config == Config.TEST) {
-                return new Configuration().configure("hibernate-test.cfg.xml").buildSessionFactory();
-            } else if (config == Config.PROD) {
-                return new Configuration().configure().buildSessionFactory();
-            }
+            return new Configuration().configure().buildSessionFactory();
         } catch (Exception ex) {
             System.err.println("Initial SessionFactory creation failed." + ex);
             throw new ExceptionInInitializerError(ex);
         }
-
-        return null;
     }
 
-    public static Session openSession(Config config){
-        session = buildSessionFactory(config).openSession();
+    public static Session getSession() {
         return session;
     }
 
-    public static Session getSession(){
-        return session;
+    public static void shutdown() {
+        session.close();
     }
 }

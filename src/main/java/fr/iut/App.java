@@ -3,7 +3,6 @@ package fr.iut;
 import fr.iut.controller.ConnectionController;
 import fr.iut.controller.HomeController;
 import fr.iut.controller.MapController;
-import fr.iut.persistence.dao.HibernateUtil;
 import fr.iut.view.ConnectionView;
 import fr.iut.view.MapCreatorView;
 import javafx.application.Application;
@@ -26,7 +25,6 @@ public class App extends Application {
     private HomeController homeController;
 
     public static void main(String[] args) {
-        HibernateUtil.openSession(HibernateUtil.Config.PROD);
         launch(args);
     }
 

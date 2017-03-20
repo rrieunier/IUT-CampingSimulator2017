@@ -1,39 +1,18 @@
 package fr.iut.persistence.dao;
 
-import fr.iut.persistence.dao.exception.InvalidLoginPasswordException;
+import fr.iut.persistence.TestUtils;
 import fr.iut.persistence.entities.Employee;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.List;
 import java.util.Objects;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Created by Sydpy on 3/8/17.
  */
 public class EmployeeDAOTest {
-
-    @BeforeClass
-    public static void initDaoIfNeeded() throws InvalidLoginPasswordException {
-        if(HibernateUtil.getSession() == null){
-            HibernateUtil.openSession(HibernateUtil.Config.TEST);
-
-            Employee employee = new Employee();
-            employee.setFirstName(DAOTestUtils.randomString());
-            employee.setLastName(DAOTestUtils.randomString());
-            employee.setLogin(DAOTestUtils.randomString());
-            employee.setPassword(DAOTestUtils.randomString());
-
-            EmployeeDAO employeeDAO = new EmployeeDAO();
-            employeeDAO.save(employee);
-
-            assert employeeDAO.connectUser(employee.getLogin(), employee.getPassword())!= null;
-        }
-    }
 
     private EmployeeDAO employeeDAO = new EmployeeDAO();
 
@@ -41,10 +20,10 @@ public class EmployeeDAOTest {
     public void testFindByLogin() throws Exception {
 
         Employee employee = new Employee();
-        employee.setFirstName(DAOTestUtils.randomString());
-        employee.setLastName(DAOTestUtils.randomString());
-        employee.setLogin(DAOTestUtils.randomString());
-        employee.setPassword(DAOTestUtils.randomString());
+        employee.setFirstName(TestUtils.randomString());
+        employee.setLastName(TestUtils.randomString());
+        employee.setLogin(TestUtils.randomString());
+        employee.setPassword(TestUtils.randomString());
 
         employeeDAO.save(employee);
 
@@ -63,10 +42,10 @@ public class EmployeeDAOTest {
     public void testConnectionDisconnection() throws Exception {
 
         Employee employee = new Employee();
-        employee.setFirstName(DAOTestUtils.randomString());
-        employee.setLastName(DAOTestUtils.randomString());
-        employee.setLogin(DAOTestUtils.randomString());
-        employee.setPassword(DAOTestUtils.randomString());
+        employee.setFirstName(TestUtils.randomString());
+        employee.setLastName(TestUtils.randomString());
+        employee.setLogin(TestUtils.randomString());
+        employee.setPassword(TestUtils.randomString());
 
         employeeDAO.save(employee);
 
@@ -86,10 +65,10 @@ public class EmployeeDAOTest {
     public void testFindByFirstName() throws Exception {
 
         Employee employee = new Employee();
-        employee.setFirstName(DAOTestUtils.randomString());
-        employee.setLastName(DAOTestUtils.randomString());
-        employee.setLogin(DAOTestUtils.randomString());
-        employee.setPassword(DAOTestUtils.randomString());
+        employee.setFirstName(TestUtils.randomString());
+        employee.setLastName(TestUtils.randomString());
+        employee.setLogin(TestUtils.randomString());
+        employee.setPassword(TestUtils.randomString());
 
         employeeDAO.save(employee);
 
@@ -112,10 +91,10 @@ public class EmployeeDAOTest {
     public void testFindByLastName() throws Exception {
 
         Employee employee = new Employee();
-        employee.setFirstName(DAOTestUtils.randomString());
-        employee.setLastName(DAOTestUtils.randomString());
-        employee.setLogin(DAOTestUtils.randomString());
-        employee.setPassword(DAOTestUtils.randomString());
+        employee.setFirstName(TestUtils.randomString());
+        employee.setLastName(TestUtils.randomString());
+        employee.setLogin(TestUtils.randomString());
+        employee.setPassword(TestUtils.randomString());
 
         employeeDAO.save(employee);
 

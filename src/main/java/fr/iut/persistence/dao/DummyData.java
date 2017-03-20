@@ -16,8 +16,6 @@ public class DummyData {
 
     public static void main(String[] args) {
 
-        HibernateUtil.openSession(HibernateUtil.Config.PROD);
-
         //Crete and persist your dummy datas for test here
         GenericDAO<Spot, Integer> daoSpot = new GenericDAO<>(Spot.class);
         daoSpot.removeAll();
