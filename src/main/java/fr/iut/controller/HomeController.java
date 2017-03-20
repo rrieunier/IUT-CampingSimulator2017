@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Optional;
 
 
-public class HomeController implements ControllerInterface {
+public class HomeController {
 
     /**
      * instance of the application
@@ -28,6 +28,7 @@ public class HomeController implements ControllerInterface {
     private ClientsController clientsController = new ClientsController(this);
     private StatisticsController statisticsController = new StatisticsController();
     private IncidentsController incidentsController = new IncidentsController(this);
+    private MapController mapController = new MapController(this);
     private EmployeesController employeesController = new EmployeesController(this);
     private SupplierController supplierController = new SupplierController(this);
 
@@ -104,7 +105,6 @@ public class HomeController implements ControllerInterface {
         dao.remove(lastClickedValue);
     }
 
-    @Override
     public Scene getView() {
         return homeView;
     }
@@ -112,7 +112,6 @@ public class HomeController implements ControllerInterface {
     /**
      * return to connection screen
      */
-    @Override
     public void finish() {
         app.switchState(State.CONNECTION);
     }
@@ -128,6 +127,8 @@ public class HomeController implements ControllerInterface {
     }
 
     public IncidentsController getIncidentsController() { return incidentsController; }
+
+    public MapController getMapController() { return mapController; }
 
     public EmployeesController getEmployeesController() { return  employeesController; }
 

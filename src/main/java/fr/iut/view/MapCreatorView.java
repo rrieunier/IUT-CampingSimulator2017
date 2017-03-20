@@ -9,6 +9,7 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.SubScene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
@@ -32,7 +33,7 @@ import java.util.Optional;
 /**
  * Created by shellcode on 2/6/17.
  */
-public class MapCreatorView extends Scene {
+public class MapCreatorView extends SubScene {
 
     private final static int MAP_VIEWPORT_WIDTH = (int)(App.SCREEN_W*3/4);
     private final static int MAP_VIEWPORT_HEIGHT = (int)(App.SCREEN_H / 2 + App.SCREEN_H / 10);
@@ -51,7 +52,7 @@ public class MapCreatorView extends Scene {
     private double mouseY ;
 
     public MapCreatorView(MapController controller) {
-        super(new StackPane());
+        super(new StackPane(), HomeView.TAB_CONTENT_W, HomeView.TAB_CONTENT_H);
         this.controller = controller;
 
         stackPaneRoot = (StackPane)getRoot();
@@ -66,7 +67,7 @@ public class MapCreatorView extends Scene {
         verticalWrap.setStyle("-fx-background-color: rgb(12, 27, 51);");
 
 
-        HeaderView header = new HeaderView("Création de la carte");
+        //HeaderView header = new HeaderView("Création de la carte");
 
         mapPane = new StackPane();
         mapPane.setAlignment(Pos.CENTER);
@@ -131,7 +132,6 @@ public class MapCreatorView extends Scene {
 
         buttonFinish.setOnMouseClicked(mouseEvent -> {
             controller.store(mapFile, locations);
-            controller.finish();
         });
 
         mapPane.setOnMouseClicked(mouseEvent -> {
@@ -139,7 +139,7 @@ public class MapCreatorView extends Scene {
                 FileChooser fileChooser = new FileChooser();
                 fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
                 fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Images", "*.png")); //On autorise que les images png
-                mapFile = fileChooser.showOpenDialog(getWindow());
+                mapFile = fileChooser.showOpenDialog(controller.getMainWindow());
 
                 if (mapFile != null) {
 
@@ -182,7 +182,7 @@ public class MapCreatorView extends Scene {
 
         VBox.setMargin(items, new Insets(10, App.SCREEN_W/5, 20, App.SCREEN_W/5));
         VBox.setMargin(mapViewPort, new Insets(20, 0, 20, 0));
-        verticalWrap.getChildren().addAll(header, mapViewPort, items, buttonsBox);
+        verticalWrap.getChildren().addAll(mapViewPort, items, buttonsBox);
 
         stackPaneRoot.getChildren().addAll(scrollPane);
 

@@ -12,17 +12,7 @@ import javafx.geometry.Side;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class StatisticsController implements ControllerInterface {
-
-    @Override
-    public Object getView() {
-        return null;
-    }
-
-    @Override
-    public void finish() {
-
-    }
+public class StatisticsController {
 
     public ChartView makeChart(@NamedArg("category") SelectedCategory category,
                                @NamedArg("selectedChart") int selectedChart,

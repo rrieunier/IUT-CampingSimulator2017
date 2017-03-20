@@ -4,10 +4,15 @@ import fr.iut.controller.ConnectionController;
 import fr.iut.controller.HomeController;
 import fr.iut.controller.MapController;
 import fr.iut.view.ConnectionView;
+import fr.iut.view.HomeView;
 import fr.iut.view.MapCreatorView;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+import org.hibernate.Hibernate;
 
 import java.awt.*;
 
@@ -18,8 +23,9 @@ public class App extends Application {
 
     public static final double SCREEN_W = SCREEN_SIZE.getWidth() / monitors.length;
     public static final double SCREEN_H = SCREEN_SIZE.getHeight();
-    MapController mapController = new MapController(this);
+
     private Stage stage;
+
     //Controllers, il doit y avoir un état (classe State) par controller
     private ConnectionController connectionController = new ConnectionController(this);
     private HomeController homeController;
@@ -29,12 +35,11 @@ public class App extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) throws Exception{
 
         stage = primaryStage;
         primaryStage.setTitle("Camping Simulator 2017");
 
-        //InscriptionController inscriptionController = new InscriptionController(this);
         primaryStage.setScene(connectionController.getView());
         primaryStage.setResizable(false);
 
@@ -43,15 +48,18 @@ public class App extends Application {
     }
 
     @Override
-    public void stop() {
+    public void stop(){
         System.out.println("Stopping...");
         Platform.exit();
         System.exit(0);
     }
 
+    /**
+     * Allows to switch beetween the different states of the application (see State enum)
+     */
     public void switchState(State state) {
 
-        if (connectionController == null && state != State.CONNECTION) {
+        if(connectionController == null && state != State.CONNECTION) {
             System.out.println("You are not connected.");
             System.exit(1);
         }
@@ -67,23 +75,18 @@ public class App extends Application {
                 stage.setHeight(ConnectionView.LOGIN_HEIGHT);
                 break;
 
-            case MAP_CREATOR:
-                MapCreatorView scene = (MapCreatorView) mapController.getView();
-                stage.setScene(scene);
-                scene.showInfo();
+            case FIRST_LAUNCH:
+                //TODO : lancer interface de première connection
                 break;
 
-            case HOME:
+            case HOME: {
                 homeController = new HomeController(this, connectionController.getConnectedUser());
                 stage.setScene(homeController.getView());
                 stage.setOnCloseRequest(action -> homeController.OnWindowIsClosing());
                 break;
+            }
         }
 
         stage.centerOnScreen();
-    }
-
-    public boolean doINeedToShowMapEditor() {
-        return !mapController.isMapAlreadyCreated();
     }
 }

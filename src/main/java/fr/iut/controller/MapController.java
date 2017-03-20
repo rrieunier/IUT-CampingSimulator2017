@@ -1,6 +1,5 @@
 package fr.iut.controller;
 
-import fr.iut.App;
 import fr.iut.State;
 import fr.iut.persistence.dao.GenericDAO;
 import fr.iut.persistence.dao.MapDao;
@@ -8,6 +7,8 @@ import fr.iut.persistence.entities.Location;
 import fr.iut.persistence.entities.Map;
 import fr.iut.view.MapCreatorView;
 import javafx.scene.Scene;
+import javafx.scene.SubScene;
+import javafx.stage.Window;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,22 +17,21 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 
 
-public class MapController implements ControllerInterface {
+public class MapController {
 
-    private App app;
+    private HomeController homeController;
     private MapCreatorView mapCreatorView = new MapCreatorView(this);
     private MapDao daoMap = new MapDao();
     private GenericDAO<Location, Integer> daoLocation = new GenericDAO<>(Location.class);
 
     private Map currentMap = null;
 
-    public MapController(App app) {
-        this.app = app;
+    public MapController(HomeController homeController) {
+        this.homeController = homeController;
         currentMap = daoMap.getMap();
     }
 
-    @Override
-    public Scene getView() {
+    public SubScene getView() {
         return mapCreatorView;
     }
 
@@ -56,12 +56,11 @@ public class MapController implements ControllerInterface {
         //TODO : save map and locations in the bdd
     }
 
-    @Override
-    public void finish() {
-        app.switchState(State.HOME);
-    }
-
     public boolean isMapAlreadyCreated() {
         return currentMap != null;
+    }
+
+    public Window getMainWindow() {
+        return homeController.getView().getWindow();
     }
 }
