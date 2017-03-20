@@ -15,7 +15,7 @@ import java.util.Set;
 @Entity
 @Table
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Location extends EntityModel<Integer> {
+public class Location implements EntityModel<Integer> {
 
     /**
      * Locations's id.

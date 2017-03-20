@@ -7,13 +7,14 @@ import fr.iut.persistence.exception.StartAfterEndException;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by Sydpy on 2/15/17.
  */
 @Entity
 @Table
-public class Task extends EntityModel<Integer> {
+public class Task implements EntityModel<Integer> {
 
     /**
      * Task's id.
@@ -50,7 +51,7 @@ public class Task extends EntityModel<Integer> {
     /**
      * Location on which the task is planned.
      */
-    @ManyToOne
+    @ManyToOne(optional = true)
     private Location location;
 
     public Integer getId() {
@@ -104,9 +105,6 @@ public class Task extends EntityModel<Integer> {
     @PrePersist
     @PreUpdate
     void prePersistUpdate() throws StartAfterEndException, EmployeeAlreadyAssigned {
-        if (starttime.getTime() > endtime.getTime()) {
-            throw new StartAfterEndException();
-        }
 
         GenericDAO<Task, Integer> dao = new GenericDAO<>(Task.class);
 
@@ -115,7 +113,7 @@ public class Task extends EntityModel<Integer> {
         boolean isEmployeeAlreadyAssigned = false;
 
         for (Task task : all) {
-            if(task.getEmployee().getId() == getEmployee().getId()){
+            if(Objects.equals(task.getEmployee().getId(), getEmployee().getId())){
                 isEmployeeAlreadyAssigned = true;
                 break;
             }

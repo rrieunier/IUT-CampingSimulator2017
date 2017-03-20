@@ -14,7 +14,7 @@ import java.util.Set;
  */
 @Entity
 @Table
-public class Employee extends EntityModel<Integer> {
+public class Employee implements EntityModel<Integer> {
 
     /**
      * Employee's id.

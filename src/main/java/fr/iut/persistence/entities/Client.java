@@ -14,7 +14,7 @@ import java.util.Set;
  */
 @Entity
 @Table
-public class Client extends EntityModel<Integer> {
+public class Client implements EntityModel<Integer> {
 
     /**
      * Client's id.

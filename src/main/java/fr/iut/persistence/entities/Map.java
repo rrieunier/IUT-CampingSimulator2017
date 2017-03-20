@@ -7,7 +7,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table
-public class Map extends EntityModel<Integer> {
+public class Map implements EntityModel<Integer> {
 
     /**
      * Map's id
