@@ -183,6 +183,11 @@ public class HomeView extends Scene {
                 blinkAnimation = createBlinker(notification_text);
                 blinkAnimation.play();
             }
+
+            else if(count == 0 && blinkAnimation != null) {
+                stopBlinkAnimation();
+                notification_text.setOpacity(1); //Because de blink animation can let the notification_text vanished
+            }
         });
 
         notification_text = new Text("Vous avez " + notificationsController.getNotificationsCount() + " notifications en attente.");
@@ -199,9 +204,8 @@ public class HomeView extends Scene {
         HBox notification_wrapper = new HBox();
 
         notification_wrapper.setOnMouseClicked(mouseEvent -> {
-            Optional<Integer> result = controller.getNotificationsController().getView().showAndWait();
-
-            //result.ifPresent(value -> notification_text.setText("Vous avez " + controller.getNotificationsController().getNotifications().size() + " notifications en attente.")); //TODO
+            controller.getNotificationsController().getView().showAndWait();
+            notification_text.setText("Vous avez " + notificationsController.getNotificationsCount() + " notifications en attente.");
         });
 
         notification_wrapper.getChildren().addAll(alertIcon, notification_text);

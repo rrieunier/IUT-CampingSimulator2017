@@ -45,6 +45,7 @@ public class NotificationsController {
     }
 
     public void solve(Notification notification) {
+        notifications.remove(notification);
         dao.remove(notification);
     }
 
