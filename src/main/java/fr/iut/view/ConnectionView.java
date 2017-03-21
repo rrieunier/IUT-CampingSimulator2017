@@ -2,9 +2,8 @@ package fr.iut.view;
 
 import fr.iut.App;
 import fr.iut.controller.ConnectionController;
-import fr.iut.persistence.entities.Client;
-import fr.iut.persistence.entities.Reservation;
-import fr.iut.persistence.entities.Spot;
+import fr.iut.controller.ReservationController;
+import fr.iut.persistence.entities.*;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -145,8 +144,23 @@ public class ConnectionView extends Scene {
         client.setId(10);
         client.setFirstname("Thierry");
         client.setLastname("Lhermitte");
+        client.setPhone("0666587895");
+        client.setEmail("thierry.lhermitte@campeur.com");
+
+        for (int i = 0; i < 6; i++) {
+            Product product = new Product();
+            product.setName("Magazine n°" + i);
+            product.setSellPrice(i * 2);
+            Purchase purchase = new Purchase();
+            purchase.setProduct(product);
+            purchase.setQuantity(i + 1);
+            purchase.setDatetime(new Timestamp(0));
+
+            client.getPurchases().add(purchase);
+        }
 
         Spot spot= new Spot();
+        spot.setName("Les Arbouliers");
         spot.setCapacity(5);
         spot.setElectricity(true);
         spot.setPricePerDay(30);
@@ -163,7 +177,8 @@ public class ConnectionView extends Scene {
         reservation.setReduction(10);
         reservation.setSpot(spot);
 
-        FactureSummaryView facture = new FactureSummaryView(reservation);
+        ReservationController controller = new ReservationController();
+        FactureSummaryView facture = new FactureSummaryView(reservation, controller);
 
         toRemoveButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -174,7 +189,7 @@ public class ConnectionView extends Scene {
 
         // TODO ====================================================
 
-        components.getChildren().addAll(wrapper, confirm, password_shown/*, toRemoveButton*/);
+        components.getChildren().addAll(wrapper, confirm, password_shown, toRemoveButton);
     }
 
     private void connectionButtonAction(String username, String password) {
