@@ -1,14 +1,16 @@
 package fr.iut.view;
 
 import fr.iut.App;
-import fr.iut.controller.InscriptionController;
+import fr.iut.controller.ConnectionController;
+import fr.iut.controller.SubscribeController;
 import fr.iut.persistence.entities.Employee;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -22,14 +24,14 @@ import java.io.File;
 /**
  * Created by theo on 13/03/17.
  */
-public class InscriptionView extends Scene {
+public class SubscribeView extends Scene {
 
     public static final double INSCRIPTION_WIDTH = App.SCREEN_W / 2;
     public static final double INSCRIPTION_HEIGHT = App.SCREEN_H / 1.5;
 
-    private InscriptionController controller;
+    private SubscribeController controller;
 
-    public InscriptionView(InscriptionController controller){
+    public SubscribeView(SubscribeController controller){
         super(new BorderPane(), INSCRIPTION_WIDTH, INSCRIPTION_HEIGHT);
         this.controller = controller;
         BorderPane root = (BorderPane) getRoot();
@@ -91,20 +93,24 @@ public class InscriptionView extends Scene {
         Button okButton = new Button("Valider");
         okButton.getStylesheets().add(new File("res/style.css").toURI().toString());
         okButton.getStyleClass().add("record-sales");
-        okButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                if(login.getText().toString() != "" && password.getText().toString() != "" && firstName.getText().toString() != "" && lastName.getText().toString() != "") {
-                    Employee employee = new Employee();
-                    employee.setLogin(login.getText().toString());
-                    employee.setPassword(password.getText().toString());
-                    employee.setFirstName(firstName.getText().toString());
-                    employee.setLastName(lastName.getText().toString());
-                    employee.setPhone(phone.getText().toString());
-                    employee.setCompleteAddress(address.getText().toString());
-                    employee.setEmail(mail.getText().toString());
-                    controller.finish(employee);
-                }
+        okButton.setOnAction(event -> {
+            if(!login.getText().isEmpty() && !password.getText().isEmpty() && !firstName.getText().isEmpty() && !lastName.getText().isEmpty()) {
+                Employee employee = new Employee();
+                employee.setLogin(login.getText());
+                employee.setPassword(ConnectionController.hash(password.getText()));
+                employee.setFirstName(firstName.getText());
+                employee.setLastName(lastName.getText());
+                employee.setPhone(phone.getText());
+                employee.setCompleteAddress(address.getText());
+                employee.setEmail(mail.getText());
+                controller.finish(employee);
+            }
+
+            else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setHeaderText(null);
+                alert.setContentText("Merci de rentrer au minimum votre login, mot de passe, nom, et prenom.");
+                Platform.runLater(alert::showAndWait);
             }
         });
         BorderPane.setMargin(okButton, new Insets(0,0, 20, (INSCRIPTION_WIDTH/2) - 50));

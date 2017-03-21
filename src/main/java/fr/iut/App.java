@@ -3,10 +3,12 @@ package fr.iut;
 import fr.iut.controller.ConnectionController;
 import fr.iut.controller.HomeController;
 import fr.iut.controller.MapController;
+import fr.iut.controller.SubscribeController;
 import fr.iut.persistence.dao.HibernateUtil;
 import fr.iut.view.ConnectionView;
 import fr.iut.view.HomeView;
 import fr.iut.view.MapCreatorView;
+import fr.iut.view.SubscribeView;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -29,6 +31,7 @@ public class App extends Application {
 
     //Controllers, il doit y avoir un état (classe State) par controller
     private ConnectionController connectionController = new ConnectionController(this);
+    private SubscribeController subscribeController = new SubscribeController(this);
     private HomeController homeController;
 
     public static void main(String[] args) {
@@ -40,10 +43,12 @@ public class App extends Application {
 
         stage = primaryStage;
         primaryStage.setTitle("Camping Simulator 2017");
-
-        primaryStage.setScene(connectionController.getView());
         primaryStage.setResizable(false);
 
+        if(isFirstLaunch())
+            switchState(State.FIRST_LAUNCH);
+        else
+            switchState(State.CONNECTION);
 
         primaryStage.show();
     }
@@ -78,7 +83,9 @@ public class App extends Application {
                 break;
 
             case FIRST_LAUNCH:
-                //TODO : lancer interface de première connection
+                stage.setScene(subscribeController.getView());
+                stage.setWidth(SubscribeView.INSCRIPTION_WIDTH);
+                stage.setHeight(SubscribeView.INSCRIPTION_HEIGHT);
                 break;
 
             case HOME: {
@@ -90,5 +97,9 @@ public class App extends Application {
         }
 
         stage.centerOnScreen();
+    }
+
+    public boolean isFirstLaunch() {
+        return subscribeController.isFirstSuscribe();
     }
 }

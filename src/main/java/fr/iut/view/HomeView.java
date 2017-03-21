@@ -4,6 +4,7 @@ import fr.iut.App;
 import fr.iut.controller.HomeController;
 import fr.iut.controller.NotificationsController;
 import javafx.animation.*;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -204,6 +205,14 @@ public class HomeView extends Scene {
         HBox notification_wrapper = new HBox();
 
         notification_wrapper.setOnMouseClicked(mouseEvent -> {
+            if(notificationsController.getNotificationsCount() == 0) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setHeaderText(null);
+                alert.setContentText("Aucune notification à consulter.");
+                Platform.runLater(alert::showAndWait);
+                return;
+            }
+
             controller.getNotificationsController().getView().showAndWait();
             notification_text.setText("Vous avez " + notificationsController.getNotificationsCount() + " notifications en attente.");
         });

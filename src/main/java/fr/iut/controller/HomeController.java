@@ -45,9 +45,7 @@ public class HomeController {
      */
     public ArrayList<Product> getProductsList() {
 
-        ArrayList<Product> products = (ArrayList<Product>) dao.findAll();
-
-        return products;
+        return (ArrayList<Product>) dao.findAll();
     }
 
     /**

@@ -137,59 +137,7 @@ public class ConnectionView extends Scene {
         wrapper.setPrefWidth(LOGIN_WIDTH);
         wrapper.getChildren().addAll(header, fields, radio_buttons);
 
-        // TODO REMOVE =============================================
-        Button toRemoveButton = new Button("A ENLEVER");
-
-        Client client = new Client();
-        client.setId(10);
-        client.setFirstname("Thierry");
-        client.setLastname("Lhermitte");
-        client.setPhone("0666587895");
-        client.setEmail("thierry.lhermitte@campeur.com");
-
-        for (int i = 0; i < 6; i++) {
-            Product product = new Product();
-            product.setName("Magazine n°" + i);
-            product.setSellPrice(i * 2);
-            Purchase purchase = new Purchase();
-            purchase.setProduct(product);
-            purchase.setQuantity(i + 1);
-            purchase.setDatetime(new Timestamp(0));
-
-            client.getPurchases().add(purchase);
-        }
-
-        Spot spot= new Spot();
-        spot.setName("Les Arbouliers");
-        spot.setCapacity(5);
-        spot.setElectricity(true);
-        spot.setPricePerDay(30);
-        spot.setShadow(true);
-        spot.setWater(true);
-
-        Reservation reservation = new Reservation();
-        reservation.setId(10);
-        reservation.setClient(client);
-        reservation.setClientComment("C'était vraiment génial tellement de barres avec Nico mdr! Je reviendrais wallah!");
-        reservation.setPersonCount(5);
-        reservation.setStarttime(new Timestamp(0));
-        reservation.setEndtime(new Timestamp(604800000));
-        reservation.setReduction(10);
-        reservation.setSpot(spot);
-
-        ReservationController controller = new ReservationController();
-        FactureSummaryView facture = new FactureSummaryView(reservation, controller);
-
-        toRemoveButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                facture.show();
-            }
-        });
-
-        // TODO ====================================================
-
-        components.getChildren().addAll(wrapper, confirm, password_shown, toRemoveButton);
+        components.getChildren().addAll(wrapper, confirm, password_shown);
     }
 
     private void connectionButtonAction(String username, String password) {
