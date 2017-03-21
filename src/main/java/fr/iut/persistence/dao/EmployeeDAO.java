@@ -2,6 +2,7 @@ package fr.iut.persistence.dao;
 
 import fr.iut.persistence.entities.Authorization;
 import fr.iut.persistence.entities.Employee;
+import fr.iut.persistence.exception.InvalidLoginPasswordException;
 import org.hibernate.query.Query;
 
 import javax.persistence.NoResultException;
@@ -77,10 +78,10 @@ public class EmployeeDAO extends GenericDAO<Employee, Integer> {
      * @param login
      * @param password
      * @return The connected Employee.
-     * @throws //InvalidLoginPasswordException If the login/password is invalid.
+     * @throws InvalidLoginPasswordException If the login/password is invalid.
      */
     @Transactional(rollbackOn = Exception.class)
-    public Employee connectUser(String login, String password) throws Exception /*InvalidLoginPasswordException*/ {
+    public Employee connectUser(String login, String password) throws InvalidLoginPasswordException {
 
         Employee byLogin = findByLogin(login);
 
@@ -89,8 +90,7 @@ public class EmployeeDAO extends GenericDAO<Employee, Integer> {
             return connectedUser;
         } else {
             connectedUser = null;
-            //throw new InvalidLoginPasswordException();
-            throw new Exception();
+            throw new InvalidLoginPasswordException();
         }
     }
 
