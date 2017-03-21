@@ -2,6 +2,7 @@ package fr.iut.view;
 
 
 import fr.iut.controller.HomeController;
+import fr.iut.controller.ProductController;
 import fr.iut.persistence.entities.Product;
 import javafx.beans.NamedArg;
 import javafx.beans.value.ChangeListener;
@@ -32,7 +33,7 @@ public class ProductManagerView extends SubScene {
     /**
      * instance of the controller
      */
-    private HomeController controller;
+    private ProductController controller;
     /**
      * local list of products
      */
@@ -65,7 +66,7 @@ public class ProductManagerView extends SubScene {
     /**
      * @param controller
      */
-    public ProductManagerView(@NamedArg("controller") HomeController controller) {
+    public ProductManagerView(@NamedArg("controller") ProductController controller) {
         super(new VBox(), HomeView.TAB_CONTENT_W, HomeView.TAB_CONTENT_H);
         this.controller = controller;
 

@@ -116,7 +116,7 @@ public class HomeView extends Scene {
                     case 1: subScene = new IncidentsManagerView(controller.getIncidentsController()); break;
                     case 2: subScene = new EmployeeManagerView(controller.getEmployeesController()); break;
                     case 3: subScene = new SupplierManagerView(controller.getSupplierController()); break;
-                    case 4: subScene = new ProductManagerView(controller); break;
+                    case 4: subScene = new ProductManagerView(controller.getProductController()); break;
                     case 5: subScene = new StatisticsView(controller.getStatiscticsController()); break;
                 }
 
