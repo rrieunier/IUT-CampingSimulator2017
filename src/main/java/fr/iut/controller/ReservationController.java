@@ -1,22 +1,68 @@
 package fr.iut.controller;
 
 
-import fr.iut.persistence.entities.*;
-import javafx.scene.paint.Color;
+import fr.iut.persistence.entities.Reservation;
+import javafx.stage.FileChooser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentInformation;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
+import java.io.File;
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 public class ReservationController {
+    private HomeController controller;
+
+    public ReservationController(HomeController homeController) {
+        this.controller = homeController;
+    }
+
+    /*Client client = new Client();
+        client.setId(10);
+        client.setFirstname("Thierry");
+        client.setLastname("Lhermitte");
+        client.setPhone("0666587895");
+        client.setEmail("thierry.lhermitte@campeur.com");
+
+
+        for (int i = 0; i < 6; i++) {
+
+            Product product = new Product();
+            product.setName("Magazine n°" + i);
+            product.setSellPrice(i * 2);
+            Purchase purchase = new Purchase();
+            purchase.setProduct(product);
+            purchase.setQuantity(i + 1);
+            purchase.setDatetime(new Timestamp(0));
+
+            client.getPurchases().add(purchase);
+        }
+
+    Spot spot= new Spot();
+        spot.setName("Les Arbouliers");
+        spot.setCapacity(5);
+        spot.setElectricity(true);
+        spot.setPricePerDay(30);
+        spot.setShadow(true);
+        spot.setWater(true);
+
+    Reservation reservation = new Reservation();
+        reservation.setId(10);
+        reservation.setClient(client);
+        reservation.setClientComment("C'était vraiment génial tellement de barres avec Nico mdr! Je reviendrais wallah!");
+        reservation.setPersonCount(5);
+        reservation.setStarttime(new Timestamp(0));
+        reservation.setEndtime(new Timestamp(604800000));
+        reservation.setReduction(10);
+        reservation.setSpot(spot);
+        */
+
     public PDDocument makeFacturePDF(Reservation reservation) throws IOException {
 
         PDDocument pdf = new PDDocument();
@@ -64,28 +110,32 @@ public class ReservationController {
         String taxValue = reservation.getSpot().getCoucilTaxPersonDay() + "€ / jour x " + reservation.getPersonCount() + "pers";
         String pricePerDayValue = reservation.getSpot().getPricePerDay() + "€ / jour";
         ArrayList<String> purchasesValue = new ArrayList<>();
+        /*
         for (Purchase p : reservation.getClient().getPurchases()) {
             purchasesValue.add(p.getDatetime().toString().substring(0, 10)
                     + " " + p.getProduct().getName() + " -> "
                     + p.getProduct().getSellPrice() * p.getQuantity() + "€");
         }
+        */
         String reductionValue = reservation.getReduction() + "%";
-        String totalValue = "Somme des valeurs";
 
+        //prices
         float taxPrice = reservation.getPersonCount() * reservation.getSpot().getCoucilTaxPersonDay()
                 * (reservation.getEndtime().getTime() - reservation.getStarttime().getTime())
                 / (1000 * 60 * 60 * 24);
         float pricePerDayPrice = reservation.getSpot().getPricePerDay() * (reservation.getEndtime().getTime() - reservation.getStarttime().getTime())
                 / (1000 * 60 * 60 * 24);
         float purchasesPrice = 0f;
+        /*
         for (Purchase p : reservation.getClient().getPurchases()) {
             purchasesPrice += p.getProduct().getSellPrice() * p.getQuantity();
         }
+        */
         float totalPrice = taxPrice + pricePerDayPrice + purchasesPrice * (1 - (reservation.getReduction() / 100));
 
         String warning = "Ce document est un original, toute tentative de reproduction sera passible de poursuites.";
 
-                //===========================================================
+        //===========================================================
 
         // écriture dans le pdf =====================================
         // l'origine du repaire est en bas à gauche
@@ -96,8 +146,7 @@ public class ReservationController {
 
         // titre
         writer.setFont(PDType1Font.HELVETICA_BOLD, 20);
-        writer.newLineAtOffset(20, 750);
-        writer.showText(title);
+        newLineAndShowText(20, 750, title, writer);
 
 
         writer.endText();
@@ -109,10 +158,8 @@ public class ReservationController {
         //infos facture
         writer.setFont(PDType1Font.HELVETICA, 15);
         writer.setNonStrokingColor(java.awt.Color.BLACK);
-        writer.newLineAtOffset(360, 755);
-        writer.showText(factureNumber);
-        writer.newLineAtOffset(0, -20);
-        writer.showText(todaysDate);
+        newLineAndShowText(360, 755, factureNumber, writer);
+        newLineAndShowText(0, -20, todaysDate, writer);
 
         writer.endText();
         //rectangle infos client
@@ -123,20 +170,14 @@ public class ReservationController {
 
         //infos client
         writer.setNonStrokingColor(java.awt.Color.BLACK);
-        writer.newLineAtOffset(20, 660);
-        writer.showText(refClient);
-        writer.newLineAtOffset(340, -5);
-        writer.showText(clientName);
-        writer.newLineAtOffset(0, -20);
-        writer.showText(clientMail);
-        writer.newLineAtOffset(0, -20);
-        writer.showText(clientPhone);
+        newLineAndShowText(20, 660, refClient, writer);
+        newLineAndShowText(340, -5, clientName, writer);
+        newLineAndShowText(0, -20, clientMail, writer);
+        newLineAndShowText(0, -20, clientPhone, writer);
 
         //dates et emplacement
-        writer.newLineAtOffset(-340, -100);
-        writer.showText(timelaspe);
-        writer.newLineAtOffset(330, 0);
-        writer.showText(location);
+        newLineAndShowText(-340, -100, timelaspe, writer);
+        newLineAndShowText(330, 0, location, writer);
 
         writer.endText();
         //tableaux facturation
@@ -154,25 +195,17 @@ public class ReservationController {
 
         //titre des colonnes
         writer.setFont(PDType1Font.HELVETICA_BOLD_OBLIQUE, 13);
-        writer.newLineAtOffset(15, 475);
-        writer.showText(designation);
-        writer.newLineAtOffset(240, 0);
-        writer.showText(value);
-        writer.newLineAtOffset(230, 0);
-        writer.showText(price);
+        newLineAndShowText(15, 475, designation, writer);
+        newLineAndShowText(240, 0, value, writer);
+        newLineAndShowText(230, 0, price, writer);
 
         //première colonne
         writer.setFont(PDType1Font.HELVETICA, 13);
-        writer.newLineAtOffset(-470, -25);
-        writer.showText(durationLabel);
-        writer.newLineAtOffset(0, -25);
-        writer.showText(personCountLabel);
-        writer.newLineAtOffset(0, -25);
-        writer.showText(taxlabel);
-        writer.newLineAtOffset(0, -25);
-        writer.showText(pricePerDayLabel);
-        writer.newLineAtOffset(0, -25);
-        writer.showText(purchasesLabel);
+        newLineAndShowText(-470, -24, durationLabel, writer);
+        newLineAndShowText(0, -25, personCountLabel, writer);
+        newLineAndShowText(0, -25, taxlabel, writer);
+        newLineAndShowText(0 ,-25, pricePerDayLabel, writer);
+        newLineAndShowText(0, -25, purchasesLabel, writer);
         //reduction & total
         writer.setFont(PDType1Font.HELVETICA_BOLD_OBLIQUE, 13);
         writer.newLineAtOffset(0, -275);
@@ -182,35 +215,25 @@ public class ReservationController {
 
         //seconde colonne
         writer.setFont(PDType1Font.HELVETICA, 13);
-        writer.newLineAtOffset(240, 405);
-        writer.showText(durationValue);
-        writer.newLineAtOffset(0, -25);
-        writer.showText(personCountValue);
-        writer.newLineAtOffset(0, -25);
-        writer.showText(taxValue);
-        writer.newLineAtOffset(0, -25);
-        writer.showText(pricePerDayValue);
+        newLineAndShowText(240, 405, durationValue, writer);
+        newLineAndShowText(0, -25, personCountValue, writer);
+        newLineAndShowText(0, -25, taxValue, writer);
+        newLineAndShowText(0, -25, pricePerDayLabel, writer);
         writer.newLineAtOffset(0, -25);
         for (String s : purchasesValue) {
             writer.showText(s);
             writer.newLineAtOffset(0, -25);
         }
-        writer.newLineAtOffset(0, -125);
-        writer.showText(reductionValue);
+        newLineAndShowText(0, -125, reductionValue, writer);
 
         //troisième colonne
-        writer.newLineAtOffset(225, 325);
-        writer.showText(String.valueOf(taxPrice) + "€");
-        writer.newLineAtOffset(0, -25);
-        writer.showText(String.valueOf(pricePerDayPrice) + "€");
-        writer.newLineAtOffset(0, -25);
-        writer.showText(String.valueOf(purchasesPrice) + "€");
-        writer.newLineAtOffset(0, -305);
-        writer.showText(String.valueOf(totalPrice) + "€");
+        newLineAndShowText(225, 325, String.valueOf(taxPrice) + "€", writer);
+        newLineAndShowText(0, -25, String.valueOf(pricePerDayPrice) + "€", writer );
+        newLineAndShowText(0, -25, String.valueOf(purchasesPrice) + "€", writer);
+        newLineAndShowText(0, -305, String.valueOf(totalPrice) + "€", writer);
 
         writer.setFont(PDType1Font.HELVETICA_OBLIQUE, 10);
-        writer.newLineAtOffset(-470, -35);
-        writer.showText(warning);
+        newLineAndShowText(-470, -35, warning, writer);
 
         //fin écriture
         writer.endText();
@@ -221,11 +244,22 @@ public class ReservationController {
         return pdf;
     }
 
-    public void printFacture() {
+    public void printFacture(PDDocument facture) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Exporter la facture");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Portable Document Format", "*.pdf"));
+        File selectedFile = fileChooser.showOpenDialog(controller.getView().getWindow());
+    }
+
+    public void exportFacturePDF(PDDocument facture) {
+
 
     }
 
-    public void exportFacturePDF() {
+    // UTILS=================================
 
+    private void newLineAndShowText(int x, int y, String text, PDPageContentStream writer) throws IOException {
+        writer.newLineAtOffset(x, y);
+        writer.showText(text);
     }
 }

@@ -31,6 +31,7 @@ public class HomeController {
     private MapController mapController = new MapController(this);
     private EmployeesController employeesController = new EmployeesController(this);
     private SupplierController supplierController = new SupplierController(this);
+    private ReservationController reservationController = new ReservationController(this);
 
     private GenericDAO<Product, Integer> dao = new GenericDAO<>(Product.class);
 

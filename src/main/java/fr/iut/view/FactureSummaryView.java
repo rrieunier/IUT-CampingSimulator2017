@@ -15,6 +15,7 @@ import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import org.apache.pdfbox.pdmodel.PDDocument;
 
@@ -128,8 +129,10 @@ public class FactureSummaryView extends Dialog<Void> {
         int personCount= this.reservation.getPersonCount();
         float pricePerDay = this.reservation.getSpot().getPricePerDay();
         float totalPurchases = 0;
+        /*
         for (Purchase p : this.reservation.getClient().getPurchases())
             totalPurchases += (p.getProduct().getSellPrice() * p.getQuantity());
+            */
         float council_tax = this.reservation.getPersonCount() * this.reservation.getSpot().getCoucilTaxPersonDay() * ((endtime.getTime() - startime.getTime()) / (1000 *60 *60* 24));
         float reduction = (100 - this.reservation.getReduction()) / 100;
 
