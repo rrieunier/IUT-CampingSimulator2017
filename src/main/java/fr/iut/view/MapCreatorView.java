@@ -52,12 +52,14 @@ public class MapCreatorView extends SubScene {
     private double mouseY ;
 
     public MapCreatorView(MapController controller) {
-        super(new StackPane(), HomeView.TAB_CONTENT_W, HomeView.TAB_CONTENT_H);
+        super(new StackPane(), App.SCREEN_W * 3/4, App.SCREEN_H * 3/4);
         this.controller = controller;
 
         stackPaneRoot = (StackPane)getRoot();
+        stackPaneRoot.setStyle("-fx-background-color:transparent;");
 
         ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setStyle("-fx-background-color:transparent;");
         VBox verticalWrap = new VBox();
         scrollPane.setContent(verticalWrap);
         scrollPane.setFitToWidth(true);
@@ -91,25 +93,15 @@ public class MapCreatorView extends SubScene {
 
         handleDropItem();
 
-        FlowPane items = new FlowPane();
+        HBox items = new HBox();
         buildDraggableItems(items);
 
-        HBox buttonsBox = new HBox();
         Button buttonReset = new Button("Réinitialiser la carte");
         buttonReset.setDisable(true);
-        Button buttonFinish = new Button("Terminer");
-        buttonFinish.setDisable(true);
         buttonReset.setMinSize(App.SCREEN_W / 10, App.SCREEN_H / 18);
-        buttonFinish.setMinSize(App.SCREEN_W / 10, App.SCREEN_H / 18);
         HBox.setMargin(buttonReset, new Insets(20));
-        HBox.setMargin(buttonFinish, new Insets(20));
-        buttonsBox.getChildren().addAll(buttonReset, buttonFinish);
-        buttonsBox.setAlignment(Pos.TOP_CENTER);
-        buttonsBox.setSpacing(100);
         buttonReset.getStylesheets().add(new File("res/style.css").toURI().toString());
         buttonReset.getStyleClass().add("record-sales");
-        buttonFinish.getStylesheets().add(new File("res/style.css").toURI().toString());
-        buttonFinish.getStyleClass().add("record-sales");
 
         buttonReset.setOnMouseClicked(mouseEvent -> {
             mapFile = null;
@@ -123,15 +115,10 @@ public class MapCreatorView extends SubScene {
             importMapText.setFont(Font.font("DejaVu Sans", 20));
             importMapText.setFill(Color.WHITE);
             mapPane.getChildren().add(importMapText);
-            buttonReset.setDisable(true);
-            buttonFinish.setDisable(true);
+            buttonReset.setVisible(false);
             mapViewPort.setMaxWidth(MAP_VIEWPORT_WIDTH);
             mapViewPort.setMaxHeight(MAP_VIEWPORT_HEIGHT);
             locations.clear();
-        });
-
-        buttonFinish.setOnMouseClicked(mouseEvent -> {
-            controller.store(mapFile, locations);
         });
 
         mapPane.setOnMouseClicked(mouseEvent -> {
@@ -155,11 +142,9 @@ public class MapCreatorView extends SubScene {
 
                     Image image = new Image(mapFile.toURI().toString());
 
-                    buttonFinish.setDisable(false);
-                    buttonReset.setDisable(false);
+                    buttonReset.setVisible(true);
 
                     mapPane.getChildren().remove(importMapText);
-
 
                     if(image.getWidth() < mapViewPort.getWidth())
                         mapViewPort.setMaxWidth(image.getWidth());
@@ -174,27 +159,23 @@ public class MapCreatorView extends SubScene {
 
                     mapPane.setAlignment(Pos.TOP_LEFT);
                     mapPane.getChildren().add(new ImageView(image));
-
-
                 }
             }
         });
 
-        VBox.setMargin(items, new Insets(10, App.SCREEN_W/5, 20, App.SCREEN_W/5));
-        VBox.setMargin(mapViewPort, new Insets(20, 0, 20, 0));
-        verticalWrap.getChildren().addAll(mapViewPort, items, buttonsBox);
+        VBox.setMargin(items, new Insets(30, 0, 20, 0));
+        verticalWrap.getChildren().addAll(mapViewPort, items);
 
         stackPaneRoot.getChildren().addAll(scrollPane);
 
         verticalWrap.setAlignment(Pos.TOP_CENTER);
     }
 
-    private void buildDraggableItems(FlowPane items) {
+    private void buildDraggableItems(HBox items) {
         items.setPadding(new Insets(30));
         items.setStyle("-fx-background-color: rgb(50, 50, 50); -fx-border-color: rgb(55, 77, 114); -fx-border-width: 5px;");
         items.setAlignment(Pos.CENTER);
-        items.setHgap(80);
-        items.setVgap(80);
+        items.setSpacing(80);
 
         File[] files64 = new File("res/items/x64").listFiles();
 

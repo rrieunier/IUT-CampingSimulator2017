@@ -5,6 +5,7 @@ import fr.iut.persistence.dao.GenericDAO;
 import fr.iut.persistence.dao.MapDao;
 import fr.iut.persistence.entities.Location;
 import fr.iut.persistence.entities.Map;
+import fr.iut.persistence.entities.Spot;
 import fr.iut.view.MapCreatorView;
 import javafx.scene.Scene;
 import javafx.scene.SubScene;
@@ -35,7 +36,7 @@ public class MapController {
         return mapCreatorView;
     }
 
-    public void store(File mapFile, ArrayList<Location> locations) {
+    public void storeMap(File mapFile) {
 
         Map map = new Map();
 
@@ -50,10 +51,10 @@ public class MapController {
         daoMap.setMap(map);
         System.out.println("Done !");
         currentMap = map;
+    }
 
-        locations.forEach(daoLocation::save);
-
-        //TODO : save map and locations in the bdd
+    public void storeLocation(Location location) {
+        daoLocation.save(location);
     }
 
     public boolean isMapAlreadyCreated() {

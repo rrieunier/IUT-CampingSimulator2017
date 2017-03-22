@@ -1,13 +1,10 @@
 package fr.iut.controller;
 
-
+import fr.iut.persistence.dao.ReservationsDAO;
 import fr.iut.persistence.entities.Reservation;
+import fr.iut.view.ReservationsView;
+import javafx.scene.control.ScrollPane;
 import javafx.stage.FileChooser;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDDocumentInformation;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,53 +12,35 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-public class ReservationController {
-    private HomeController controller;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDDocumentInformation;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
-    public ReservationController(HomeController homeController) {
-        this.controller = homeController;
+/**
+ * Created by shellcode on 3/21/17.
+ */
+public class ReservationsController {
+
+    private ReservationsDAO dao = new ReservationsDAO();
+    private ReservationsView reservationsView = new ReservationsView(this);
+    private HomeController homeController;
+
+
+    public ReservationsController(HomeController homeController) {
+        this.homeController = homeController;
     }
 
-    /*Client client = new Client();
-        client.setId(10);
-        client.setFirstname("Thierry");
-        client.setLastname("Lhermitte");
-        client.setPhone("0666587895");
-        client.setEmail("thierry.lhermitte@campeur.com");
+    public ScrollPane getView() {
+        return reservationsView;
+    }
 
-
-        for (int i = 0; i < 6; i++) {
-
-            Product product = new Product();
-            product.setName("Magazine n°" + i);
-            product.setSellPrice(i * 2);
-            Purchase purchase = new Purchase();
-            purchase.setProduct(product);
-            purchase.setQuantity(i + 1);
-            purchase.setDatetime(new Timestamp(0));
-
-            client.getPurchases().add(purchase);
-        }
-
-    Spot spot= new Spot();
-        spot.setName("Les Arbouliers");
-        spot.setCapacity(5);
-        spot.setElectricity(true);
-        spot.setPricePerDay(30);
-        spot.setShadow(true);
-        spot.setWater(true);
-
-    Reservation reservation = new Reservation();
-        reservation.setId(10);
-        reservation.setClient(client);
-        reservation.setClientComment("C'était vraiment génial tellement de barres avec Nico mdr! Je reviendrais wallah!");
-        reservation.setPersonCount(5);
-        reservation.setStarttime(new Timestamp(0));
-        reservation.setEndtime(new Timestamp(604800000));
-        reservation.setReduction(10);
-        reservation.setSpot(spot);
-        */
+    public List<Reservation> getReservations() {
+        return dao.findAll();
+    }
 
     public PDDocument makeFacturePDF(Reservation reservation) throws IOException {
 
@@ -248,7 +227,7 @@ public class ReservationController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Exporter la facture");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Portable Document Format", "*.pdf"));
-        File selectedFile = fileChooser.showOpenDialog(controller.getView().getWindow());
+        File selectedFile = fileChooser.showOpenDialog(homeController.getView().getWindow());
     }
 
     public void exportFacturePDF(PDDocument facture) {

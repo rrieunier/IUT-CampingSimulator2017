@@ -2,31 +2,20 @@ package fr.iut.view;
 
 import fr.iut.App;
 import fr.iut.controller.ConnectionController;
-import fr.iut.controller.ReservationController;
-import fr.iut.persistence.entities.*;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.util.Pair;
-
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Map;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Optional;
 
 
 public class ConnectionView extends Scene {

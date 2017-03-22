@@ -38,7 +38,7 @@ public class DummyData {
         }
         ArrayList<Client> clients = new ArrayList<>();
         clients.addAll(daoClient.findAll());
-        GenericDAO<Reservation, Integer> dao = new GenericDAO<>(Reservation.class);
+        ReservationsDAO dao = new ReservationsDAO();
         for (int i = 0; i < 50; i++) {
             Reservation reservation = new Reservation();
             reservation.setSpot(spots.get(i));

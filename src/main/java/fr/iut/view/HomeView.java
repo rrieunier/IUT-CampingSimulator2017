@@ -137,9 +137,18 @@ public class HomeView extends Scene {
 
 
     private void buildReservationsTab(Tab tab) {
-        tab.setText("Carte");
+        tab.setText("Carte & Réservations");
 
-        tab.setContent(controller.getMapController().getView());
+        BorderPane container = new BorderPane();
+        MapCreatorView mapCreatorView = (MapCreatorView)controller.getMapController().getView();
+
+        ReservationsView reservationsView = (ReservationsView) controller.getReservationsController().getView();
+        reservationsView.setMinWidth(TAB_CONTENT_W / 4);
+        BorderPane.setMargin(reservationsView, new Insets(20));
+
+        container.setLeft(reservationsView);
+        container.setCenter(mapCreatorView);
+        tab.setContent(container);
     }
 
     private void buildFooter() {
