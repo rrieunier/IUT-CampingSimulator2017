@@ -21,7 +21,6 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 import java.io.File;
-import java.util.Optional;
 
 /**
  * Created by shellcode on 2/6/17.
@@ -56,7 +55,7 @@ public class HomeView extends Scene {
 
         Tab tabManagment = new Tab(), tabMap = new Tab();
         buildManagmentTab(tabManagment);
-        buildReservationsTab(tabMap);
+        buildMapAndReservationsTab(tabMap);
 
         tabPane.getTabs().addAll(tabManagment, tabMap);
         components.setCenter(tabPane);
@@ -136,17 +135,25 @@ public class HomeView extends Scene {
     }
 
 
-    private void buildReservationsTab(Tab tab) {
+    private void buildMapAndReservationsTab(Tab tab) {
         tab.setText("Carte & Réservations");
 
         BorderPane container = new BorderPane();
         MapCreatorView mapCreatorView = (MapCreatorView)controller.getMapController().getView();
 
+        VBox reservationsWrapper = new VBox();
+
+        Text reservationsText = new Text("Réservations :");
+        reservationsText.setFont(new Font(20));
+        reservationsText.setFill(Color.WHITE);
+        reservationsWrapper.getChildren().add(reservationsText);
+
         ReservationsView reservationsView = (ReservationsView) controller.getReservationsController().getView();
         reservationsView.setMinWidth(TAB_CONTENT_W / 4);
-        BorderPane.setMargin(reservationsView, new Insets(20));
+        BorderPane.setMargin(reservationsWrapper, new Insets(20));
+        reservationsWrapper.getChildren().add(reservationsView);
 
-        container.setLeft(reservationsView);
+        container.setLeft(reservationsWrapper);
         container.setCenter(mapCreatorView);
         tab.setContent(container);
     }
