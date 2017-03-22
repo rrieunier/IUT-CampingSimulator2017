@@ -66,11 +66,6 @@ public class App extends Application {
      */
     public void switchState(State state) {
 
-        if(connectionController == null && state != State.CONNECTION) {
-            System.out.println("You are not connected.");
-            System.exit(1);
-        }
-
         stage.setWidth(SCREEN_W);
         stage.setHeight(SCREEN_H);
 
@@ -99,6 +94,9 @@ public class App extends Application {
         stage.centerOnScreen();
     }
 
+    /**
+     * @return application first launch or not, if there are no employee accounts in the database, it means that this is the first launch and the function returns true
+     */
     public boolean isFirstLaunch() {
         return subscribeController.isFirstSuscribe();
     }

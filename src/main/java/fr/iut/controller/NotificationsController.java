@@ -14,16 +14,31 @@ import java.util.List;
  */
 public class NotificationsController {
 
+
     public interface NotificationsUpdatedListener {
         void onUnsolvedNotificationsCountChanged(int count);
     }
 
+    /**
+     * Listener which enables the view to update when the notifications count changes
+     */
     NotificationsUpdatedListener listener;
 
+    /**
+     * Parent controller
+     */
     private HomeController homeController;
+
     private NotificationDAO dao = new NotificationDAO();
 
+    /**
+     * boolean to stop threads nicely :)
+     */
     private boolean querying = true;
+
+    /**
+     * Notifications in memory, clone of the actual DB state (update every 3 seconds)
+     */
     private List<Notification> notifications = new ArrayList<>();
 
     public NotificationsController(HomeController homeController) {
@@ -32,6 +47,9 @@ public class NotificationsController {
         updateNotificationsAsynchronously();
     }
 
+    /**
+     * @return the corresponding view which is a Dialog
+     */
     public Dialog<Integer> getView() {
         return new NotificationsDialog(this);
     }
@@ -44,6 +62,9 @@ public class NotificationsController {
         this.listener = listener;
     }
 
+    /**
+     * The notification is set solved and removed from the DB
+     */
     public void solve(Notification notification) {
         notifications.remove(notification);
         dao.remove(notification);
@@ -53,6 +74,9 @@ public class NotificationsController {
         return notifications.size();
     }
 
+    /**
+     * Run a thread which perform requests to the database every 3 seconds to keep notifications updated
+     */
     private void updateNotificationsAsynchronously() {
         new Thread(() -> {
 
@@ -68,8 +92,8 @@ public class NotificationsController {
                     listener.onUnsolvedNotificationsCountChanged(notifications.size());
 
                 try {
-                    //La boucle permet de pas attendre 10 secondes la fin du programme si jamais les requetes doivent s'arrêter
-                    for(int i = 0; i < 10 && querying; i++) //saveOrUpdate toutes les 10 secondes
+                    //La boucle permet de pas attendre 3 secondes la fin du programme si jamais les requetes doivent s'arrêter
+                    for(int i = 0; i < 3 && querying; i++) //saveOrUpdate toutes les 3 secondes
                         Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
