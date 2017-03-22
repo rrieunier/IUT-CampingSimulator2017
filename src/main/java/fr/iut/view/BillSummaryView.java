@@ -1,8 +1,7 @@
 package fr.iut.view;
 
 import fr.iut.App;
-import fr.iut.controller.ReservationController;
-import fr.iut.persistence.entities.Purchase;
+import fr.iut.controller.ReservationsController;
 import fr.iut.persistence.entities.Reservation;
 import javafx.beans.NamedArg;
 import javafx.event.EventHandler;
@@ -15,7 +14,6 @@ import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import org.apache.pdfbox.pdmodel.PDDocument;
 
@@ -24,7 +22,7 @@ import java.io.IOException;
 import java.sql.Timestamp;
 
 
-public class FactureSummaryView extends Dialog<Void> {
+public class BillSummaryView extends Dialog<Void> {
 
     /**
      * width of the facture preview window
@@ -57,7 +55,7 @@ public class FactureSummaryView extends Dialog<Void> {
     /**
      * instance of the controller
      */
-    private ReservationController controller;
+    private ReservationsController controller;
     /**
      * pdf facture of the reservation
      */
@@ -67,8 +65,8 @@ public class FactureSummaryView extends Dialog<Void> {
      * @param reservation
      * create view of the facture related to reservation
      */
-    public FactureSummaryView(@NamedArg("reservation") Reservation reservation,
-                              @NamedArg("controller") ReservationController controller) {
+    public BillSummaryView(@NamedArg("reservation") Reservation reservation,
+                           @NamedArg("controller") ReservationsController controller) {
         setTitle("Aperçu de la facture");
 
         this.reservation = reservation;

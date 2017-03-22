@@ -31,7 +31,10 @@ public class HomeController {
     private MapController mapController = new MapController(this);
     private EmployeesController employeesController = new EmployeesController(this);
     private SupplierController supplierController = new SupplierController(this);
-    private ReservationController reservationController = new ReservationController(this);
+    private ReservationsController reservationsController = new ReservationsController(this);
+
+    private GenericDAO<Product, Integer> dao = new GenericDAO<>(Product.class);
+
     private ProductController productController = new ProductController(this);
 
     public HomeController(App app, String connectedUser) {
@@ -68,7 +71,9 @@ public class HomeController {
 
     public SupplierController getSupplierController() { return  supplierController; }
 
-    public ReservationController getReservationController() { return reservationController; }
+    public ReservationsController getReservationsController() {
+        return reservationsController;
+    }
 
     public ProductController getProductController() { return productController; }
 
