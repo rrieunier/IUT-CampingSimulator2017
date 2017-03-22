@@ -1,8 +1,5 @@
 package fr.iut.persistence.entities;
 
-import fr.iut.persistence.dao.EmployeeDAO;
-import fr.iut.persistence.dao.GenericDAO;
-
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.HashSet;
@@ -110,20 +107,4 @@ public class Problem implements EntityModel<Integer> {
         return solutionDatetime != null;
     }
 
-    @PostUpdate
-    @PostPersist
-    void postPersistUpdate() {
-
-        EmployeeDAO employeeDAO = new EmployeeDAO();
-        Set<Employee> allWithAuthorization =
-                employeeDAO.findAllWithAuthorization(Authorization.PROBLEM_READ);
-
-        Notification notification = new Notification();
-        notification.setTitle("Nouveau problem ! ID : " + getId());
-        notification.setEmployees(allWithAuthorization);
-        notification.setContent("Description : \n" + getDescription());
-
-        GenericDAO<Notification, Integer> notificationDAO = new GenericDAO<>(Notification.class);
-        notificationDAO.save(notification);
-    }
 }

@@ -71,12 +71,10 @@ public class Employee implements EntityModel<Integer> {
     /**
      * Notifications sent to this employee if it's a user.
      */
-    @ManyToMany(
-            targetEntity = Notification.class
-    )
-    @JoinTable(
-            joinColumns = @JoinColumn(name = "employee_id"),
-            inverseJoinColumns = @JoinColumn(name = "notification_id")
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name="Employee_Notification",
+            joinColumns=@JoinColumn(name="employee_id"),
+            inverseJoinColumns=@JoinColumn(name="notification_id")
     )
     private Set<Notification> notifications;
 

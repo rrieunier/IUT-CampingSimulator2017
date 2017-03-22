@@ -33,9 +33,10 @@ public class Notification implements EntityModel<Integer> {
     /**
      * Employees concerned about this notification.
      */
-    @ManyToMany(
-            mappedBy = "notifications",
-            targetEntity = Employee.class
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name="Employee_Notification",
+            joinColumns=@JoinColumn(name="notification_id"),
+            inverseJoinColumns=@JoinColumn(name="employee_id")
     )
     private Set<Employee> employees = new HashSet<>();
 
