@@ -84,6 +84,14 @@ public class Product implements EntityModel<Integer> {
         return purchases;
     }
 
+    public Integer getSumPurchases() {
+        Integer ret = 0;
+        for (Purchase p : purchases)
+            ret += p.getQuantity();
+
+        return ret;
+    }
+
     public Set<Restocking> getRestockings() {
         return restockings;
     }

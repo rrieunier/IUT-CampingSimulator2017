@@ -37,339 +37,179 @@ public class StatisticsController {
     }
 
 
-    private ChartView reservationChart(@NamedArg("selectedChart") int selectedChart,
-                                       @NamedArg("type") ChartType type) {
-        GenericDAO<Spot, Integer> dao;
-        ChartView chartView = null;
+    private ChartView reservationChart(@NamedArg("selectedChart") int selectedChart, @NamedArg("type") ChartType type) {
+        GenericDAO<Spot, Integer> dao = new GenericDAO<>(Spot.class);
+        ArrayList<Spot> spots = (ArrayList<Spot>) dao.findAll();
+        ArrayList<String> objects = new ArrayList<>();
+        ArrayList<Float> comparative = new ArrayList<>();
+        String title = null;
 
         switch (selectedChart) {
             case 0: // emplacements les plus réservés
-                dao = new GenericDAO<>(Spot.class);
-                ArrayList<Spot> spots = (ArrayList<Spot>) dao.findAll();
 
-                spots.sort(new Comparator<Spot>() {
-                    @Override
-                    public int compare(Spot o1, Spot o2) {
-                        return o2.getReservations().size() - o1.getReservations().size();
-                    }
-                });
-
-                ArrayList<String> objects = new ArrayList<>();
-                ArrayList<Float> comparative = new ArrayList<>();
+                spots.sort((o1, o2) -> o2.getReservations().size() - o1.getReservations().size());
 
                 for (Spot s : spots) {
                     objects.add(s.getName());
                     comparative.add((float) s.getReservations().size());
                 }
-                comparative.sort(new Comparator<Float>() {
-                    @Override
-                    public int compare(Float o1, Float o2) {
-                        return (int) (o2 - o1);
-                    }
-                });
 
-                chartView = new ChartView(ChartType.PIE, objects, comparative,
-                        "Emplacements les plus réservés", "Nom", "Nombre de rés.");
+                comparative.sort((o1, o2) -> (int) (o2 - o1));
+
+                title = "Emplacements les plus réservés";
+
                 break;
 
             case 1: // emplacements les moins réservés
 
-                dao = new GenericDAO<>(Spot.class);
-                spots = (ArrayList<Spot>) dao.findAll();
-
-                spots.sort(new Comparator<Spot>() {
-                    @Override
-                    public int compare(Spot o1, Spot o2) {
-                        return o2.getReservations().size() - o1.getReservations().size();
-                    }
-                });
-
-                objects = new ArrayList<>();
-                comparative = new ArrayList<>();
+                spots.sort((o1, o2) -> o2.getReservations().size() - o1.getReservations().size());
 
                 for (Spot s : spots) {
                     objects.add(s.getName());
                     comparative.add((float) s.getReservations().size());
                 }
-                comparative.sort(new Comparator<Float>() {
-                    @Override
-                    public int compare(Float o1, Float o2) {
-                        return (int) (o1 - o2);
-                    }
-                });
 
-                chartView = new ChartView(type, objects, comparative,
-                        "Emplacements les moins réservés\n\t\t(1/nb de res.)", "Nom", "Nombre de rés.");
+                comparative.sort((o1, o2) -> (int) (o1 - o2));
+
+                title = "Emplacements les moins réservés\n\t\t(1/nb de res.)";
                 break;
 
             default:
                 break;
         }
 
-        return chartView;
+        return new ChartView(ChartType.PIE, objects, comparative, title, "Nom", "Nombre de rés.");
     }
 
     private ChartView clientChart(@NamedArg("selectedChart") int selectedChart,
                                   @NamedArg("type") ChartType type) {
-        GenericDAO<Client, Integer> dao;
+        GenericDAO<Client, Integer> dao = new GenericDAO<>(Client.class);
+        ArrayList<Client> clients = (ArrayList<Client>) dao.findAll();
+        ArrayList<String> objects = new ArrayList<>();
+        ArrayList<Float> comparative = new ArrayList<>();
         ChartView chartView = null;
 
         switch (selectedChart) {
             case 0: // clients les plus fidèles
-                dao = new GenericDAO<>(Client.class);
-                ArrayList<Client> clients = (ArrayList<Client>) dao.findAll();
 
-                clients.sort(new Comparator<Client>() {
-                    @Override
-                    public int compare(Client o1, Client o2) {
-                        return o2.getReservations().size() - o1.getReservations().size();
-                    }
-                });
-
-                ArrayList<String> objects = new ArrayList<>();
-                ArrayList<Float> comparative = new ArrayList<>();
+                clients.sort((o1, o2) -> o2.getReservations().size() - o1.getReservations().size());
 
                 for (Client c : clients) {
                     objects.add(c.getFirstname() + " " + c.getLastname());
                     comparative.add((float) c.getReservations().size());
                 }
-                comparative.sort(new Comparator<Float>() {
-                    @Override
-                    public int compare(Float o1, Float o2) {
-                        return (int) (o2 - o1);
-                    }
-                });
 
-                chartView = new ChartView(ChartType.PIE, objects, comparative,
-                        "Clients les plus fidèles", "Nom", "Nombre de rés.");
+                comparative.sort((o1, o2) -> (int) (o2 - o1));
+
+                chartView = new ChartView(ChartType.PIE, objects, comparative, "Clients les plus fidèles", "Nom", "Nombre de rés.");
                 chartView.setLegendSide(Side.BOTTOM);
                 break;
 
             case 1:// clients les plus plaintifs
-                dao = new GenericDAO<>(Client.class);
-                
-                clients = (ArrayList<Client>) dao.findAll();
 
-                clients.sort(new Comparator<Client>() {
-                    @Override
-                    public int compare(Client o1, Client o2) {
-                        return o2.getProblems().size() - o1.getProblems().size();
-                    }
-                });
-
-                objects = new ArrayList<>();
-                comparative = new ArrayList<>();
+                clients.sort((o1, o2) -> o2.getProblems().size() - o1.getProblems().size());
 
                 for (Client c : clients) {
                     objects.add(c.getFirstname() + " " + c.getLastname());
                     comparative.add((float) c.getProblems().size());
                 }
-                comparative.sort(new Comparator<Float>() {
-                    @Override
-                    public int compare(Float o1, Float o2) {
-                        return (int) (o2 - o1);
-                    }
-                });
 
-                chartView = new ChartView(ChartType.PIE, objects, comparative,
-                        "Clients ayant reportés \nle plus de problèmes", "Nom", "Nombre de prob.");
-                chartView.setLegendSide(Side.BOTTOM);
-                
+                comparative.sort((o1, o2) -> (int) (o2 - o1));
 
+                chartView = new ChartView(ChartType.PIE, objects, comparative,"Clients ayant reportés \nle plus de problèmes", "Nom", "Nombre de prob.");
                 break;
 
             case 2: // clients les moins fidèles
-                dao = new GenericDAO<>(Client.class);
-                
-                clients = (ArrayList<Client>) dao.findAll();
 
-                clients.sort(new Comparator<Client>() {
-                    @Override
-                    public int compare(Client o1, Client o2) {
-                        return o1.getProblems().size() - o2.getProblems().size();
-                    }
-                });
-
-                objects = new ArrayList<>();
-                comparative = new ArrayList<>();
+                clients.sort(Comparator.comparingInt(o -> o.getProblems().size()));
 
                 for (Client c : clients) {
                     objects.add(c.getFirstname() + " " + c.getLastname());
                     comparative.add((float) c.getProblems().size());
                 }
-                comparative.sort(new Comparator<Float>() {
-                    @Override
-                    public int compare(Float o1, Float o2) {
-                        return (int) (o1 - o2);
-                    }
-                });
 
-                chartView = new ChartView(ChartType.PIE, objects, comparative,
-                        "Clients ayant reportés \nle moins de problèmes", "Nom", "Nombre de prob.");
-                chartView.setLegendSide(Side.BOTTOM);
-                
+                comparative.sort((o1, o2) -> (int) (o1 - o2));
+
+                chartView = new ChartView(ChartType.PIE, objects, comparative, "Clients ayant reportés \nle moins de problèmes", "Nom", "Nombre de prob.");
                 break;
 
             case 3:// clients achetant le plus
-                dao = new GenericDAO<>(Client.class);
-                
-                clients = (ArrayList<Client>) dao.findAll();
 
-                clients.sort(new Comparator<Client>() {
-                    @Override
-                    public int compare(Client o1, Client o2) {
-                        return o2.getPurchases().size() - o1.getPurchases().size();
-                    }
-                });
-
-                objects = new ArrayList<>();
-                comparative = new ArrayList<>();
+                clients.sort((o1, o2) -> o2.getPurchases().size() - o1.getPurchases().size());
 
                 for (Client c : clients) {
                     objects.add(c.getFirstname() + " " + c.getLastname());
                     comparative.add((float) c.getPurchases().size());
                 }
-                comparative.sort(new Comparator<Float>() {
-                    @Override
-                    public int compare(Float o1, Float o2) {
-                        return (int) (o2 - o1);
-                    }
-                });
 
-                chartView = new ChartView(type, objects, comparative,
-                        "Clients ayant acheté le plus", "Nom", "Nombre d'achats");
-                chartView.setLegendSide(Side.BOTTOM);
-                
+                comparative.sort((o1, o2) -> (int) (o2 - o1));
+
+                chartView = new ChartView(type, objects, comparative,"Clients ayant acheté le plus", "Nom", "Nombre d'achats");
                 break;
         }
 
+        assert chartView != null;
+        chartView.setLegendSide(Side.BOTTOM);
         return chartView;
     }
 
-    private ChartView purchaseChart(@NamedArg("selectedChart") int selectedChart,
-                                    @NamedArg("type") ChartType type) {
-        GenericDAO<Product, Integer> dao;
-        ChartView chartView = null;
+    private ChartView purchaseChart(@NamedArg("selectedChart") int selectedChart, @NamedArg("type") ChartType type) {
+
+        GenericDAO<Product, Integer> dao = new GenericDAO<>(Product.class);
+        ArrayList<Product> products = (ArrayList<Product>) dao.findAll();
+        ArrayList<String> objects = new ArrayList<>();
+        ArrayList<Float> comparative = new ArrayList<>();
+        String title = null;
 
         switch (selectedChart) {
             case 0: // produit le plus vendu
-                dao = new GenericDAO<>(Product.class);
-                
-                ArrayList<Product> products = (ArrayList<Product>) dao.findAll();
-
-                ArrayList<String> objects = new ArrayList<>();
-                ArrayList<Float> comparative = new ArrayList<>();
-
-                products.sort(new Comparator<Product>() {
-                    @Override
-                    public int compare(Product o1, Product o2) {
-                        int sum1 = 0;
-                        int sum2 = 0;
-                        for (Purchase p : o1.getPurchases())
-                            sum1 += p.getQuantity();
-                        for (Purchase p : o2.getPurchases())
-                            sum2 += p.getQuantity();
-                        return sum2 - sum1;
-                    }
-                });
-
-                for (Product c : products) {
-                    int sum = 0;
-                    objects.add(c.getName());
-                    for (Purchase p : c.getPurchases())
-                        sum += p.getQuantity();
-                    comparative.add((float) sum);
-                }
-                comparative.sort(new Comparator<Float>() {
-                    @Override
-                    public int compare(Float o1, Float o2) {
-                        return (int) (o2 - o1);
-                    }
-                });
-
-                chartView = new ChartView(ChartType.PIE, objects, comparative,
-                        "Produits les plus achetés", "Nom", "Nombre de ventes");
-                chartView.setLegendSide(Side.BOTTOM);
-                
+                products.sort((p1, p2) -> p2.getSumPurchases() - p1.getSumPurchases());
+                comparative.sort((o1, o2) -> (int) (o2 - o1));
+                title = "Produits les plus achetés";
                 break;
 
             case 1: // produits les moins vendus
-                dao = new GenericDAO<>(Product.class);
-                
-                products = (ArrayList<Product>) dao.findAll();
-
-                objects = new ArrayList<>();
-                comparative = new ArrayList<>();
-
-                products.sort(new Comparator<Product>() {
-                    @Override
-                    public int compare(Product o1, Product o2) {
-                        int sum1 = 0;
-                        int sum2 = 0;
-                        for (Purchase p : o1.getPurchases())
-                            sum1 += p.getQuantity();
-                        for (Purchase p : o2.getPurchases())
-                            sum2 += p.getQuantity();
-                        return sum1 - sum2;
-                    }
-                });
-
-                for (Product c : products) {
-                    int sum = 0;
-                    objects.add(c.getName());
-                    for (Purchase p : c.getPurchases())
-                        sum += p.getQuantity();
-                    comparative.add((float) sum);
-                }
-                comparative.sort(new Comparator<Float>() {
-                    @Override
-                    public int compare(Float o1, Float o2) {
-                        return (int) (o1 - o2);
-                    }
-                });
-
-                chartView = new ChartView(type, objects, comparative,
-                        "Produits les moins achetés", "Nom", "Nombre de ventes");
-                chartView.setLegendSide(Side.BOTTOM);
-                
+                products.sort(Comparator.comparingInt(Product::getSumPurchases));
+                comparative.sort((o1, o2) -> (int) (o1 - o2));
+                title = "Produits les moins achetés";
                 break;
 
             default:
                 break;
         }
 
+        for (Product c : products) {
+            int sum = c.getSumPurchases();
+            objects.add(c.getName());
+            comparative.add((float) sum);
+        }
+
+        ChartView chartView = new ChartView(ChartType.PIE, objects, comparative, title, "Nom", "Nombre de ventes");
+        chartView.setLegendSide(Side.BOTTOM);
         return chartView;
     }
 
     private ChartView employeeChart(@NamedArg("selectedChart") int selectedChart,
                                     @NamedArg("type") ChartType type) {
-        GenericDAO<Employee, Integer> dao;
+        GenericDAO<Employee, Integer> dao = new GenericDAO<>(Employee.class);
+        ArrayList<Employee> employees = (ArrayList<Employee>) dao.findAll();
+        ArrayList<String> objects = new ArrayList<>();
+        ArrayList<Float> comparative = new ArrayList<>();
         ChartView chartView = null;
 
         switch (selectedChart) {
             case 0:
-                dao = new GenericDAO<>(Employee.class);
-                
-                ArrayList<Employee> employees = (ArrayList<Employee>) dao.findAll();
-
-                employees.sort(new Comparator<Employee>() {
-
-                    @Override
-                    public int compare(Employee o1, Employee o2) {
-                        int sum1 = 0;
-                        int sum2 = 1;
-                        for (Task t : o1.getTasks()) {
-                            sum1 += t.getEndtime().getTime() - t.getStarttime().getTime();
-                        }
-                        for (Task t : o2.getTasks()) {
-                            sum2 += t.getEndtime().getTime() - t.getStarttime().getTime();
-                        }
-                        return sum2 - sum1;
+                employees.sort((o1, o2) -> {
+                    int sum1 = 0;
+                    int sum2 = 1;
+                    for (Task t : o1.getTasks()) {
+                        sum1 += t.getEndtime().getTime() - t.getStarttime().getTime();
                     }
+                    for (Task t : o2.getTasks()) {
+                        sum2 += t.getEndtime().getTime() - t.getStarttime().getTime();
+                    }
+                    return sum2 - sum1;
                 });
-
-                ArrayList<String> objects = new ArrayList<>();
-                ArrayList<Float> comparative = new ArrayList<>();
 
                 for (Employee e : employees) {
                     int sum = 0;
@@ -378,129 +218,86 @@ public class StatisticsController {
                     objects.add(e.getFirstName() + " " + e.getLastName());
                     comparative.add((float) ((sum / 60000.0) / 60.0));
                 }
-                comparative.sort(new Comparator<Float>() {
-                    @Override
-                    public int compare(Float o1, Float o2) {
-                        return (int) (o2 - o1);
-                    }
-                });
+
+                comparative.sort((o1, o2) -> (int) (o2 - o1));
 
                 chartView = new ChartView(type, objects, comparative,
                         "Employés travaillant le plus", "Nom", "Nombre d'heures de travail");
-                chartView.setLegendSide(Side.BOTTOM);
                 
                 break;
 
             default:
                 break;
         }
+
+
+        assert chartView != null;
+        chartView.setLegendSide(Side.BOTTOM);
         return chartView;
     }
 
     private ChartView problemChart(@NamedArg("selectedChart") int selectedChart,
                                    @NamedArg("type") ChartType type) {
-        GenericDAO<Client, Integer> dao_client;
-        GenericDAO<Location, Integer> dao_location;
-        ChartView chartView = null;
+        GenericDAO<Client, Integer> dao_client = new GenericDAO<>(Client.class);
+        ArrayList<Client> clients = (ArrayList<Client>) dao_client.findAll();
+        GenericDAO<Location, Integer> dao_location = new GenericDAO<>(Location.class);
+        ArrayList<Location> locations = (ArrayList<Location>) dao_location.findAll();
+        ArrayList<String> objects = new ArrayList<>();
+        ArrayList<Float> comparative = new ArrayList<>();
+        String title = null;
 
         switch (selectedChart) {
             case 0:
-                dao_client = new GenericDAO<>(Client.class);
-                ArrayList<Client> clients = (ArrayList<Client>) dao_client.findAll();
-
-                clients.sort(new Comparator<Client>() {
-                    @Override
-                    public int compare(Client o1, Client o2) {
-                        return o2.getProblems().size() - o1.getProblems().size();
-                    }
-                });
-
-                ArrayList<String> objects = new ArrayList<>();
-                ArrayList<Float> comparative = new ArrayList<>();
+                clients.sort((o1, o2) -> o2.getProblems().size() - o1.getProblems().size());
 
                 for (Client c : clients) {
                     objects.add(c.getFirstname() + " " + c.getLastname());
                     comparative.add((float) c.getProblems().size());
                 }
-                comparative.sort(new Comparator<Float>() {
-                    @Override
-                    public int compare(Float o1, Float o2) {
-                        return (int) (o2 - o1);
-                    }
-                });
+                comparative.sort((o1, o2) -> (int) (o2 - o1));
 
-                chartView = new ChartView(ChartType.PIE, objects, comparative,
-                        "Clients ayant reportés \nle plus de problèmes", "Nom", "Nombre de prob.");
-                chartView.setLegendSide(Side.BOTTOM);
+                title = "Clients ayant reportés \nle plus de problèmes";
 
                 break;
 
             case 1:
-                dao_location = new GenericDAO<>(Location.class);
-                ArrayList<Location> locations = (ArrayList<Location>) dao_location.findAll();
-
-                locations.sort(new Comparator<Location>() {
-                    @Override
-                    public int compare(Location o1, Location o2) {
-                        return o2.getProblems().size() - o1.getProblems().size();
-                    }
-                });
-
-                objects = new ArrayList<>();
-                comparative = new ArrayList<>();
+                locations.sort((o1, o2) -> o2.getProblems().size() - o1.getProblems().size());
 
                 for (Location c : locations) {
                     objects.add(c.getName());
                     comparative.add((float) c.getProblems().size());
                 }
-                comparative.sort(new Comparator<Float>() {
-                    @Override
-                    public int compare(Float o1, Float o2) {
-                        return (int) (o2 - o1);
-                    }
-                });
 
-                chartView = new ChartView(ChartType.PIE, objects, comparative,
-                        "Lieu ayant le plus de problèmes", "Nom", "Nombre de prob.");
-                chartView.setLegendSide(Side.BOTTOM);
+                comparative.sort((o1, o2) -> (int) (o2 - o1));
+
+                title = "Lieu ayant le plus de problèmes";
                 break;
         }
+
+        ChartView chartView = new ChartView(ChartType.PIE, objects, comparative, title, "Nom", "Nombre de prob.");
+        chartView.setLegendSide(Side.BOTTOM);
         return chartView;
     }
 
     private ChartView otherChart(@NamedArg("selectedChart") int selectedChart,
                                    @NamedArg("type") ChartType type) {
         GenericDAO<Employee, Integer> dao = new GenericDAO<>(Employee.class);
+        ArrayList<Employee> employees = (ArrayList<Employee>) dao.findAll();
+        ArrayList<String> objects = new ArrayList<>();
+        ArrayList<Float> comparative = new ArrayList<>();
         ChartView chartView = null;
 
         switch (selectedChart) {
             case 0:
-                
-                ArrayList<Employee> employees = (ArrayList<Employee>) dao.findAll();
-
-                employees.sort(new Comparator<Employee>() {
-                    @Override
-                    public int compare(Employee o1, Employee o2) {
-                        return o2.getLogs().size() - o1.getLogs().size();
-                    }
-                });
-
-                ArrayList<String> objects = new ArrayList<>();
-                ArrayList<Float> comparative = new ArrayList<>();
+                employees.sort((o1, o2) -> o2.getLogs().size() - o1.getLogs().size());
 
                 for (Employee e : employees) {
                     objects.add(e.getFirstName() + " " + e.getLastName());
                     comparative.add((float) e.getLogs().size());
                 }
-                comparative.sort(new Comparator<Float>() {
-                    @Override
-                    public int compare(Float o1, Float o2) {
-                        return (int) (o2 - o1);
-                    }
-                });
+                comparative.sort((o1, o2) -> (int) (o2 - o1));
 
-                chartView = new ChartView(ChartType.PIE, objects, comparative,
-                        "Employés se connectant le plus", "Nom", "Nombre de connections");
+                chartView = new ChartView(ChartType.PIE, objects, comparative,"Employés se connectant le plus", "Nom", "Nombre de connections");
                 chartView.setLegendSide(Side.BOTTOM);
                 
                 break;
