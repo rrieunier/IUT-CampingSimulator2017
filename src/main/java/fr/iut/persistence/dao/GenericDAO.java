@@ -65,9 +65,7 @@ public class GenericDAO<T extends EntityModel, Id> {
         session.beginTransaction();
 
         try {
-            session.createQuery("delete from " + persistentClass.getName() + " where getId() = :id")
-                    .setParameter("id", entity.getId())
-                    .executeUpdate();
+            session.remove(entity);
             session.getTransaction().commit();
         } catch (Exception e) {
             e.printStackTrace();
@@ -82,7 +80,9 @@ public class GenericDAO<T extends EntityModel, Id> {
         session.beginTransaction();
 
         try {
-            session.createQuery("delete from " + persistentClass.getName() + " where 1 = 1").executeUpdate();
+            for (T t : findAll()) {
+                session.remove(t);
+            }
             session.getTransaction().commit();
         } catch (Exception e) {
             e.printStackTrace();
