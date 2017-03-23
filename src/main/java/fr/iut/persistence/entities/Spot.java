@@ -35,7 +35,7 @@ public class Spot extends Location {
     private boolean water = false;
 
     @Column(nullable = false)
-    private float coucilTaxPersonDay = 1.20f;
+    private float councilTaxPersonDay = 1.20f;
 
     /**
      * Does this spot has electricity.
@@ -48,6 +48,14 @@ public class Spot extends Location {
      */
     @Column(nullable = false)
     private boolean shadow = false;
+
+
+    /**
+     * Type of the Spot.
+     */
+    @Column
+    @Enumerated(EnumType.STRING)
+    private SpotType spotType;
 
     /**
      * Reservations made to this spot.
@@ -76,8 +84,12 @@ public class Spot extends Location {
         return shadow;
     }
 
-    public float getCoucilTaxPersonDay() {
-        return coucilTaxPersonDay;
+    public SpotType getSpotType() {
+        return spotType;
+    }
+
+    public float getCouncilTaxPersonDay() {
+        return councilTaxPersonDay;
     }
 
     public Set<Reservation> getReservations() {
@@ -104,8 +116,12 @@ public class Spot extends Location {
         this.shadow = shadow;
     }
 
-    public void setCoucilTaxPersonDay(float coucilTaxPersonDay) {
-        this.coucilTaxPersonDay = coucilTaxPersonDay;
+    public void setSpotType(SpotType spotType) {
+        this.spotType = spotType;
+    }
+
+    public void setCouncilTaxPersonDay(float coucilTaxPersonDay) {
+        this.councilTaxPersonDay = coucilTaxPersonDay;
     }
 
     public void setReservations(Set<Reservation> reservations) {
