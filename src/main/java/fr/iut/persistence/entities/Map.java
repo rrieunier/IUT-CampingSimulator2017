@@ -1,7 +1,6 @@
 package fr.iut.persistence.entities;
 
 import javax.persistence.*;
-import java.sql.Blob;
 
 /**
  * Created by Sydpy on 2/15/17.
@@ -20,8 +19,8 @@ public class Map implements EntityModel<Integer> {
     /**
      * Map's image.
      */
-    @Column(nullable = false)
-    private Blob image;
+    @Column(nullable = false, columnDefinition = "longblob")
+    private byte[] image;
 
     public Integer getId() {
         return id;
@@ -31,11 +30,11 @@ public class Map implements EntityModel<Integer> {
         this.id = id;
     }
 
-    public Blob getImage() {
+    public byte[] getImage() {
         return image;
     }
 
-    public void setImage(Blob image) {
+    public void setImage(byte[] image) {
         this.image = image;
     }
 }
