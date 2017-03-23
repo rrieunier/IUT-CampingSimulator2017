@@ -1,17 +1,10 @@
 package fr.iut.persistence.entities;
 
-import fr.iut.persistence.dao.GenericDAO;
-import fr.iut.persistence.exception.EmployeeAlreadyAssigned;
-import fr.iut.persistence.exception.StartAfterEndException;
-import org.hibernate.annotations.*;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import java.sql.Timestamp;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * Created by Sydpy on 2/15/17.
@@ -108,25 +101,4 @@ public class Task implements EntityModel<Integer> {
         this.location = location;
     }
 
-    @PrePersist
-    @PreUpdate
-    void prePersistUpdate() throws StartAfterEndException, EmployeeAlreadyAssigned {
-
-        GenericDAO<Task, Integer> dao = new GenericDAO<>(Task.class);
-
-        List<Task> all = dao.findAll();
-
-        boolean isEmployeeAlreadyAssigned = false;
-
-        for (Task task : all) {
-            if(Objects.equals(task.getEmployee().getId(), getEmployee().getId())){
-                isEmployeeAlreadyAssigned = true;
-                break;
-            }
-        }
-
-        if(isEmployeeAlreadyAssigned) {
-            throw new EmployeeAlreadyAssigned();
-        }
-    }
 }
