@@ -37,7 +37,15 @@ public class GenericDAO<T extends EntityModel, Id> {
      */
     public T save(T entity) {
 
-        session.save(entity);
+        session.beginTransaction();
+
+        try {
+            session.save(entity);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            session.getTransaction().rollback();
+        }
 
         return entity;
     }
@@ -50,7 +58,15 @@ public class GenericDAO<T extends EntityModel, Id> {
      */
     public T update(T entity) {
 
-        session.update(entity);
+        session.beginTransaction();
+
+        try {
+            session.update(entity);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            session.getTransaction().rollback();
+        }
 
         return entity;
     }
