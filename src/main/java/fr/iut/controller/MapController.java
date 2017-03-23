@@ -15,21 +15,28 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.Blob;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class MapController {
 
     private HomeController homeController;
-    private MapCreatorView mapCreatorView = new MapCreatorView(this);
+    private MapCreatorView mapCreatorView;
     private MapDao daoMap = new MapDao();
-    private GenericDAO<Location, Integer> daoLocation = new GenericDAO<>(Location.class);
+    private GenericDAO<Spot, Integer> daoSpot= new GenericDAO<>(Spot.class);
 
     private Map currentMap = null;
 
     public MapController(HomeController homeController) {
         this.homeController = homeController;
         currentMap = daoMap.getMap();
+
+        if(currentMap != null)
+            mapCreatorView = new MapCreatorView(this, currentMap);
+        else
+            mapCreatorView = new MapCreatorView(this);
     }
 
     public SubScene getView() {
@@ -53,13 +60,25 @@ public class MapController {
         currentMap = map;
     }
 
-    public void storeLocation(Location location) {
-        daoLocation.save(location);
+    public void storeSpot(Spot spot) {
+        daoSpot.save(spot);
     }
 
-    public void removeMapAndAllLocations() {
+    public void updateSpot(Spot spot) {
+        daoSpot.update(spot);
+    }
+
+    public void removeSpot(Spot spot) {
+        daoSpot.remove(spot);
+    }
+
+    public List<Spot> getAllSpots() {
+        return daoSpot.findAll();
+    }
+
+    public void removeMapAndAllSpots() {
         daoMap.remove();
-        daoLocation.removeAll();
+        daoSpot.removeAll();
     }
 
     public boolean isMapAlreadyCreated() {

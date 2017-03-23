@@ -2,22 +2,21 @@ package fr.iut.view;
 
 import fr.iut.App;
 import fr.iut.controller.MapController;
-import fr.iut.persistence.entities.Location;
 import fr.iut.persistence.entities.Spot;
-import javafx.application.Platform;
+import fr.iut.persistence.entities.SpotType;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
+import javafx.scene.Cursor;
 import javafx.scene.SubScene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -26,8 +25,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
 
@@ -40,21 +39,101 @@ public class MapCreatorView extends SubScene {
     private final static int MAP_VIEWPORT_HEIGHT = (int)(App.SCREEN_H / 2 + App.SCREEN_H / 10);
     private MapController controller;
 
+    /**
+     * We use a StackPane as root in order to drag & drop pictures everywhere in it
+     */
     private StackPane stackPaneRoot;
     private ScrollPane mapViewPort;
-    private ArrayList<Location> locations = new ArrayList<>();
 
     private StackPane mapPane;
     private File mapFile = null;
 
-    private File selectedBigIconFile = null;
-    private ImageView selectedIcon = null;
-    private double mouseX ;
-    private double mouseY ;
+    private ImageView buttonReset;
+    private Text importMapText;
 
+    private ItemMap selectedItem;
+    private double mouseX;
+    private double mouseY;
+
+    /**
+     * The available items are all the SpotType values
+     */
+    private ItemMap [] availableItems = new ItemMap[7];
+    private ImageView draggingIcon;
+
+    private fr.iut.persistence.entities.Map mapInBdd;
+
+    /**
+     * Build the CreatorView from existing Map in the DB
+     */
+    public MapCreatorView(MapController controller, fr.iut.persistence.entities.Map mapInBdd) {
+        this(controller);
+        this.mapInBdd = mapInBdd;
+
+        //We create the image from bytes in DB
+        Image image = new Image(new ByteArrayInputStream(mapInBdd.getImage()));
+
+        buttonReset.setVisible(true);
+
+        mapPane.getChildren().remove(importMapText);
+
+        if(image.getWidth() < mapViewPort.getWidth())
+            mapViewPort.setMaxWidth(image.getWidth());
+
+        if(image.getHeight() < mapViewPort.getHeight())
+            mapViewPort.setMaxHeight(image.getHeight());
+
+        mapPane.setPrefWidth(image.getWidth());
+        mapPane.setMinWidth(image.getWidth());
+        mapPane.setPrefHeight(image.getHeight());
+        mapPane.setMinHeight(image.getHeight());
+
+        mapPane.setAlignment(Pos.TOP_LEFT);
+        mapPane.getChildren().add(new ImageView(image));
+
+
+        //We create the spots on the map from the DB
+        for(Spot spot : controller.getAllSpots()) {
+
+            ItemMap correspondingItem = null;
+
+            for(ItemMap itemMap : availableItems)
+                if(itemMap.getType().equals(spot.getSpotType())) {
+                    correspondingItem = itemMap;
+                    break;
+                }
+
+            if(correspondingItem == null) {
+                System.out.println("This cannot be possible !!!");
+                System.exit(1);
+            }
+
+            ImageView imageOnMap = new ImageView(correspondingItem.getSmallImage());
+            mapPane.getChildren().add(imageOnMap);
+            imageOnMap.setTranslateX(spot.getPointX());
+            imageOnMap.setTranslateY(spot.getPointY());
+
+            ItemMap finalCorrespondingItem = correspondingItem;
+            imageOnMap.setOnMouseClicked(mouseEvent1 -> {
+                editItem(new ImageView(finalCorrespondingItem.getBigImage()), imageOnMap, spot);
+            });
+        }
+    }
+
+    /**
+     * Build MapCreatorView from scratch, with no existing map in the DB
+     */
     public MapCreatorView(MapController controller) {
         super(new StackPane(), App.SCREEN_W * 3/4, App.SCREEN_H * 3/4);
         this.controller = controller;
+
+        availableItems[0] = new ItemMap(SpotType.HOUSE);
+        availableItems[1] = new ItemMap(SpotType.TRAILER);
+        availableItems[2] = new ItemMap(SpotType.RESTAURANT);
+        availableItems[3] = new ItemMap(SpotType.PARKING);
+        availableItems[4] = new ItemMap(SpotType.POOL);
+        availableItems[5] = new ItemMap(SpotType.TENT);
+        availableItems[6] = new ItemMap(SpotType.SPORT);
 
         stackPaneRoot = (StackPane)getRoot();
         stackPaneRoot.setStyle("-fx-background-color:transparent;");
@@ -76,7 +155,8 @@ public class MapCreatorView extends SubScene {
         mapPane.setPrefHeight(MAP_VIEWPORT_HEIGHT);
         mapPane.setMinHeight(MAP_VIEWPORT_HEIGHT);
         mapPane.setStyle("-fx-background-color: black;");
-        Text importMapText = new Text("Cliquez pour importer une carte...");
+
+        importMapText = new Text("Cliquez pour importer une carte...");
         importMapText.setFont(Font.font("DejaVu Sans", 20));
         importMapText.setFill(Color.WHITE);
         mapPane.getChildren().add(importMapText);
@@ -97,7 +177,8 @@ public class MapCreatorView extends SubScene {
         HBox items = new HBox();
         buildDraggableItems(items);
 
-        ImageView buttonReset = new ImageView(new Image(new File("res/reset-icon.png").toURI().toString()));
+        buttonReset = new ImageView(new Image(new File("res/reset-icon.png").toURI().toString()));
+        buttonReset.setCursor(Cursor.CROSSHAIR);
         buttonReset.setVisible(false);
         StackPane.setAlignment(buttonReset, Pos.TOP_RIGHT);
         StackPane.setMargin(buttonReset, new Insets(20, 20, 0, 0));
@@ -126,13 +207,12 @@ public class MapCreatorView extends SubScene {
                 buttonReset.setVisible(false);
                 mapViewPort.setMaxWidth(MAP_VIEWPORT_WIDTH);
                 mapViewPort.setMaxHeight(MAP_VIEWPORT_HEIGHT);
-                locations.clear();
-                controller.removeMapAndAllLocations();
+                controller.removeMapAndAllSpots();
             }
         });
 
         mapPane.setOnMouseClicked(mouseEvent -> {
-            if(mapFile == null) {
+            if(mapFile == null && mapInBdd == null) {
                 FileChooser fileChooser = new FileChooser();
                 fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
                 fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Images", "*.png")); //On autorise que les images png
@@ -169,6 +249,8 @@ public class MapCreatorView extends SubScene {
 
                     mapPane.setAlignment(Pos.TOP_LEFT);
                     mapPane.getChildren().add(new ImageView(image));
+
+                    controller.storeMap(mapFile);
                 }
             }
         });
@@ -187,85 +269,86 @@ public class MapCreatorView extends SubScene {
         items.setAlignment(Pos.CENTER);
         items.setSpacing(80);
 
-        File[] files64 = new File("res/items/x64").listFiles();
+        for(ItemMap availableItem : availableItems) {
 
-        if(files64 == null) {
-            System.out.println("Can't find any items !!!");
-            return;
-        }
+            ImageView itemBigImage = new ImageView(availableItem.getBigImage());
+            ImageView itemSmallImage = new ImageView(availableItem.getSmallImage());
 
-        for (File file : files64) {
-            if (file.isFile()) {
-                ImageView item = new ImageView(new Image(file.toURI().toString()));
+            itemBigImage.setOnMousePressed(mouseEvent -> {
+                if (mapFile != null || mapInBdd != null) {
+                    selectedItem = availableItem;
+                    draggingIcon = itemSmallImage;
+                    draggingIcon.setManaged(false);//très important, permet de dire au parent (Le stackpane, de ne pas gérer de la position de l'image) lors de son déplacement drag&drop
+                    stackPaneRoot.getChildren().add(draggingIcon);
 
-                item.setOnMousePressed(mouseEvent -> {
-                    if(mapFile != null) {
-                        String fileStr = new File("res/items/x32/" + file.getName()).toURI().toString();
-                        selectedIcon = new ImageView(new Image(fileStr));
-                        selectedIcon.setManaged(false); //très important, permet de dire au parent (Le stackpane, de ne pas gérer de la position de l'image
-                        selectedBigIconFile = file;
-                        stackPaneRoot.getChildren().add(selectedIcon);
+                    Point2D mouse_pos = sceneToLocal(mouseEvent.getSceneX(), mouseEvent.getSceneY());
+                    mouseX = mouse_pos.getX();
+                    mouseY = mouse_pos.getY();
 
-                        mouseX = mouseEvent.getSceneX();
-                        mouseY = mouseEvent.getSceneY();
-                        selectedIcon.relocate(mouseX - selectedIcon.getImage().getWidth() / 2, mouseY - selectedIcon.getImage().getHeight() / 2);
-                    }
-                });
+                    draggingIcon.relocate(mouseX - draggingIcon.getImage().getWidth() / 2, mouseY - draggingIcon.getImage().getHeight() / 2);
+                }
 
-                item.setOnMouseDragged(mouseEvent -> {
-                    if(selectedIcon != null) {
-                        double deltaX = mouseEvent.getSceneX() - mouseX ;
-                        double deltaY = mouseEvent.getSceneY() - mouseY ;
+                else {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Impossible");
+                    alert.setHeaderText("Merci de choisir une carte avant de créer des emplacements.");
+                    alert.setContentText(null);
+                    alert.show();
+                }
+            });
 
-                        selectedIcon.relocate(selectedIcon.getLayoutX() + deltaX, selectedIcon.getLayoutY() + deltaY);
+            itemBigImage.setOnMouseDragged(mouseEvent -> {
+                if (selectedItem != null) {
+                    Point2D mouse_pos = sceneToLocal(mouseEvent.getSceneX(), mouseEvent.getSceneY());
+                    double deltaX = mouse_pos.getX() - mouseX;
+                    double deltaY = mouse_pos.getY() - mouseY;
 
-                        mouseX = mouseEvent.getSceneX() ;
-                        mouseY = mouseEvent.getSceneY() ;
-                    }
-                });
+                    draggingIcon.relocate(draggingIcon.getLayoutX() + deltaX, draggingIcon.getLayoutY() + deltaY);
 
-                items.getChildren().add(item);
-            }
+                    mouseX = mouse_pos.getX();
+                    mouseY = mouse_pos.getY();
+                }
+            });
+
+            items.getChildren().add(itemBigImage);
         }
     }
 
     private void handleDropItem() {
         addEventFilter(MouseEvent.MOUSE_RELEASED, mouseEvent -> {
-            if(selectedIcon != null) {
-                Bounds boundsInScene = selectedIcon.localToScene(selectedIcon.getBoundsInLocal());
+            if(selectedItem != null) {
+                Bounds boundsInScene = draggingIcon.localToScene(draggingIcon.getBoundsInLocal());
                 Bounds mapViewPort_coords = mapViewPort.sceneToLocal(boundsInScene);
                 Bounds map_coords = mapPane.sceneToLocal(boundsInScene);
 
                 //Si l'item est dans le viewport
                 if(mapViewPort_coords.getMinX() > 0 && mapViewPort_coords.getMaxX() < mapViewPort.getWidth() && mapViewPort_coords.getMinY() > 0 && mapViewPort_coords.getMaxY() < mapViewPort.getHeight()) {
-                    createItem(map_coords);
+                    createItem(map_coords.getMinX(), map_coords.getMinY());
                 }
 
-                stackPaneRoot.getChildren().remove(selectedIcon);
-                selectedIcon = null;
-                selectedBigIconFile = null;
+                stackPaneRoot.getChildren().remove(draggingIcon);
+                draggingIcon = null;
+                selectedItem = null;
             }
         });
     }
 
-    private void createItem(Bounds map_coords) {
-        String fileStr = selectedBigIconFile.toURI().toString();
-        ImageView bigIcon = new ImageView(new Image(fileStr));
+    private void createItem(double x, double y) {
+        ImageView bigIcon = new ImageView(selectedItem.getBigImage());
 
         Optional<Map<String, String>> result = new LocationDialog(bigIcon).showAndWait();
 
         result.ifPresent(mapResult -> {
-            ImageView imageOnMap = new ImageView(selectedIcon.getImage());
-
-            imageOnMap.setTranslateX(map_coords.getMinX());
-            imageOnMap.setTranslateY(map_coords.getMinY());
+            ImageView imageOnMap = new ImageView(selectedItem.getSmallImage());
             mapPane.getChildren().add(imageOnMap);
+            imageOnMap.setTranslateX(x);
+            imageOnMap.setTranslateY(y);
 
             Spot spot = new Spot();
-
+            spot.setSpotType(selectedItem.getType());
             spot.setName(mapResult.get("name"));
-            spot.setPointX(map_coords.getMinX());
-            spot.setPointY(map_coords.getMinY());
+            spot.setPointX(x);
+            spot.setPointY(y);
             spot.setCapacity(Integer.parseInt(mapResult.get("capacity")));
             spot.setElectricity(Boolean.parseBoolean(mapResult.get("elec")));
             spot.setWater(Boolean.parseBoolean(mapResult.get("water")));
@@ -273,41 +356,72 @@ public class MapCreatorView extends SubScene {
 
 
             imageOnMap.setOnMouseClicked(mouseEvent1 -> {
-                editItem(map_coords, bigIcon, imageOnMap, spot);
+                editItem(bigIcon, imageOnMap, spot);
             });
 
-            locations.add(spot);
+
+            controller.storeSpot(spot);
         });
     }
 
-    private void editItem(Bounds map_coords, ImageView bigIcon, ImageView imageOnMap, Spot spot) {
+    private void editItem(ImageView bigIcon, ImageView imageOnMap, Spot spot) {
         Optional<Map<String, String>> edit_result = new LocationDialog(bigIcon, spot).showAndWait();
 
         edit_result.ifPresent(mapEditResult -> {
 
             if(mapEditResult.containsKey("remove")) {
                 mapPane.getChildren().remove(imageOnMap);
-                locations.remove(spot);
+                controller.removeSpot(spot);
             }
 
             else {
                 spot.setName(mapEditResult.get("name"));
-                spot.setPointX(map_coords.getMinX());
-                spot.setPointY(map_coords.getMinY());
                 spot.setCapacity(Integer.parseInt(mapEditResult.get("capacity")));
                 spot.setElectricity(Boolean.parseBoolean(mapEditResult.get("elec")));
                 spot.setWater(Boolean.parseBoolean(mapEditResult.get("water")));
                 spot.setShadow(Boolean.parseBoolean(mapEditResult.get("shadow")));
-
+                controller.updateSpot(spot);
             }
         });
     }
 
-    public void showInfo() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setHeaderText(null);
-        alert.setContentText("Cette interface permet de créer la carte de votre camping, glissez/deposez les éléments dessus.");
+    /**
+     * Class which represents an item (a location) on the map
+     */
+    class ItemMap {
 
-        Platform.runLater(alert::showAndWait);
+        private SpotType type;
+        private Image smallImage, bigImage;
+
+        public ItemMap(SpotType type) {
+            this.type = type;
+
+            String filename = null;
+
+            switch (type) {
+                case HOUSE: filename = "cabin.png"; break;
+                case TRAILER: filename = "trailer.png"; break;
+                case RESTAURANT: filename = "cutlery.png"; break;
+                case PARKING: filename = "parking.png"; break;
+                case POOL: filename = "swimming-pool.png"; break;
+                case SPORT: filename = "kayak.png"; break;
+                case TENT: filename = "tent.png"; break;
+            }
+
+            smallImage = new Image(new File("res/items/x32/" + filename).toURI().toString());
+            bigImage = new Image(new File("res/items/x64/" + filename).toURI().toString());
+        }
+
+        public SpotType getType() {
+            return type;
+        }
+
+        public Image getSmallImage() {
+            return smallImage;
+        }
+
+        public Image getBigImage() {
+            return bigImage;
+        }
     }
 }
