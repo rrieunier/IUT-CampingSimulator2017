@@ -57,6 +57,11 @@ public class MapController {
         daoLocation.save(location);
     }
 
+    public void removeMapAndAllLocations() {
+        daoMap.remove();
+        daoLocation.removeAll();
+    }
+
     public boolean isMapAlreadyCreated() {
         return currentMap != null;
     }

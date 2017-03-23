@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.SubScene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -68,9 +69,6 @@ public class MapCreatorView extends SubScene {
 
         verticalWrap.setStyle("-fx-background-color: rgb(12, 27, 51);");
 
-
-        //HeaderView header = new HeaderView("Création de la carte");
-
         mapPane = new StackPane();
         mapPane.setAlignment(Pos.CENTER);
         mapPane.setPrefWidth(MAP_VIEWPORT_WIDTH);
@@ -83,6 +81,8 @@ public class MapCreatorView extends SubScene {
         importMapText.setFill(Color.WHITE);
         mapPane.getChildren().add(importMapText);
 
+        StackPane scrollContainer = new StackPane();
+
         mapViewPort = new ScrollPane();
         mapViewPort.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         mapViewPort.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
@@ -90,35 +90,45 @@ public class MapCreatorView extends SubScene {
         mapViewPort.setMaxWidth(MAP_VIEWPORT_WIDTH);
         mapViewPort.setMaxHeight(MAP_VIEWPORT_HEIGHT);
         mapViewPort.setPannable(true);
+        scrollContainer.getChildren().add(mapViewPort);
 
         handleDropItem();
 
         HBox items = new HBox();
         buildDraggableItems(items);
 
-        Button buttonReset = new Button("Réinitialiser la carte");
-        buttonReset.setDisable(true);
-        buttonReset.setMinSize(App.SCREEN_W / 10, App.SCREEN_H / 18);
-        HBox.setMargin(buttonReset, new Insets(20));
-        buttonReset.getStylesheets().add(new File("res/style.css").toURI().toString());
-        buttonReset.getStyleClass().add("record-sales");
+        ImageView buttonReset = new ImageView(new Image(new File("res/reset-icon.png").toURI().toString()));
+        buttonReset.setVisible(false);
+        StackPane.setAlignment(buttonReset, Pos.TOP_RIGHT);
+        StackPane.setMargin(buttonReset, new Insets(20, 20, 0, 0));
+        scrollContainer.getChildren().add(buttonReset);
 
         buttonReset.setOnMouseClicked(mouseEvent -> {
-            mapFile = null;
-            mapPane.setAlignment(Pos.CENTER);
-            mapPane.setPrefWidth(MAP_VIEWPORT_WIDTH);
-            mapPane.setMinWidth(MAP_VIEWPORT_WIDTH);
-            mapPane.setPrefHeight(MAP_VIEWPORT_HEIGHT);
-            mapPane.setMinHeight(MAP_VIEWPORT_HEIGHT);
-            mapPane.getChildren().removeAll(mapPane.getChildren());
-            mapPane.setStyle("-fx-background-color: black;");
-            importMapText.setFont(Font.font("DejaVu Sans", 20));
-            importMapText.setFill(Color.WHITE);
-            mapPane.getChildren().add(importMapText);
-            buttonReset.setVisible(false);
-            mapViewPort.setMaxWidth(MAP_VIEWPORT_WIDTH);
-            mapViewPort.setMaxHeight(MAP_VIEWPORT_HEIGHT);
-            locations.clear();
+
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Attention");
+            alert.setHeaderText("Vous êtes sur le point de supprimer la carte et tous les emplacements crées, c'est opération est irréversible.");
+            alert.setContentText("Voulez vous vraiment tout supprimer ?");
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.OK){
+                mapFile = null;
+                mapPane.setAlignment(Pos.CENTER);
+                mapPane.setPrefWidth(MAP_VIEWPORT_WIDTH);
+                mapPane.setMinWidth(MAP_VIEWPORT_WIDTH);
+                mapPane.setPrefHeight(MAP_VIEWPORT_HEIGHT);
+                mapPane.setMinHeight(MAP_VIEWPORT_HEIGHT);
+                mapPane.getChildren().removeAll(mapPane.getChildren());
+                mapPane.setStyle("-fx-background-color: black;");
+                importMapText.setFont(Font.font("DejaVu Sans", 20));
+                importMapText.setFill(Color.WHITE);
+                mapPane.getChildren().add(importMapText);
+                buttonReset.setVisible(false);
+                mapViewPort.setMaxWidth(MAP_VIEWPORT_WIDTH);
+                mapViewPort.setMaxHeight(MAP_VIEWPORT_HEIGHT);
+                locations.clear();
+                controller.removeMapAndAllLocations();
+            }
         });
 
         mapPane.setOnMouseClicked(mouseEvent -> {
@@ -164,7 +174,7 @@ public class MapCreatorView extends SubScene {
         });
 
         VBox.setMargin(items, new Insets(30, 0, 20, 0));
-        verticalWrap.getChildren().addAll(mapViewPort, items);
+        verticalWrap.getChildren().addAll(scrollContainer, items);
 
         stackPaneRoot.getChildren().addAll(scrollPane);
 
