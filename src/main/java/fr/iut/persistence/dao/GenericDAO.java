@@ -61,7 +61,18 @@ public class GenericDAO<T extends EntityModel, Id> {
      * @param entity Entity to remove.
      */
     public void remove(T entity) {
-        session.remove(entity);
+
+        session.beginTransaction();
+
+        try {
+            session.createQuery("delete from " + persistentClass.getName() + " where getId() = :id")
+                    .setParameter("id", entity.getId())
+                    .executeUpdate();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            session.getTransaction().rollback();
+        }
     }
 
     /**
