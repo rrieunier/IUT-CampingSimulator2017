@@ -75,21 +75,7 @@ public class MapCreatorView extends SubScene {
 
         buttonReset.setVisible(true);
 
-        mapPane.getChildren().remove(importMapText);
-
-        if(image.getWidth() < mapViewPort.getWidth())
-            mapViewPort.setMaxWidth(image.getWidth());
-
-        if(image.getHeight() < mapViewPort.getHeight())
-            mapViewPort.setMaxHeight(image.getHeight());
-
-        mapPane.setPrefWidth(image.getWidth());
-        mapPane.setMinWidth(image.getWidth());
-        mapPane.setPrefHeight(image.getHeight());
-        mapPane.setMinHeight(image.getHeight());
-
-        mapPane.setAlignment(Pos.TOP_LEFT);
-        mapPane.getChildren().add(new ImageView(image));
+        adaptMapPaneToImage(image);
 
 
         //We create the spots on the map from the DB
@@ -118,6 +104,24 @@ public class MapCreatorView extends SubScene {
                 editItem(new ImageView(finalCorrespondingItem.getBigImage()), imageOnMap, spot);
             });
         }
+    }
+
+    private void adaptMapPaneToImage(Image image) {
+        mapPane.getChildren().remove(importMapText);
+
+        if(image.getWidth() < mapViewPort.getWidth())
+            mapViewPort.setMaxWidth(image.getWidth());
+
+        if(image.getHeight() < mapViewPort.getHeight())
+            mapViewPort.setMaxHeight(image.getHeight());
+
+        mapPane.setPrefWidth(image.getWidth());
+        mapPane.setMinWidth(image.getWidth());
+        mapPane.setPrefHeight(image.getHeight());
+        mapPane.setMinHeight(image.getHeight());
+
+        mapPane.setAlignment(Pos.TOP_LEFT);
+        mapPane.getChildren().add(new ImageView(image));
     }
 
     /**
@@ -234,21 +238,7 @@ public class MapCreatorView extends SubScene {
 
                     buttonReset.setVisible(true);
 
-                    mapPane.getChildren().remove(importMapText);
-
-                    if(image.getWidth() < mapViewPort.getWidth())
-                        mapViewPort.setMaxWidth(image.getWidth());
-
-                    if(image.getHeight() < mapViewPort.getHeight())
-                        mapViewPort.setMaxHeight(image.getHeight());
-
-                    mapPane.setPrefWidth(image.getWidth());
-                    mapPane.setMinWidth(image.getWidth());
-                    mapPane.setPrefHeight(image.getHeight());
-                    mapPane.setMinHeight(image.getHeight());
-
-                    mapPane.setAlignment(Pos.TOP_LEFT);
-                    mapPane.getChildren().add(new ImageView(image));
+                    adaptMapPaneToImage(image);
 
                     controller.storeMap(mapFile);
                 }
