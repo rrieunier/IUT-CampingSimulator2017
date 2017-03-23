@@ -86,7 +86,7 @@ public class ReservationsController {
         String durationValue = (reservation.getEndtime().getTime() - reservation.getStarttime().getTime())
                 / (1000 * 60 * 60 * 24) + " jours";
         String personCountValue = reservation.getPersonCount() + " pers.";
-        String taxValue = reservation.getSpot().getCoucilTaxPersonDay() + "€ / jour x " + reservation.getPersonCount() + "pers";
+        String taxValue = reservation.getSpot().getCouncilTaxPersonDay() + "€ / jour x " + reservation.getPersonCount() + "pers";
         String pricePerDayValue = reservation.getSpot().getPricePerDay() + "€ / jour";
         ArrayList<String> purchasesValue = new ArrayList<>();
         /*
@@ -99,7 +99,7 @@ public class ReservationsController {
         String reductionValue = reservation.getReduction() + "%";
 
         //prices
-        float taxPrice = reservation.getPersonCount() * reservation.getSpot().getCoucilTaxPersonDay()
+        float taxPrice = reservation.getPersonCount() * reservation.getSpot().getCouncilTaxPersonDay()
                 * (reservation.getEndtime().getTime() - reservation.getStarttime().getTime())
                 / (1000 * 60 * 60 * 24);
         float pricePerDayPrice = reservation.getSpot().getPricePerDay() * (reservation.getEndtime().getTime() - reservation.getStarttime().getTime())
