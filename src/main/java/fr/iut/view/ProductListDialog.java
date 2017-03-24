@@ -1,61 +1,99 @@
 package fr.iut.view;
 
 import fr.iut.App;
+import fr.iut.persistence.dao.GenericDAO;
+import fr.iut.persistence.entities.Product;
+import fr.iut.persistence.entities.SupplierProposeProduct;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Pair;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 /**
  * Created by theo on 27/02/17.
  */
-public class ProductListDialog extends Dialog<ArrayList<String>> {
+public class ProductListDialog extends Dialog<ArrayList<Pair<Product, Float>>> {
 
     public static final double PRODUCTSLIST_WIDTH = App.SCREEN_W / 3;
     public static final double PRODUCTSLIST_HEIGHT = App.SCREEN_H / 3;
 
-    private ArrayList<Pair<Text, RadioButton>> arrayListProducts = new ArrayList<>();
-    private VBox wrapper = new VBox();
-    private VBox productsWrapper = new VBox();
+    private ArrayList<Pair<Pair<Product, TextField>, RadioButton>> arrayListProducts = new ArrayList<>();
+    private VBox productsWrapper;
     private int iterator_box = 0;
 
-    private void add(String name){
-        Text text = new Text(name);
+    public void add(Product p){
+
+        GridPane gridPane = new GridPane();
+        gridPane.setMinWidth(PRODUCTSLIST_WIDTH);
+        gridPane.setAlignment(Pos.CENTER);
+
+        for (int i = 0; i < 3; i++) {
+            ColumnConstraints column = new ColumnConstraints();
+            column.setPercentWidth(30);
+            gridPane.getColumnConstraints().add(column);
+        }
+
+        Text text = new Text(p.getName());
         text.setStyle("-fx-font-weight: bold;" +
                 "-fx-font-size: 17px");
         text.setFill(Color.WHITESMOKE);
 
+        TextField price = new TextField();
+        price.setMaxWidth(PRODUCTSLIST_WIDTH/10);
+        price.setMaxHeight(PRODUCTSLIST_HEIGHT/15);
+        price.setPromptText("Prix");
+        price.setStyle("-fx-font-weight: bold;" +
+                "-fx-font-size: 17px;");
+
         RadioButton radioButton = new RadioButton();
 
-        Pair<Text, RadioButton> pair = new Pair<>(text, radioButton);
-        arrayListProducts.add(pair);
+        Pair productTextFieldPair = new Pair<>(p, price);
+        Pair<Pair<Product, TextField>, RadioButton> pairRadioButtonPair = new Pair<>(productTextFieldPair, radioButton);
+        arrayListProducts.add(pairRadioButtonPair);
 
-        BorderPane borderPane = new BorderPane();
-        borderPane.setMinWidth(PRODUCTSLIST_WIDTH);
 
         if(iterator_box++ % 2 == 1)
-            borderPane.setStyle("-fx-background-color: #336699;");
+            gridPane.setStyle("-fx-background-color: #336699;");
         else
-            borderPane.setStyle("-fx-background-color: #0F355C;");
+            gridPane.setStyle("-fx-background-color: #0F355C;");
 
-        BorderPane.setMargin(text, new Insets(20,0,20,100));
 
-        BorderPane.setMargin(radioButton, new Insets(20, 100, 20, 0));
-        BorderPane.setAlignment(radioButton, Pos.CENTER);
+        gridPane.setPadding(new Insets(20));
+        GridPane.setHalignment(text, HPos.LEFT);
+        GridPane.setHalignment(price, HPos.CENTER);
+        GridPane.setHalignment(radioButton, HPos.RIGHT);
+        gridPane.add(text,0,0);
+        gridPane.add(price,1,0);
+        gridPane.add(radioButton,2,0);
 
-        borderPane.setLeft(text);
-        borderPane.setRight(radioButton);
-        productsWrapper.getChildren().add(borderPane);
+        productsWrapper.getChildren().add(gridPane);
+    }
+
+    public void createProduct(){
+        GenericDAO<Product, Integer> daoProduct = new GenericDAO<>(Product.class);
+        List<Product> products = daoProduct.findAll();
+        for (Product p: products) {
+            add(p);
+        }
+    }
+
+    public void checkProducts(ArrayList<SupplierProposeProduct> supplierProposeProducts){
+        for (int i = 0; i < supplierProposeProducts.size(); i++) {
+            for (int j = 0; j < arrayListProducts.size(); j++) {
+                if (supplierProposeProducts.get(i).getProduct() == arrayListProducts.get(j).getKey().getKey()){
+                    arrayListProducts.get(j).getValue().setSelected(true);
+                    arrayListProducts.get(j).getKey().getValue().setText(Float.toString(supplierProposeProducts.get(i).getSellPrice()));
+                }
+            }
+        }
     }
 
     public ProductListDialog(){
@@ -64,25 +102,20 @@ public class ProductListDialog extends Dialog<ArrayList<String>> {
         dialogPane.getStylesheets().add(new File("res/style.css").toURI().toString());
         getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
 
+        productsWrapper = new VBox();
         ScrollPane scrollPane = new ScrollPane(productsWrapper);
         scrollPane.setMaxHeight(PRODUCTSLIST_HEIGHT);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
         HeaderView header = new HeaderView("Liste des produits");
         header.setMinWidth(PRODUCTSLIST_WIDTH);
+        VBox wrapper = new VBox();
         wrapper.getChildren().add(header);
 
-        ButtonType okButtonType = new ButtonType("Commander", ButtonBar.ButtonData.OK_DONE);
+        ButtonType okButtonType = new ButtonType("Valider", ButtonBar.ButtonData.OK_DONE);
         dialogPane.getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
 
-        add("Haricot");
-        add("c'est");
-        add("beau la vie");
-        add("pour les grands");
-        add("et les petits");
-        for (int i = 0; i < 20; i++) {
-            add(""+i);
-        }
+        createProduct();
 
         productsWrapper.setSpacing(3);
         wrapper.getChildren().add(scrollPane);
@@ -96,12 +129,13 @@ public class ProductListDialog extends Dialog<ArrayList<String>> {
         hbox.getChildren().add(spacer);
 
         setResultConverter((ButtonType dialogButton) ->{
-            ArrayList<String> arrayList = new ArrayList<>();
+            ArrayList<Pair<Product, Float>> arrayList = new ArrayList<>();
 
             if(dialogButton == okButtonType){
                 for (int i = 0; i < arrayListProducts.size(); i++) {
                     if(arrayListProducts.get(i).getValue().isSelected()){
-                        arrayList.add(arrayListProducts.get(i).getKey().getText().toString());
+                        Pair p = new Pair(arrayListProducts.get(i).getKey().getKey(), Float.parseFloat(arrayListProducts.get(i).getKey().getValue().getText().toString()));
+                        arrayList.add(p);
                     }
                 }
             }

@@ -63,9 +63,9 @@ public class IncidentsManagerView extends SubScene{
      */
     private Problem lastClickedValue;
 
-    public IncidentsManagerView(IncidentsController controller){
+    public IncidentsManagerView(IncidentsController c){
         super(new BorderPane(), HomeView.TAB_CONTENT_W, HomeView.TAB_CONTENT_H);
-        this.controller = controller;
+        controller = c;
         controller.createIncidents();
 
         BorderPane root = (BorderPane) getRoot();
@@ -80,15 +80,7 @@ public class IncidentsManagerView extends SubScene{
         TextField search_field = new TextField();
         search_field.setPrefWidth(HomeView.TAB_CONTENT_W / 7);
         search_field.setPromptText("Nom de l'incident");
-        search_field.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                if (event.getCode().equals(KeyCode.ENTER)) {
-                    createScroll(search_field.getText().toString());
-                    search_field.clear();
-                }
-            }
-        });
+
         search_label.setLabelFor(search_field);
         search_bar.setAlignment(Pos.CENTER);
         search_bar.getChildren().addAll(search_label, search_field);
@@ -103,6 +95,8 @@ public class IncidentsManagerView extends SubScene{
         ScrollPane incidentsScroll = new ScrollPane(incidents);
         incidentsScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         incidentsScroll.setMaxWidth(HomeView.TAB_CONTENT_W/4);
+        incidentsScroll.setMinWidth(HomeView.TAB_CONTENT_W/4);
+
 
 
         HBox sort_options = new HBox();
@@ -116,14 +110,23 @@ public class IncidentsManagerView extends SubScene{
         sort_by.valueProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                controller.sortIncidents(sort_by.getSelectionModel().getSelectedIndex());
-                createScroll(search_field.getText().toString());
+                createScroll(search_field.getText().toString(), false, sort_by.getSelectionModel().getSelectedIndex());
             }
         });
         Label sort_by_label = new Label("Tri par: ");
         sort_by_label.setStyle("-fx-text-fill: whitesmoke; -fx-font-size: 18px");
         sort_by_label.setLabelFor(sort_by);
 
+
+        search_field.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (event.getCode().equals(KeyCode.ENTER)) {
+                    createScroll(search_field.getText().toString(), false, sort_by.getSelectionModel().getSelectedIndex());
+                    search_field.clear();
+                }
+            }
+        });
 
         Button newIncident = new Button("+");
         newIncident.setTooltip(new Tooltip("Ajouter un nouvel incident..."));
@@ -138,7 +141,7 @@ public class IncidentsManagerView extends SubScene{
             problem.setDescription(newIncident_result.get().get("Description"));
 
             controller.saveIncident(problem);
-            createScroll(search_field.getText().toString());
+            createScroll(search_field.getText().toString(), true, sort_by.getSelectionModel().getSelectedIndex());
         });
 
         HBox resolvedBox = new HBox();
@@ -150,7 +153,7 @@ public class IncidentsManagerView extends SubScene{
         resolved.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                createScroll(search_field.getText().toString());
+                createScroll(search_field.getText().toString(), false, sort_by.getSelectionModel().getSelectedIndex());
             }
         });
         resolved_label.setStyle("-fx-text-fill: whitesmoke; -fx-font-size: 18px");
@@ -162,7 +165,7 @@ public class IncidentsManagerView extends SubScene{
         header.setLeft(sort_options);
         root.setTop(header);
 
-        createScroll(search_field.getText().toString());
+        createScroll(search_field.getText().toString(), true, 0);
 
         wrapper.getChildren().add(incidentsScroll);
 
@@ -215,7 +218,7 @@ public class IncidentsManagerView extends SubScene{
 
                 controller.updateIncident(lastClikedCopy, description.getText().toString(),
                         appearanceDatetime.getText().toString(), solutionDatetime.getText().toString());
-                createScroll(search_field.getText().toString());
+                createScroll(search_field.getText().toString(), true, sort_by.getSelectionModel().getSelectedIndex());
             }
 
             else {
@@ -236,7 +239,7 @@ public class IncidentsManagerView extends SubScene{
         resolvedButton.setOnAction(actionEvent -> {
             final Problem lastClikedCopy = lastClickedValue;
             controller.resolveIncident(lastClikedCopy);
-            createScroll(search_field.getText().toString());
+            createScroll(search_field.getText().toString(), true, sort_by.getSelectionModel().getSelectedIndex());
         });
 
         buttonsWrap.setSpacing(10);
@@ -294,11 +297,15 @@ public class IncidentsManagerView extends SubScene{
         incidents.getChildren().add(incidentsBox);
     }
 
-    private void createScroll(String search){
+    private void createScroll(String search, boolean refresh, int sort_options){
         incidents.getChildren().clear();
 
         int i = 0;
-        controller.createIncidents();
+        if(refresh)
+            controller.createIncidents();
+
+        controller.sortIncidents(sort_options);
+
         for (Problem problem : controller.getIncidents()) {
             if (problem.getDescription().toLowerCase().contains(search)) {
                 if(resolved.isSelected()){
