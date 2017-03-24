@@ -192,12 +192,13 @@ public class MapCreatorView extends SubScene {
 
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Attention");
-            alert.setHeaderText("Vous êtes sur le point de supprimer la carte et tous les emplacements crées, c'est opération est irréversible.");
+            alert.setHeaderText("Vous êtes sur le point de supprimer la carte et tous les emplacements crées, cette opération est irréversible.");
             alert.setContentText("Voulez vous vraiment tout supprimer ?");
 
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == ButtonType.OK){
                 mapFile = null;
+                mapInBdd = null;
                 mapPane.setAlignment(Pos.CENTER);
                 mapPane.setPrefWidth(MAP_VIEWPORT_WIDTH);
                 mapPane.setMinWidth(MAP_VIEWPORT_WIDTH);
