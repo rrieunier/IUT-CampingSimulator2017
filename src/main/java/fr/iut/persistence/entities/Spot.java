@@ -53,7 +53,7 @@ public class Spot extends Location {
     /**
      * Type of the Spot.
      */
-    @Column
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private SpotType spotType;
 
