@@ -82,11 +82,8 @@ public class IncidentsController {
         problems.sort(new Comparator<Problem>() {
             @Override
             public int compare(Problem o1, Problem o2) {
-                int result = 0;
+                double result = 0;
                 switch (sort_options){
-                    default:
-                        result = o1.getDescription().toLowerCase().compareTo(o2.getDescription().toLowerCase());
-                        break;
                     case 1:
                         result = o2.getDescription().toLowerCase().compareTo(o1.getDescription().toLowerCase());
                         break;
@@ -102,8 +99,11 @@ public class IncidentsController {
                     case 5:
                         result = o2.getSolutionDatetime().compareTo(o1.getSolutionDatetime());
                         break;
+                    default:
+                        result = o1.getDescription().toLowerCase().compareTo(o2.getDescription().toLowerCase());
+                        break;
                 }
-                return result;
+                return (int) result;
             }
         });
     }
