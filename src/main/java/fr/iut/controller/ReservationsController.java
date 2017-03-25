@@ -232,7 +232,6 @@ public class ReservationsController {
 
     public void exportFacturePDF(PDDocument facture) {
 
-
     }
 
     // UTILS=================================

@@ -128,7 +128,7 @@ public class MapCreatorView extends SubScene {
      * Build MapCreatorView from scratch, with no existing map in the DB
      */
     public MapCreatorView(MapController controller) {
-        super(new StackPane(), App.SCREEN_W * 3/4, App.SCREEN_H * 3/4);
+        super(new StackPane(), App.SCREEN_W * 2/3, App.SCREEN_H * 3/4);
         this.controller = controller;
 
         availableItems[0] = new ItemMap(SpotType.HOUSE);
@@ -384,7 +384,7 @@ public class MapCreatorView extends SubScene {
         private SpotType type;
         private Image smallImage, bigImage;
 
-        public ItemMap(SpotType type) {
+        ItemMap(SpotType type) {
             this.type = type;
 
             String filename = null;
@@ -403,15 +403,15 @@ public class MapCreatorView extends SubScene {
             bigImage = new Image(new File("res/items/x64/" + filename).toURI().toString());
         }
 
-        public SpotType getType() {
+        SpotType getType() {
             return type;
         }
 
-        public Image getSmallImage() {
+        Image getSmallImage() {
             return smallImage;
         }
 
-        public Image getBigImage() {
+        Image getBigImage() {
             return bigImage;
         }
     }

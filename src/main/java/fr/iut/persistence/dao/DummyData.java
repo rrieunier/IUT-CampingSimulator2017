@@ -17,12 +17,24 @@ public class DummyData {
         //Crete and persist your dummy datas for test here
         GenericDAO<Spot, Integer> daoSpot = new GenericDAO<>(Spot.class);
         daoSpot.removeAll();
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 20; i++) {
             Spot spot = new Spot();
-            spot.setName("Emplacement " + i);
-            spot.setCapacity(2);
-            spot.setPointX((double) i);
-            spot.setPointY((double) i);
+
+            switch (i%7) {
+                case 0: spot.setSpotType(SpotType.HOUSE); break;
+                case 1: spot.setSpotType(SpotType.PARKING); break;
+                case 2: spot.setSpotType(SpotType.POOL); break;
+                case 3: spot.setSpotType(SpotType.RESTAURANT); break;
+                case 4: spot.setSpotType(SpotType.SPORT); break;
+                case 5: spot.setSpotType(SpotType.TRAILER); break;
+                case 6: spot.setSpotType(SpotType.TENT); break;
+            }
+
+            spot.setName(spot.getSpotType().toString() + " " + i);
+
+            spot.setCapacity(i%10);
+            spot.setPointX((double) (i+1) * 20);
+            spot.setPointY((double) (i+1) * 20);
             daoSpot.save(spot);
         }
         ArrayList<Spot> spots = new ArrayList<>();

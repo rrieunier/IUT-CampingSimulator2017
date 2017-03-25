@@ -6,12 +6,15 @@ import fr.iut.persistence.entities.Reservation;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -29,11 +32,34 @@ public class ReservationsView extends ScrollPane {
 
         int i = 0;
         for(Reservation reservation : controller.getReservations()) {
-            VBox verticalWrapper = new VBox();
-            verticalWrapper.setAlignment(Pos.CENTER);
+            HBox horizontalWrapper = new HBox();
+            horizontalWrapper.setSpacing(10);
+            horizontalWrapper.setAlignment(Pos.CENTER);
 
-            verticalWrapper.setOnMouseClicked(mouseEvent -> {
-                //TODO : focus sur la map et affichage de la reservation
+            String filename = null;
+
+            switch (reservation.getSpot().getSpotType()) {
+                case HOUSE: filename = "cabin.png"; break;
+                case TRAILER: filename = "trailer.png"; break;
+                case RESTAURANT: filename = "cutlery.png"; break;
+                case PARKING: filename = "parking.png"; break;
+                case POOL: filename = "swimming-pool.png"; break;
+                case SPORT: filename = "kayak.png"; break;
+                case TENT: filename = "tent.png"; break;
+            }
+
+            Image bigImage = new Image(new File("res/items/x64/" + filename).toURI().toString());
+            ImageView locationImageView = new ImageView(bigImage);
+            HBox.setMargin(locationImageView, new Insets(0, 0, 0, 20));
+            horizontalWrapper.getChildren().add(locationImageView);
+
+            VBox verticalWrapper = new VBox();
+            horizontalWrapper.getChildren().add(verticalWrapper);
+            verticalWrapper.setAlignment(Pos.CENTER_LEFT);
+
+            horizontalWrapper.setOnMouseClicked(mouseEvent -> {
+                ReservationManagerDialog reservationManagerDialog = new ReservationManagerDialog(reservation, new ImageView(bigImage));
+                reservationManagerDialog.show();
             });
 
             verticalWrapper.setMinWidth(HomeView.TAB_CONTENT_W / 4);
@@ -63,14 +89,15 @@ public class ReservationsView extends ScrollPane {
             verticalWrapper.getChildren().add(datesText);
 
             if (i++ % 2 == 1)
-                verticalWrapper.setStyle("-fx-background-color: #336699;");
+                horizontalWrapper.setStyle("-fx-background-color: #336699;");
             else
-                verticalWrapper.setStyle("-fx-background-color: #0F355C;");
+                horizontalWrapper.setStyle("-fx-background-color: #0F355C;");
 
-            reservationsWrapper.getChildren().add(verticalWrapper);
+            reservationsWrapper.getChildren().add(horizontalWrapper);
         }
 
         setContent(reservationsWrapper);
         setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
     }
 }
