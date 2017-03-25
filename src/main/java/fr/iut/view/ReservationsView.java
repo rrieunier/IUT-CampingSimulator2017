@@ -58,7 +58,7 @@ public class ReservationsView extends ScrollPane {
             verticalWrapper.setAlignment(Pos.CENTER_LEFT);
 
             horizontalWrapper.setOnMouseClicked(mouseEvent -> {
-                ReservationManagerDialog reservationManagerDialog = new ReservationManagerDialog(reservation, new ImageView(bigImage));
+                ReservationManagerDialog reservationManagerDialog = new ReservationManagerDialog(controller, reservation, new ImageView(bigImage));
                 reservationManagerDialog.show();
             });
 
@@ -82,7 +82,7 @@ public class ReservationsView extends ScrollPane {
             personCountText.setFill(Color.WHITE);
             verticalWrapper.getChildren().add(personCountText);
 
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             Text datesText = new Text("Dates début/fin : " + dateFormat.format(new Date(reservation.getStarttime().getTime())) + " / " + dateFormat.format(new Date(reservation.getEndtime().getTime())));
             datesText.setFont(new Font(15));
             datesText.setFill(Color.WHITE);

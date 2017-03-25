@@ -1,6 +1,7 @@
 package fr.iut.controller;
 
 import fr.iut.persistence.dao.ReservationsDAO;
+import fr.iut.persistence.entities.Location;
 import fr.iut.persistence.entities.Reservation;
 import fr.iut.view.ReservationsView;
 import javafx.scene.control.ScrollPane;
@@ -40,6 +41,23 @@ public class ReservationsController {
 
     public List<Reservation> getReservations() {
         return dao.findAll();
+    }
+
+    public void removeReservation(Reservation reservation) {
+        dao.remove(reservation);
+    }
+
+    public void updateReservation(Reservation reservation) {
+        dao.update(reservation);
+    }
+
+    public List<String> getAllLocationNames() {
+        ArrayList<String> names = new ArrayList<>();
+
+        for(Location location : homeController.getMapController().getAllSpots())
+            names.add(location.getName());
+
+        return names;
     }
 
     public PDDocument makeFacturePDF(Reservation reservation) throws IOException {
