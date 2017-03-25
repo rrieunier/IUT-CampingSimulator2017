@@ -17,7 +17,7 @@ public class DummyData {
         //Crete and persist your dummy datas for test here
         GenericDAO<Spot, Integer> daoSpot = new GenericDAO<>(Spot.class);
         daoSpot.removeAll();
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 50; i++) {
             Spot spot = new Spot();
 
             switch (i%7) {
@@ -93,5 +93,6 @@ public class DummyData {
             notification.setContent("Coucou je suis la notification ! :)");
             daoNotifications.save(notification);
         }
+        HibernateUtil.shutdown();
     }
 }
