@@ -1,9 +1,11 @@
 package fr.iut.view;
 
 
-import fr.iut.controller.HomeController;
 import fr.iut.controller.ProductController;
+import fr.iut.persistence.dao.GenericDAO;
 import fr.iut.persistence.entities.Product;
+import fr.iut.persistence.entities.Supplier;
+import fr.iut.persistence.entities.SupplierProposeProduct;
 import javafx.beans.NamedArg;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -23,8 +25,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Comparator;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.*;
 
 /**
  * the product manager screen
@@ -132,27 +135,23 @@ public class ProductManagerView extends SubScene {
         grid.getStyleClass().add("stock-grid");
 
         HBox buttons = new HBox();
-        buttons.setSpacing(HomeView.TAB_CONTENT_W / 15);
+        buttons.setSpacing(HomeView.TAB_CONTENT_W / 10);
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 3; i++) {
             Button button = new Button();
             if (i == 0) {
-                button.setText("Gérer fournisseurs");
-                button.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent event) {
-                        // TODO
-                    }
-                });
-            } else if (i == 1) {
                 button.setText("Réaprovisionner");
                 button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
-                        // TODO
+                        try {
+                            controller.restock(lastClickedValue);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
-            } else if (i == 2) {
+            } else if (i == 1) {
                 button.setText("Supprimer");
                 button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override

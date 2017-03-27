@@ -3,6 +3,7 @@ package fr.iut.view;
 import fr.iut.App;
 import fr.iut.controller.ConnectionController;
 import fr.iut.controller.SubscribeController;
+import fr.iut.persistence.entities.Authorization;
 import fr.iut.persistence.entities.Employee;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -19,6 +20,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.HashSet;
 
 
 /**
@@ -103,6 +106,8 @@ public class SubscribeView extends Scene {
                 employee.setPhone(phone.getText());
                 employee.setCompleteAddress(address.getText());
                 employee.setEmail(mail.getText());
+                employee.setAuthorizations(new HashSet<>(Arrays.asList(Authorization.values()))); //On met toutes les permissions au premier utilisateur car il s'agit de l'administrateur
+
                 controller.finish(employee);
             }
 

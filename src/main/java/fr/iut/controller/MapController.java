@@ -25,22 +25,20 @@ public class MapController {
     private HomeController homeController;
     private MapCreatorView mapCreatorView;
     private MapDao daoMap = new MapDao();
-    private GenericDAO<Spot, Integer> daoSpot= new GenericDAO<>(Spot.class);
+    private GenericDAO<Spot, Integer> daoSpot = new GenericDAO<>(Spot.class);
 
     private Map currentMap = null;
 
     public MapController(HomeController homeController) {
         this.homeController = homeController;
         currentMap = daoMap.getMap();
-
-        if(currentMap != null)
-            mapCreatorView = new MapCreatorView(this, currentMap);
-        else
-            mapCreatorView = new MapCreatorView(this);
     }
 
     public SubScene getView() {
-        return mapCreatorView;
+        if(currentMap != null)
+            return new MapCreatorView(this, currentMap);
+        else
+            return new MapCreatorView(this);
     }
 
     public void storeMap(File mapFile) {

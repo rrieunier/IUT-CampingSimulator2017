@@ -23,12 +23,31 @@ import java.util.Date;
  */
 public class ReservationsView extends ScrollPane {
 
+    /**
+     * instance of the controller
+     */
     ReservationsController controller;
+    VBox reservationsWrapper;
 
+    /**
+     * @param controller
+     * reservations list
+     */
     public ReservationsView(ReservationsController controller) {
         this.controller = controller;
 
-        VBox reservationsWrapper = new VBox();
+        reservationsWrapper = new VBox();
+
+        refresh();
+
+        setContent(reservationsWrapper);
+        setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+    }
+
+    public void refresh() {
+
+        reservationsWrapper.getChildren().clear();
 
         int i = 0;
         for(Reservation reservation : controller.getReservations()) {
@@ -59,7 +78,8 @@ public class ReservationsView extends ScrollPane {
 
             horizontalWrapper.setOnMouseClicked(mouseEvent -> {
                 ReservationManagerDialog reservationManagerDialog = new ReservationManagerDialog(controller, reservation, new ImageView(bigImage));
-                reservationManagerDialog.show();
+                reservationManagerDialog.showAndWait();
+                refresh();
             });
 
             verticalWrapper.setMinWidth(HomeView.TAB_CONTENT_W / 4);
@@ -95,9 +115,5 @@ public class ReservationsView extends ScrollPane {
 
             reservationsWrapper.getChildren().add(horizontalWrapper);
         }
-
-        setContent(reservationsWrapper);
-        setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
     }
 }

@@ -4,6 +4,8 @@ import fr.iut.persistence.dao.GenericDAO;
 import fr.iut.persistence.entities.Product;
 import fr.iut.persistence.entities.Supplier;
 import fr.iut.persistence.entities.SupplierProposeProduct;
+import fr.iut.view.SupplierManagerView;
+import javafx.scene.SubScene;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
@@ -21,6 +23,10 @@ public class SupplierController {
     private GenericDAO<SupplierProposeProduct, Integer> daoProposeProduct = new GenericDAO<>(SupplierProposeProduct.class);
 
     public SupplierController(HomeController homeController){ this.homeController = homeController;}
+
+    public SubScene getView() {
+        return new SupplierManagerView(this);
+    }
 
     public void createSuppliers() { suppliers = (ArrayList<Supplier>) daoSuppliers.findAll();}
 

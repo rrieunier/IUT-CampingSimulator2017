@@ -126,6 +126,10 @@ public class Employee implements EntityModel<Integer> {
         return authorizations;
     }
 
+    public boolean hasPermission(Authorization authorization) {
+        return authorizations.contains(authorization);
+    }
+
     public Set<Notification> getNotifications() {
         return notifications;
     }

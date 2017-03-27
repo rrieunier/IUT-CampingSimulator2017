@@ -3,6 +3,7 @@ package fr.iut.view;
 import fr.iut.controller.ReservationsController;
 import fr.iut.persistence.entities.Client;
 import fr.iut.persistence.entities.Reservation;
+import fr.iut.persistence.entities.Spot;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -14,19 +15,41 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.util.Callback;
+import javafx.util.StringConverter;
 
 import java.io.File;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.ZoneId;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by shellcode on 3/23/17.
  */
 public class ReservationManagerDialog extends Dialog<Void> {
 
-    public ReservationManagerDialog(ReservationsController controller, Reservation reservation, ImageView reservationPic) {
+    private Reservation reservationToEdit;
 
-        Client clientOfTheReservation = reservation.getClient();
+    public ReservationManagerDialog(ReservationsController controller, Reservation reservation, ImageView reservationPic) {
+        this(controller, reservation, null, reservationPic);
+        setTitle("Création d'une réservation");
+    }
+
+    public ReservationManagerDialog(ReservationsController controller) {
+        this(controller, null, null, null);
+        setTitle("Création d'une réservation");
+    }
+
+    private  ReservationManagerDialog(ReservationsController controller, Reservation reservationToEdit, Client clientOfNewReservation, ImageView reservationPic) {
+
+        this.reservationToEdit = reservationToEdit;
+
+        Client clientOfTheReservation = clientOfNewReservation;
+
+        if(clientOfNewReservation == null && reservationToEdit != null)
+            clientOfTheReservation = reservationToEdit.getClient();
 
         VBox wrapper = new VBox();
 
@@ -37,14 +60,19 @@ public class ReservationManagerDialog extends Dialog<Void> {
         getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
 
         HeaderView header = new HeaderView("Réservation");
-        header.setRight(reservationPic);
+
+        if(reservationPic != null)
+            header.setRight(reservationPic);
+
         wrapper.getChildren().add(header);
 
         ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
         getDialogPane().getButtonTypes().add(okButtonType);
 
         ButtonType deleteButtonType = new ButtonType("Supprimer");
-        getDialogPane().getButtonTypes().add(deleteButtonType);
+
+        if(reservationToEdit != null)
+            getDialogPane().getButtonTypes().add(deleteButtonType);
 
         getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
 
@@ -57,9 +85,15 @@ public class ReservationManagerDialog extends Dialog<Void> {
         clientResaText.setFont(new Font(16));
         clientResaText.setFill(Color.WHITE);
 
-        Text nameClientText = new Text(clientOfTheReservation.getFirstname() + " " + clientOfTheReservation.getLastname());
-        nameClientText.setFont(new Font(16));
-        nameClientText.setFill(Color.WHITE);
+        Text nameClientText = null;
+        ComboBox<Client> clientsComboBox = null;
+
+        if(clientOfTheReservation != null) {
+            nameClientText = new Text();
+            nameClientText.setText(clientOfTheReservation.getFirstname() + " " + clientOfTheReservation.getLastname());
+            nameClientText.setFont(new Font(16));
+            nameClientText.setFill(Color.WHITE);
+        }
 
         Text personCountText = new Text("Nombre de personnes : ");
         personCountText.setFont(new Font(16));
@@ -78,30 +112,75 @@ public class ReservationManagerDialog extends Dialog<Void> {
         locationText.setFill(Color.WHITE);
 
         Spinner personCountInput = new Spinner();
-        personCountInput.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 99, reservation.getPersonCount()));
+
+            personCountInput.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 99, (reservationToEdit != null) ? reservationToEdit.getPersonCount() : 1));
 
         DatePicker beginTime = new DatePicker();
-        beginTime.setValue(Instant.ofEpochMilli(reservation.getStarttime().getTime()).atZone(ZoneId.systemDefault()).toLocalDate());
+
+        if(reservationToEdit != null)
+            beginTime.setValue(Instant.ofEpochMilli(reservationToEdit.getStarttime().getTime()).atZone(ZoneId.systemDefault()).toLocalDate());
 
         DatePicker endTime = new DatePicker();
-        endTime.setValue(Instant.ofEpochMilli(reservation.getEndtime().getTime()).atZone(ZoneId.systemDefault()).toLocalDate());
 
-        ObservableList<String> locations = FXCollections.observableArrayList();
-        locations.addAll(controller.getAllLocationNames());
+        if(reservationToEdit != null && reservationToEdit.getEndtime() != null)
+            endTime.setValue(Instant.ofEpochMilli(reservationToEdit.getEndtime().getTime()).atZone(ZoneId.systemDefault()).toLocalDate());
 
-        ComboBox<String> locationComboBox = new ComboBox<>(locations);
-        locationComboBox.setValue(reservation.getSpot().getName());
+        ObservableList<Spot> locations = FXCollections.observableArrayList();
+        locations.addAll(controller.getAllSpots());
+
+        ComboBox<Spot> locationComboBox = new ComboBox<>(locations);
+
+        locationComboBox.setConverter(new StringConverter<Spot>() {
+            @Override
+            public String toString(Spot spot) {
+                return spot.getName();
+            }
+
+            @Override
+            public Spot fromString(String s) {
+                return null;
+            }
+        });
+
+        if(reservationToEdit != null)
+            locationComboBox.setValue(reservationToEdit.getSpot());
 
 
         Button billButton = new Button("Facture");
         billButton.getStyleClass().add("record-sales");
-        billButton.setOnAction(action -> {
-            BillSummaryView billSummaryView = new BillSummaryView(reservation, controller);
-            billSummaryView.showAndWait();
-        });
+
+        if(reservationToEdit != null) {
+            billButton.setOnAction(action -> {
+                BillSummaryView billSummaryView = new BillSummaryView(this.reservationToEdit, controller);
+                billSummaryView.showAndWait();
+            });
+        }
 
         grid.add(clientResaText, 0, 0);
-        grid.add(nameClientText, 1, 0);
+
+        if(nameClientText != null)
+            grid.add(nameClientText, 1, 0);
+
+        else {
+            ObservableList<Client> clients = FXCollections.observableArrayList();
+            clients.addAll(controller.getAllClients());
+
+            clientsComboBox = new ComboBox<>(clients);
+
+            clientsComboBox.setConverter(new StringConverter<Client>() {
+                @Override
+                public String toString(Client client) {
+                    return client.getFirstname() + " " + client.getLastname();
+                }
+
+                @Override
+                public Client fromString(String s) {
+                    return null;
+                }
+            });
+
+            grid.add(clientsComboBox, 1, 0);
+        }
 
         grid.add(personCountText, 0, 1);
         grid.add(personCountInput, 1, 1);
@@ -115,23 +194,48 @@ public class ReservationManagerDialog extends Dialog<Void> {
         grid.add(locationText, 0, 4);
         grid.add(locationComboBox, 1, 4);
 
-        grid.add(billButton, 0, 5);
+        if(reservationToEdit != null)
+            grid.add(billButton, 1, 5);
 
         wrapper.getChildren().add(grid);
 
         getDialogPane().setContent(wrapper);
 
+        ComboBox<Client> finalClientsComboBox = clientsComboBox;
+        Client finalClientOfTheReservation = clientOfTheReservation;
         setResultConverter(dialogButton -> {
-
             if (dialogButton == okButtonType) {
-                /*
-                //TODO : modifier la reservation en fonction de toutes les valeurs qui ont été modifiées et update la BDD
-                controller.updateReservation(reservation);
-                */
+
+                if(this.reservationToEdit == null)
+                    this.reservationToEdit = new Reservation();
+
+                Instant instant = Instant.from(beginTime.getValue().atStartOfDay(ZoneId.systemDefault()));
+                Date dateBegin = Date.from(instant);
+                instant = Instant.from(endTime.getValue().atStartOfDay(ZoneId.systemDefault()));
+                Date dateEnd = Date.from(instant);
+
+                Calendar c = Calendar.getInstance();
+                c.setTime(dateBegin);
+                this.reservationToEdit.setStarttime(new Timestamp(c.getTimeInMillis()));
+
+                c.setTime(dateEnd);
+                this.reservationToEdit.setEndtime(new Timestamp(c.getTimeInMillis()));
+
+                this.reservationToEdit.setSpot(locationComboBox.getValue());
+                this.reservationToEdit.setPersonCount((Integer)personCountInput.getValue());
+
+                if(finalClientOfTheReservation == null)
+                    this.reservationToEdit.setClient(finalClientsComboBox.getValue());
+
+                if(reservationToEdit == null) //paramètre constructeur, alors que les autres sont des attributs de l'objet
+                    controller.createReservation(this.reservationToEdit);
+                else
+                    controller.updateReservation(this.reservationToEdit);
             }
 
             else if(dialogButton == deleteButtonType) {
-                controller.removeReservation(reservation);
+                if(this.reservationToEdit != null)
+                    controller.removeReservation(this.reservationToEdit);
             }
 
             return null;

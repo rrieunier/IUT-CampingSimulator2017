@@ -2,11 +2,21 @@ package fr.iut.controller;
 
 import fr.iut.persistence.dao.GenericDAO;
 import fr.iut.persistence.entities.Product;
+import fr.iut.persistence.entities.Supplier;
+import fr.iut.persistence.entities.SupplierProposeProduct;
+import fr.iut.view.ChooseSupplierDialog;
 import fr.iut.view.InputsListDialog;
+import fr.iut.view.ProductManagerView;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.SubScene;
 
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Optional;
+import java.awt.*;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.*;
+import java.util.List;
 
 /**
  * Created by damnhotuser on 21/03/17.
@@ -18,6 +28,10 @@ public class ProductController {
 
     public ProductController(HomeController homeController) {
         this.controller = homeController;
+    }
+
+    public SubScene getView() {
+        return new ProductManagerView(this);
     }
 
     /**
@@ -83,7 +97,60 @@ public class ProductController {
         dao.update(product);
     }
 
+    /**
+     * @param lastClickedValue
+     * deletes a product from the database
+     */
     public void deleteProduct(Product lastClickedValue) {
         dao.remove(lastClickedValue);
+    }
+
+    /**
+     * @param lastClickedValue
+     * @throws IOException
+     * display the chooseSupplierDialog to choose the supplier to restock
+     */
+    public void restock(Product lastClickedValue) throws IOException {
+        ObservableList<Supplier> choices = FXCollections.observableArrayList();
+
+        for (SupplierProposeProduct s : lastClickedValue.getSupplierProposeProducts()) {
+            if (Objects.equals(s.getProduct().getId(), lastClickedValue.getId()))
+                choices.add(s.getSupplier());
+        }
+
+        ChooseSupplierDialog dialog = new ChooseSupplierDialog(choices, lastClickedValue, this);
+
+        dialog.showAndWait();
+    }
+
+    /**
+     * @param supplier
+     * @throws IOException
+     * browse "mailto:email@supplier.com" to send a mail to the supplier
+     */
+    public void sendMailToSupplier(Supplier supplier) throws IOException {
+        String supplierEmail = supplier.getEmail();
+        String os = System.getProperty("os.name").toLowerCase();
+
+        if (os.contains("win")) { // windows
+            Runtime rt = Runtime.getRuntime();
+            String url = "mailto:" + supplierEmail;
+            rt.exec("rundll32 url.dll,FileProtocolHandler " + url);
+        } else if (os.contains("mac")) { // macos
+            Runtime rt = Runtime.getRuntime();
+            String url = "mailto:" + supplierEmail;
+            rt.exec("open" + url);
+        } else { // linux
+            Runtime rt = Runtime.getRuntime();
+            String url = "mailto:" + supplierEmail;
+            String[] browsers = {"epiphany", "firefox", "mozilla", "konqueror",
+                    "netscape", "opera", "links", "lynx"};
+
+            StringBuffer cmd = new StringBuffer();
+            for (int i = 0; i < browsers.length; i++)
+                cmd.append(i == 0 ? "" : " || ").append(browsers[i]).append(" \"").append(url).append("\" ");
+
+            rt.exec(new String[]{"sh", "-c", cmd.toString()});
+        }
     }
 }

@@ -32,6 +32,16 @@ public class InputsListDialog extends Dialog<Map<String,String>>{
         wrapper.getChildren().add(textField);
     }
 
+    public void addPasswordField(String text){
+        PasswordField passwordField = new PasswordField();
+        passwordField.setMaxWidth(WINDOW_WIDTH/1.1);
+        passwordField.setMinHeight(WINDOW_HEIGHT / 15);
+        passwordField.setPromptText(text);
+        passwordField.setStyle("-fx-font-weight: bold;" + "-fx-font-size: 17px;");
+        textFields.add(passwordField);
+        wrapper.getChildren().add(passwordField);
+    }
+
     public InputsListDialog(String title){
         setTitle(title);
 

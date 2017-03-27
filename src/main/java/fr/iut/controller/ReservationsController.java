@@ -1,9 +1,7 @@
 package fr.iut.controller;
 
 import fr.iut.persistence.dao.ReservationsDAO;
-import fr.iut.persistence.entities.Location;
-import fr.iut.persistence.entities.Purchase;
-import fr.iut.persistence.entities.Reservation;
+import fr.iut.persistence.entities.*;
 import fr.iut.view.ReservationsView;
 import javafx.scene.control.ScrollPane;
 import javafx.stage.FileChooser;
@@ -27,10 +25,7 @@ public class ReservationsController {
      * instance of the dao for reservations
      */
     private ReservationsDAO dao = new ReservationsDAO();
-    /**
-     * view related to the controller
-     */
-    private ReservationsView reservationsView = new ReservationsView(this);
+
     /**
      * instance of the home controller
      */
@@ -42,7 +37,7 @@ public class ReservationsController {
     }
 
     public ScrollPane getView() {
-        return reservationsView;
+        return new ReservationsView(this);
     }
 
     /**
@@ -69,15 +64,25 @@ public class ReservationsController {
     }
 
     /**
-     * @return names of reservations in database
+     * @param reservation
+     * create a reservation in database
      */
-    public List<String> getAllLocationNames() {
-        ArrayList<String> names = new ArrayList<>();
+    public void createReservation(Reservation reservation) {
+        dao.save(reservation);
+    }
 
-        for(Location location : homeController.getMapController().getAllSpots())
-            names.add(location.getName());
+    /**
+     * @return retrieves all spots from map controller
+     */
+    public List<Spot> getAllSpots() {
+        return homeController.getMapController().getAllSpots();
+    }
 
-        return names;
+    /**
+     * @return retrieves all clients from clients controller
+     */
+    public List<Client> getAllClients() {
+        return homeController.getClientsController().getAllClients();
     }
 
     /**

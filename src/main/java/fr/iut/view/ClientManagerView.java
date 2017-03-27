@@ -51,7 +51,7 @@ public class ClientManagerView extends SubScene {
         clientsScroll.setMaxWidth(HomeView.TAB_CONTENT_W / 4);
 
         int i = 0;
-        for(Client client : controller.getClients()) {
+        for(Client client : controller.getAllClients()) {
             HBox clientBox = new HBox();
             clientBox.setOnMouseClicked(mouseEvent -> updateDetail(client));
 

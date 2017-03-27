@@ -109,4 +109,6 @@ public class Supplier implements EntityModel<Integer> {
     public void setSupplierProposeProducts(Set<SupplierProposeProduct> supplierProposeProducts) {
         this.supplierProposeProducts = supplierProposeProducts;
     }
+
+    public String toString() { return this.getName(); }
 }
