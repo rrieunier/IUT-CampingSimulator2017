@@ -41,6 +41,7 @@ class StatisticsView extends SubScene {
     private StatisticsState statisticsState = StatisticsState.CATEGORIES;
     private SelectedCategory selectedCategory = SelectedCategory.NONE;
     private int selectedStat = -1;
+    private Button back_button;
 
 
     /**
@@ -53,7 +54,6 @@ class StatisticsView extends SubScene {
 
         VBox wrapper = (VBox) getRoot();
         HeaderView header = new HeaderView("Statistiques");
-        ScrollPane scrollPane = new ScrollPane();
 
         wrapper.setPrefSize(HomeView.TAB_CONTENT_W, HomeView.TAB_CONTENT_H);
         wrapper.setBorder(new Border(new BorderStroke(Color.DARKGRAY, BorderStrokeStyle.SOLID, new CornerRadii(2), new BorderWidths(5))));
@@ -67,13 +67,14 @@ class StatisticsView extends SubScene {
         body.setHgap(100);
         body.setVgap(50);
 
-        scrollPane = new ScrollPane();
+        ScrollPane scrollPane = new ScrollPane();
         scrollPane.setContent(body);
         scrollPane.setMinHeight(17 * HomeView.TAB_CONTENT_H / 19);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
-        Button back_button = new Button("←");
+        back_button = new Button("←");
+        back_button.setVisible(false);
         back_button.getStylesheets().add(new File("res/style.css").toURI().toString());
         back_button.getStyleClass().add("record-sales");
         back_button.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -82,6 +83,8 @@ class StatisticsView extends SubScene {
                 switch (statisticsState) {
                     case STAT_LIST:
                         statisticsState = StatisticsState.CATEGORIES;
+                        selectedCategory = SelectedCategory.NONE;
+                        back_button.setVisible(false);
                         buildInterface(body);
                         break;
 
@@ -125,6 +128,7 @@ class StatisticsView extends SubScene {
                     button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent event) {
+                            back_button.setVisible(true);
                             selectedCategory = SelectedCategory.values()[finalI];
                             statisticsState = StatisticsState.STAT_LIST;
                             buildInterface(body);
