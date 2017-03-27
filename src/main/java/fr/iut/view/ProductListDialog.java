@@ -140,5 +140,6 @@ public class ProductListDialog extends Dialog<ArrayList<Pair<Product, Float>>> {
                 }
             }
             return arrayList;
-        });    }
+        });
+    }
 }
