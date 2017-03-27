@@ -14,7 +14,6 @@ import java.util.List;
 public class ClientsController {
 
     private HomeController homeController;
-    private ClientManagerView clientManagerView = new ClientManagerView(this);
     private GenericDAO<Client, Integer> daoClient;
 
     public ClientsController(HomeController homeController) {
@@ -22,7 +21,7 @@ public class ClientsController {
     }
 
     public SubScene getView() {
-        return clientManagerView;
+        return new ClientManagerView(this);
     }
 
     public List<Client> getAllClients() {
@@ -33,7 +32,7 @@ public class ClientsController {
 
         System.out.println("finding clients...");
 
-        List<Client> clients = daoClient.findAll();
+        List<Client> clients = daoClient.findAll(); //May cause NPE
 
         System.out.println("returning clients");
         return clients;

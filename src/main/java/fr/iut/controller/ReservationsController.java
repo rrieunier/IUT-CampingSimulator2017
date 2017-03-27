@@ -25,10 +25,7 @@ public class ReservationsController {
      * instance of the dao for reservations
      */
     private ReservationsDAO dao = new ReservationsDAO();
-    /**
-     * view related to the controller
-     */
-    private ReservationsView reservationsView = new ReservationsView(this);
+
     /**
      * instance of the home controller
      */
@@ -40,7 +37,7 @@ public class ReservationsController {
     }
 
     public ScrollPane getView() {
-        return reservationsView;
+        return new ReservationsView(this);
     }
 
     /**

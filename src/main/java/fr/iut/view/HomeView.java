@@ -3,6 +3,9 @@ package fr.iut.view;
 import fr.iut.App;
 import fr.iut.controller.HomeController;
 import fr.iut.controller.NotificationsController;
+import fr.iut.persistence.dao.EmployeeDAO;
+import fr.iut.persistence.entities.Authorization;
+import fr.iut.persistence.entities.Employee;
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -28,7 +31,7 @@ import java.io.File;
 public class HomeView extends Scene {
 
     private HomeController controller;
-    private String username;
+    private Employee connectedEmployee;
     private BorderPane components;
 
     public static double TAB_CONTENT_W = App.SCREEN_W * 5 / 6;
@@ -40,10 +43,10 @@ public class HomeView extends Scene {
     private Timeline blinkAnimation;
     private Text notification_text;
 
-    public HomeView(HomeController controller, String username) {
+    public HomeView(HomeController controller, Employee connectedEmployee) {
         super(new BorderPane(), App.SCREEN_W, App.SCREEN_H);
         this.controller = controller;
-        this.username = username;
+        this.connectedEmployee = connectedEmployee;
 
         components = (BorderPane) getRoot();
         components.setStyle("-fx-background-color: rgb(12, 27, 51);");
@@ -80,14 +83,10 @@ public class HomeView extends Scene {
         String tabsValue[] = {"Clients", "Incidents", "Salariés", "Fournisseurs", "Stocks", "Statistiques"};
 
         ToggleGroup buttonsGroup = new ToggleGroup();
+        ToggleButton defaultSelected = null;
 
         for(int i = 0; i < 6; i++) {
             ToggleButton newTab = new ToggleButton();
-
-            if(i == 0) {
-                newTab.setSelected(true);
-                borderPane.setCenter(new ClientManagerView(controller.getClientsController()));
-            }
 
             newTab.setToggleGroup(buttonsGroup);
             newTab.setText(tabsValue[i]);
@@ -95,6 +94,49 @@ public class HomeView extends Scene {
             newTab.getStyleClass().add("buttonTab");
             newTab.setMinWidth(App.SCREEN_W / 10);
             newTab.setMinHeight(App.SCREEN_H / 10);
+
+            if(i == 0) {
+                if(!connectedEmployee.hasPermission(Authorization.CLIENT_READ))
+                    newTab.setDisable(true);
+                else if(defaultSelected == null)
+                    defaultSelected = newTab;
+            }
+
+            else if(i == 1) {
+                if(!connectedEmployee.hasPermission(Authorization.PROBLEM_READ))
+                    newTab.setDisable(true);
+                else if(defaultSelected == null)
+                    defaultSelected = newTab;
+            }
+
+            else if(i == 2) {
+                if(!connectedEmployee.hasPermission(Authorization.EMPLOYEE_READ))
+                    newTab.setDisable(true);
+                else if(defaultSelected == null)
+                    defaultSelected = newTab;
+            }
+
+            else if(i == 3) {
+                if(!connectedEmployee.hasPermission(Authorization.SUPPLIER_READ))
+                    newTab.setDisable(true);
+                else if(defaultSelected == null)
+                    defaultSelected = newTab;
+            }
+
+            else if(i == 4) {
+                if(!connectedEmployee.hasPermission(Authorization.PRODUCT_READ))
+                    newTab.setDisable(true);
+                else if(defaultSelected == null)
+                    defaultSelected = newTab;
+            }
+
+            else if(i == 5) {
+                if(!connectedEmployee.hasPermission(Authorization.STATISTICS_READ))
+                    newTab.setDisable(true);
+                else if(defaultSelected == null)
+                    defaultSelected = newTab;
+            }
+
             verticalTabs.getChildren().add(newTab);
 
             //Permet d'eviter la déselection d'un bouton déjà séléctionné
@@ -111,12 +153,12 @@ public class HomeView extends Scene {
                 SubScene subScene = null;
 
                 switch (finalI) {
-                    case 0: subScene = new ClientManagerView(controller.getClientsController()); break;
-                    case 1: subScene = new IncidentsManagerView(controller.getIncidentsController()); break;
-                    case 2: subScene = new EmployeeManagerView(controller.getEmployeesController()); break;
-                    case 3: subScene = new SupplierManagerView(controller.getSupplierController()); break;
-                    case 4: subScene = new ProductManagerView(controller.getProductController()); break;
-                    case 5: subScene = new StatisticsView(controller.getStatiscticsController()); break;
+                    case 0: subScene = controller.getClientsController().getView(); break;
+                    case 1: subScene = controller.getIncidentsController().getView(); break;
+                    case 2: subScene = controller.getEmployeesController().getView(); break;
+                    case 3: subScene = controller.getSupplierController().getView(); break;
+                    case 4: subScene = controller.getProductController().getView(); break;
+                    case 5: subScene = controller.getStatiscticsController().getView(); break;
                 }
 
                 borderPane.setCenter(subScene);
@@ -132,6 +174,9 @@ public class HomeView extends Scene {
         container.getChildren().add(borderPane);
 
         tab.setContent(container);
+
+        if(defaultSelected != null)
+            defaultSelected.fire(); //click button
     }
 
 
@@ -177,7 +222,7 @@ public class HomeView extends Scene {
         VBox vboxUser = new VBox();
         vboxUser.setAlignment(Pos.CENTER);
 
-        Text welcome_text = new Text("Bienvenue " + username + " !");
+        Text welcome_text = new Text("Bienvenue " + connectedEmployee.getLogin() + " !");
         welcome_text.setFont(new Font(20));
         welcome_text.setFill(Color.WHITE);
         welcome_text.applyCss(); //important pour pouvoir récupérer les dimenssions

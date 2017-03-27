@@ -14,7 +14,6 @@ import javafx.scene.Scene;
 public class SubscribeController {
 
     private App app;
-    private SubscribeView subscribeView = new SubscribeView(this);
     private EmployeeDAO dao = new EmployeeDAO();
 
     public SubscribeController(App app){
@@ -22,7 +21,7 @@ public class SubscribeController {
     }
 
     public Scene getView() {
-        return subscribeView;
+        return new SubscribeView(this);
     }
 
     /**

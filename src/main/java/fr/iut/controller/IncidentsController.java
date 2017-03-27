@@ -2,6 +2,8 @@ package fr.iut.controller;
 
 import fr.iut.persistence.dao.GenericDAO;
 import fr.iut.persistence.entities.Problem;
+import fr.iut.view.IncidentsManagerView;
+import javafx.scene.SubScene;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -32,6 +34,10 @@ public class IncidentsController {
     private GenericDAO<Problem, Integer> daoIncidents = new GenericDAO<>(Problem.class);
 
     public IncidentsController(HomeController homeController) { this.homeController = homeController;}
+
+    public SubScene getView() {
+        return new IncidentsManagerView(this);
+    }
 
     /**
      * get incidents of database and create in local

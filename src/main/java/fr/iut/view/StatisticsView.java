@@ -26,7 +26,7 @@ enum StatisticsState {
 /**
  * the statistics screen
  */
-class StatisticsView extends SubScene {
+public class StatisticsView extends SubScene {
 
     private static final int NUMBER_OF_CATEGORIES = 6;
     private static final double CATEGORIE_BUTTON_SIZE = HomeView.TAB_CONTENT_W / 6;

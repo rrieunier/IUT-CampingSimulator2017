@@ -6,13 +6,19 @@ import fr.iut.persistence.entities.*;
 import fr.iut.view.ChartType;
 import fr.iut.view.ChartView;
 import fr.iut.view.SelectedCategory;
+import fr.iut.view.StatisticsView;
 import javafx.beans.NamedArg;
 import javafx.geometry.Side;
+import javafx.scene.SubScene;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 
 public class StatisticsController {
+
+    public SubScene getView() {
+        return new StatisticsView(this);
+    }
 
     /**
      * @param category

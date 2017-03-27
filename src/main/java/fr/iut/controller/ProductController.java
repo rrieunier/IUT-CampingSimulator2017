@@ -6,8 +6,10 @@ import fr.iut.persistence.entities.Supplier;
 import fr.iut.persistence.entities.SupplierProposeProduct;
 import fr.iut.view.ChooseSupplierDialog;
 import fr.iut.view.InputsListDialog;
+import fr.iut.view.ProductManagerView;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.SubScene;
 
 import java.awt.*;
 import java.io.IOException;
@@ -26,6 +28,10 @@ public class ProductController {
 
     public ProductController(HomeController homeController) {
         this.controller = homeController;
+    }
+
+    public SubScene getView() {
+        return new ProductManagerView(this);
     }
 
     /**

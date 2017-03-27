@@ -19,7 +19,6 @@ public class EmployeesController {
 
     private EmployeeDAO daoEmployee = new EmployeeDAO();
     private HomeController homeController;
-    private EmployeeManagerView employeeManagerView = new EmployeeManagerView(this);
     private ArrayList<Employee> employees = new ArrayList<>();
 
 
@@ -28,7 +27,7 @@ public class EmployeesController {
     }
 
     public SubScene getView() {
-        return employeeManagerView;
+        return new EmployeeManagerView(this);
     }
 
     public void createEmployees() {

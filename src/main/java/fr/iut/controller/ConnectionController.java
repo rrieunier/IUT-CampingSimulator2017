@@ -5,6 +5,7 @@ import fr.iut.State;
 import fr.iut.persistence.dao.EmployeeDAO;
 import fr.iut.persistence.dao.GenericDAO;
 import fr.iut.persistence.entities.Employee;
+import fr.iut.persistence.exception.InvalidLoginPasswordException;
 import fr.iut.view.ConnectionView;
 import javafx.scene.Scene;
 
@@ -16,8 +17,6 @@ import java.util.List;
 public class ConnectionController {
 
     private App app;
-    private ConnectionView connectionView = new ConnectionView(this);
-    private String connectedUser = null;
 
     private EmployeeDAO daoEmployee = new EmployeeDAO();
 
@@ -26,7 +25,7 @@ public class ConnectionController {
     }
 
     public Scene getView() {
-        return connectionView;
+        return new ConnectionView(this);
     }
 
     public boolean tryLogin(String username, String password) {
@@ -36,27 +35,27 @@ public class ConnectionController {
 
         Employee employee = daoEmployee.findByLogin(username);
 
-        String passHash = hash(password);
-
-        if(employee == null || !employee.getPassword().equals(passHash))
+        if(employee == null)
             return false;
 
-        connectedUser = employee.getLogin();
-
-        return true;
+        try {
+            daoEmployee.connectUser(username, hash(password));
+            return true;
+        } catch (InvalidLoginPasswordException e) {
+            return false;
+        }
     }
 
     public void finish() {
         app.switchState(State.HOME);
     }
 
-    public String getConnectedUser() {
-        return connectedUser;
+    public Employee getConnectedUser() {
+        return EmployeeDAO.getConnectedUser();
     }
 
     public void logout() {
-        connectedUser = null;
-        connectionView = new ConnectionView(this);
+        daoEmployee.disconnectUser();
     }
 
     public static String hash(String password) {

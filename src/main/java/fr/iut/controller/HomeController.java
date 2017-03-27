@@ -3,6 +3,7 @@ package fr.iut.controller;
 import fr.iut.App;
 import fr.iut.State;
 import fr.iut.persistence.dao.GenericDAO;
+import fr.iut.persistence.entities.Employee;
 import fr.iut.persistence.entities.Product;
 import fr.iut.view.HomeView;
 import javafx.scene.Scene;
@@ -17,7 +18,6 @@ public class HomeController {
     /**
      * view of the application mainView
      */
-    private HomeView homeView;
 
     private ClientsController clientsController = new ClientsController(this);
     private NotificationsController notificationsController = new NotificationsController(this);
@@ -29,13 +29,15 @@ public class HomeController {
     private ReservationsController reservationsController = new ReservationsController(this);
     private ProductController productController = new ProductController(this);
 
-    public HomeController(App app, String connectedUser) {
+    private Employee connectedEmployee;
+
+    public HomeController(App app, Employee connectedEmployee) {
         this.app = app;
-        homeView = new HomeView(this, connectedUser);
+        this.connectedEmployee = connectedEmployee;
     }
 
     public Scene getView() {
-        return homeView;
+        return new HomeView(this, connectedEmployee);
     }
 
     /**

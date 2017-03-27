@@ -17,5 +17,6 @@ public enum Authorization {
     MAP_READ,
     MAP_UPDATE,
     RESERVATION_READ,
-    RESERVATION_UPDATE
+    RESERVATION_UPDATE,
+    STATISTICS_READ
 }
