@@ -1,9 +1,10 @@
 package fr.iut.view;
 
 import fr.iut.App;
+import fr.iut.persistence.entities.Authorization;
+import fr.iut.persistence.entities.Employee;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
@@ -13,19 +14,16 @@ import javafx.scene.text.Text;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
-import javafx.util.Pair;
-import java.util.Map;
 
 /**
  * Created by theo on 08/02/17.
  */
-public class PermissionsDialog extends Dialog<Map<String, Pair<Boolean, Boolean>>> {
+public class PermissionsDialog extends Dialog<ArrayList<Boolean>> {
 
     public static final double PERMISSION_WIDTH = App.SCREEN_W / 3;
     public static final double PERMISSION_HEIGHT = App.SCREEN_H / 3;
 
-    private ArrayList<Map<Text,Pair<RadioButton, RadioButton>>> permissionsArrayList = new ArrayList<>();
+    private ArrayList<RadioButton> radioButtonArrayList = new ArrayList<>();
     private GridPane gridPane = new GridPane();
 
     public void add(String name, int i){
@@ -50,10 +48,8 @@ public class PermissionsDialog extends Dialog<Map<String, Pair<Boolean, Boolean>
             }
         });
 
-        Pair<RadioButton, RadioButton> pair = new Pair<>(readButton, editButton);
-        Map<Text, Pair<RadioButton, RadioButton>> map = new HashMap<>();
-        map.put(text, pair);
-        permissionsArrayList.add(map);
+        radioButtonArrayList.add(readButton);
+        radioButtonArrayList.add(editButton);
     }
 
     public PermissionsDialog(){
@@ -113,19 +109,24 @@ public class PermissionsDialog extends Dialog<Map<String, Pair<Boolean, Boolean>
         dialogPane.setContent(wrapper);
 
         setResultConverter((ButtonType dialogButton) -> {
-            Map<String, Pair<Boolean, Boolean>> map = null;
-
+            ArrayList<Boolean> permissionsArrayList = new ArrayList<>();
             if (dialogButton == okButtonType) {
-                map = new HashMap<>(labels.length);
-                for (int i = 0; i < permissionsArrayList.size(); i++) {
-                    for (Map.Entry<Text, Pair<RadioButton, RadioButton>> entry : permissionsArrayList.get(i).entrySet()){
-                        Pair<Boolean, Boolean> pair = new Pair<>(entry.getValue().getKey().isSelected(), entry.getValue().getValue().isSelected());
-                        map.put(entry.getKey().getText().toString(), pair);
-                    }
+                for (RadioButton radioButton: radioButtonArrayList) {
+                    permissionsArrayList.add(radioButton.isSelected());
                 }
             }
-            return map;
+            return permissionsArrayList;
         });
     }
 
+    public void checkPermissions(Employee employee){
+        if(employee.getAuthorizations() != null){
+            for (Authorization a: employee.getAuthorizations()) {
+                for (Authorization autorization :Authorization.values()){
+                    if(employee.getAuthorizations().contains(autorization))
+                        radioButtonArrayList.get(a.ordinal()).setSelected(true);
+                }
+            }
+        }
+    }
 }

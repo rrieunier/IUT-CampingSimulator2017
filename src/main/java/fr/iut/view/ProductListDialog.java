@@ -77,7 +77,7 @@ public class ProductListDialog extends Dialog<ArrayList<Pair<Product, Float>>> {
         productsWrapper.getChildren().add(gridPane);
     }
 
-    public void createProduct(){
+    public void createProducts(){
         GenericDAO<Product, Integer> daoProduct = new GenericDAO<>(Product.class);
         List<Product> products = daoProduct.findAll();
         for (Product p: products) {
@@ -115,7 +115,7 @@ public class ProductListDialog extends Dialog<ArrayList<Pair<Product, Float>>> {
         ButtonType okButtonType = new ButtonType("Valider", ButtonBar.ButtonData.OK_DONE);
         dialogPane.getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
 
-        createProduct();
+        createProducts();
 
         productsWrapper.setSpacing(3);
         wrapper.getChildren().add(scrollPane);

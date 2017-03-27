@@ -98,7 +98,6 @@ public class IncidentsManagerView extends SubScene{
         incidentsScroll.setMinWidth(HomeView.TAB_CONTENT_W/4);
 
 
-
         HBox sort_options = new HBox();
         sort_options.setSpacing(10);
         sort_options.setAlignment(Pos.CENTER);

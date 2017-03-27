@@ -2,20 +2,29 @@ package fr.iut.view;
 
 import fr.iut.controller.EmployeesController;
 import fr.iut.persistence.entities.Employee;
+import fr.iut.persistence.entities.Problem;
+import fr.iut.persistence.entities.Product;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.SubScene;
-import javafx.scene.control.Button;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.util.Pair;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -37,13 +46,15 @@ public class EmployeeManagerView extends SubScene {
     public EmployeeManagerView(EmployeesController controller) {
         super(new BorderPane(), HomeView.TAB_CONTENT_W, HomeView.TAB_CONTENT_H);
         this.controller = controller;
+        controller.createEmployees();
 
         BorderPane root = (BorderPane) getRoot();
         root.setBorder(new Border(new BorderStroke(Color.DARKGRAY, BorderStrokeStyle.SOLID, new CornerRadii(2), new BorderWidths(5))));
         root.setStyle("-fx-background-color: rgb(12, 27, 51);");
 
-        HeaderView header = new HeaderView("Gestion des employees");
-        root.setTop(header);
+
+        HeaderView headerView = new HeaderView("Gestion des employees");
+        root.setTop(headerView);
 
         VBox wrapper1 = new VBox();
         wrapper1.setSpacing(10);
@@ -54,12 +65,53 @@ public class EmployeeManagerView extends SubScene {
         employeesScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         employeesScroll.setMaxWidth(HomeView.TAB_CONTENT_W / 4);
 
-        reloadList();
 
-        Button newEmployee = new Button("Nouvel employé");
+        HBox search_bar = new HBox();
+        Label search_label = new Label("Rechercher: ");
+        search_label.setStyle("-fx-text-fill: whitesmoke; -fx-font-size: 18px");
+        TextField search_field = new TextField();
+        search_field.setPrefWidth(HomeView.TAB_CONTENT_W / 7);
+        search_field.setPromptText("Nom de l'incident");
+
+        search_label.setLabelFor(search_field);
+        search_bar.setAlignment(Pos.CENTER);
+        search_bar.getChildren().addAll(search_label, search_field);
+        headerView.setRight(search_bar);
+
+        HBox sort_options = new HBox();
+        sort_options.setSpacing(10);
+        sort_options.setAlignment(Pos.CENTER);
+        ObservableList<String> options =
+                FXCollections.observableArrayList("Nom (alphabétique)", "Nom (alphabétique inverse)", "Prénom (alphabétique)", "Prénom (alphabétique inverse)" );
+        ComboBox<String> sort_by = new ComboBox<>(options);
+        sort_by.getSelectionModel().select(0);
+        sort_by.valueProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                createScroll(search_field.getText().toString(), false, sort_by.getSelectionModel().getSelectedIndex());
+            }
+        });
+        Label sort_by_label = new Label("Tri par: ");
+        sort_by_label.setStyle("-fx-text-fill: whitesmoke; -fx-font-size: 18px");
+        sort_by_label.setLabelFor(sort_by);
+
+
+        search_field.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (event.getCode().equals(KeyCode.ENTER)) {
+                    createScroll(search_field.getText().toString(), false, sort_by.getSelectionModel().getSelectedIndex());
+                    search_field.clear();
+                }
+            }
+        });
+
+        createScroll(search_field.getText().toString(), true, sort_by.getSelectionModel().getSelectedIndex());
+
+        Button newEmployee = new Button("+");
+        newEmployee.setTooltip(new Tooltip("Nouvel employé"));
         newEmployee.getStylesheets().add(new File("res/style.css").toURI().toString());
         newEmployee.getStyleClass().add("record-sales");
-        newEmployee.setMinWidth(HomeView.TAB_CONTENT_W / 4);
         newEmployee.setOnAction((ActionEvent event) -> {
             InputsListDialog newEmployeeDialog = new InputsListDialog("Nouvel employé");
             newEmployeeDialog.addTextField("Nom");
@@ -81,11 +133,21 @@ public class EmployeeManagerView extends SubScene {
                 employee.setPassword(newEmployee_result.get().get("Mot de passe"));
 
             controller.saveEmployee(employee);
-            reloadList();
+
+            PermissionsDialog permissionsDialog = new PermissionsDialog();
+            Optional<ArrayList<Boolean>> result = permissionsDialog.showAndWait();
+            result.ifPresent(list -> {
+                controller.updateAuthorizations(employee, list);
+            });
+
+            createScroll(search_field.getText().toString(), true, sort_by.getSelectionModel().getSelectedIndex());
         });
 
+        sort_options.getChildren().addAll(newEmployee, sort_by_label, sort_by);
 
-        wrapper1.getChildren().addAll(employeesScroll, newEmployee);
+        headerView.setLeft(sort_options);
+
+        wrapper1.getChildren().addAll(employeesScroll);
 
         root.setLeft(wrapper1);
 
@@ -149,9 +211,9 @@ public class EmployeeManagerView extends SubScene {
         HBox buttonsWrap2 = new HBox();
         VBox wrapWrappers = new VBox(buttonsWrap1, buttonsWrap2);
 
-        buttonsWrap1.setSpacing(30);
-        buttonsWrap2.setSpacing(30);
-        wrapWrappers.setSpacing(30);
+        buttonsWrap1.setSpacing(10);
+        buttonsWrap2.setSpacing(10);
+        wrapWrappers.setSpacing(10);
         buttonsWrap1.setAlignment(Pos.CENTER);
         buttonsWrap2.setAlignment(Pos.CENTER);
         wrapWrappers.setAlignment(Pos.CENTER);
@@ -193,7 +255,7 @@ public class EmployeeManagerView extends SubScene {
                 editButton.setText("Sauvegarder");
             }
 
-            reloadList();
+            createScroll(search_field.getText().toString(), true, sort_by.getSelectionModel().getSelectedIndex());
             editMode = !editMode;
         });
 
@@ -203,13 +265,27 @@ public class EmployeeManagerView extends SubScene {
         bookingButton.setMinWidth(HomeView.TAB_CONTENT_W / 4);
         bookingButton.setOnAction(actionEvent -> {
             controller.eraseEmployee(currentEmployee);
-            reloadList();
+            createScroll(search_field.getText().toString(), true, sort_by.getSelectionModel().getSelectedIndex());
+        });
+
+        Button authorizationButton = new Button("Permissions");
+        authorizationButton.getStylesheets().add(new File("res/style.css").toURI().toString());
+        authorizationButton.getStyleClass().add("record-sales");
+        authorizationButton.setMinWidth(HomeView.TAB_CONTENT_W / 4);
+        authorizationButton.setOnAction(actionEvent -> {
+            PermissionsDialog permissionsDialog = new PermissionsDialog();
+            permissionsDialog.checkPermissions(currentEmployee);
+            Optional<ArrayList<Boolean>> result = permissionsDialog.showAndWait();
+            result.ifPresent(list -> {
+                controller.updateAuthorizations(currentEmployee, list);
+            });
         });
 
         buttonsWrap1.getChildren().addAll(editButton, bookingButton);
+        buttonsWrap2.getChildren().add(authorizationButton);
 
         detailsWrapper.getChildren().addAll(namesField, email, phone, login, passField);
-        detailsWrapper.setSpacing(HomeView.TAB_CONTENT_H / 15);
+        detailsWrapper.setSpacing(HomeView.TAB_CONTENT_H / 20);
 
         BorderPane.setMargin(detailsWrapper, new Insets(30));
         employeeDetailsWrapper.setPadding(new Insets(0, 0, 0, 0));
@@ -219,28 +295,54 @@ public class EmployeeManagerView extends SubScene {
         BorderPane.setAlignment(wrapWrappers, Pos.CENTER);
         root.setCenter(employeeDetailsWrapper);
     }
+    private void createElement(Employee e, int i){
+        HBox employeesBox = new HBox();
 
-    private void reloadList() {
-        employees.getChildren().removeAll();
+        employeesBox.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                for (int j=0; j<employees.getChildren().size(); j++) {
+                    if(j % 2 == 1)
+                        employees.getChildren().get(j).setStyle("-fx-background-color: #336699;");
+                    else
+                        employees.getChildren().get(j).setStyle("-fx-background-color: #0F355C;");
+                }
+
+                currentEmployee = e;
+                updateDetail(e);
+                employeesBox.setStyle("-fx-background-color: #ff6600;");
+            }
+        });
+        employeesBox.setMinWidth(HomeView.TAB_CONTENT_W / 4);
+        employeesBox.setPadding(new Insets(20));
+
+        Text employeeText = new Text(e.getFirstName() + " " + e.getLastName());
+        employeeText.setFont(new Font(20));
+        employeeText.setFill(Color.WHITE);
+        employeesBox.getChildren().add(employeeText);
+
+        if (i % 2 == 1)
+            employeesBox.setStyle("-fx-background-color: #336699;");
+        else
+            employeesBox.setStyle("-fx-background-color: #0F355C;");
+
+        employees.getChildren().add(employeesBox);
+    }
+
+    private void createScroll(String search, boolean refresh, int sort_options){
+        employees.getChildren().clear();
+
         int i = 0;
+        if(refresh)
+            controller.createEmployees();
+
+        controller.sortEmployees(sort_options);
+
         for (Employee employee : controller.getEmployees()) {
-            HBox employeeBox = new HBox();
-            employeeBox.setOnMouseClicked(mouseEvent -> updateDetail(employee));
-
-            employeeBox.setMinWidth(HomeView.TAB_CONTENT_W / 4);
-            employeeBox.setPadding(new Insets(20));
-
-            Text employeeText = new Text(employee.getFirstName() + " " + employee.getLastName());
-            employeeText.setFont(new Font(16));
-            employeeText.setFill(Color.WHITE);
-            employeeBox.getChildren().add(employeeText);
-
-            if (i++ % 2 == 1)
-                employeeBox.setStyle("-fx-background-color: #336699;");
-            else
-                employeeBox.setStyle("-fx-background-color: #0F355C;");
-
-            employees.getChildren().add(employeeBox);
+            if (employee.getFirstName().toLowerCase().contains(search) || employee.getLastName().toLowerCase().contains(search)) {
+                createElement(employee, i);
+                i++;
+            }
         }
     }
 
