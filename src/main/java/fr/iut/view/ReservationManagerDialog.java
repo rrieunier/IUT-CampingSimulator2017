@@ -96,7 +96,8 @@ public class ReservationManagerDialog extends Dialog<Void> {
         Button billButton = new Button("Facture");
         billButton.getStyleClass().add("record-sales");
         billButton.setOnAction(action -> {
-            //TODO : mettre la fenetre de facturation de maxime
+            BillSummaryView billSummaryView = new BillSummaryView(reservation, controller);
+            billSummaryView.showAndWait();
         });
 
         grid.add(clientResaText, 0, 0);

@@ -62,7 +62,8 @@ public class BillSummaryView extends Dialog<Void> {
     private PDDocument facturePDF;
 
     /**
-     * @param reservation
+     * @param reservation reservation to create the facture for
+     * @param controller instance of the controller
      * create view of the facture related to reservation
      */
     public BillSummaryView(@NamedArg("reservation") Reservation reservation,
@@ -175,7 +176,7 @@ public class BillSummaryView extends Dialog<Void> {
             @Override
             public void handle(MouseEvent event) {
                 try {
-                    facturePDF.save("facture_"+reservation.getId());
+                    controller.exportFacturePDF(facturePDF);
                     facturePDF.close();
                 } catch (IOException e) {
                     e.printStackTrace();
