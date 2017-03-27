@@ -57,7 +57,6 @@ public class StatisticsController {
                 comparative.sort((o1, o2) -> (int) (o2 - o1));
 
                 title = "Emplacements les plus réservés";
-
                 break;
 
             case 1: // emplacements les moins réservés

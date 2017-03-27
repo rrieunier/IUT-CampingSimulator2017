@@ -93,7 +93,7 @@ public class ProductController {
         dao.remove(lastClickedValue);
     }
 
-    public void restock(Product lastClickedValue) throws URISyntaxException, IOException {
+    public void restock(Product lastClickedValue) throws IOException {
         List<Supplier> choices = new ArrayList<>();
 
         for (SupplierProposeProduct s : lastClickedValue.getSupplierProposeProducts()) {
@@ -105,8 +105,6 @@ public class ProductController {
                 (ArrayList<Supplier>) choices, lastClickedValue);
 
         Optional<Supplier> result = dialog.showAndWait();
-        //result.ifPresent(supplier -> System.out.println(result.get().getName()
-                //.substring(0, result.get().getName().indexOf(" --"))));
 
         String supplierEmail = result.get().getEmail();
         String os = System.getProperty("os.name").toLowerCase();

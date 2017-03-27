@@ -146,7 +146,7 @@ public class ProductManagerView extends SubScene {
                     public void handle(MouseEvent event) {
                         try {
                             controller.restock(lastClickedValue);
-                        } catch (URISyntaxException | IOException e) {
+                        } catch (IOException e) {
                             e.printStackTrace();
                         }
                     }
