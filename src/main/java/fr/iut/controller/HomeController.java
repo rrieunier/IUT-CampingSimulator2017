@@ -19,17 +19,14 @@ public class HomeController {
      */
     private HomeView homeView;
 
-    private NotificationsController notificationsController = new NotificationsController(this);
     private ClientsController clientsController = new ClientsController(this);
+    private NotificationsController notificationsController = new NotificationsController(this);
     private StatisticsController statisticsController = new StatisticsController();
     private IncidentsController incidentsController = new IncidentsController(this);
     private MapController mapController = new MapController(this);
     private EmployeesController employeesController = new EmployeesController(this);
     private SupplierController supplierController = new SupplierController(this);
     private ReservationsController reservationsController = new ReservationsController(this);
-
-    private GenericDAO<Product, Integer> dao = new GenericDAO<>(Product.class);
-
     private ProductController productController = new ProductController(this);
 
     public HomeController(App app, String connectedUser) {

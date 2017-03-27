@@ -26,7 +26,7 @@ public class PermissionsDialog extends Dialog<ArrayList<Boolean>> {
     private ArrayList<RadioButton> radioButtonArrayList = new ArrayList<>();
     private GridPane gridPane = new GridPane();
 
-    public void add(String name, int i){
+    private void add(String name, int i){
         Text text = new Text(name);
         text.setStyle("-fx-font-weight: bold;" +
                 "-fx-font-size: 17px");

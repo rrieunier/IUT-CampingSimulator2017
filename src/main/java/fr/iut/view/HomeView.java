@@ -142,6 +142,7 @@ public class HomeView extends Scene {
         MapCreatorView mapCreatorView = (MapCreatorView)controller.getMapController().getView();
 
         VBox reservationsWrapper = new VBox();
+        reservationsWrapper.setAlignment(Pos.CENTER);
 
         Text reservationsText = new Text("Réservations :");
         reservationsText.setFont(new Font(20));
@@ -152,6 +153,17 @@ public class HomeView extends Scene {
         reservationsView.setMinWidth(TAB_CONTENT_W / 4);
         BorderPane.setMargin(reservationsWrapper, new Insets(20));
         reservationsWrapper.getChildren().add(reservationsView);
+
+        Button newResaButton = new Button("Nouvelle réservation");
+        newResaButton.getStyleClass().add("record-sales");
+        newResaButton.setOnAction(actionEvent -> {
+            ReservationManagerDialog reservationManagerDialog = new ReservationManagerDialog(controller.getReservationsController());
+            reservationManagerDialog.showAndWait();
+            reservationsView.refresh();
+        });
+        reservationsWrapper.getChildren().add(newResaButton);
+
+        reservationsWrapper.setSpacing(10);
 
         container.setLeft(reservationsWrapper);
         container.setCenter(mapCreatorView);

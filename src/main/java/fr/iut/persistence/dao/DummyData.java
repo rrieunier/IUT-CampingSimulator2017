@@ -43,8 +43,8 @@ public class DummyData {
         GenericDAO<Client, Integer> daoClient = new GenericDAO<>(Client.class);
         for (int i = 0; i < 50; i++) {
             Client client = new Client();
-            client.setFirstname("pre " + i);
-            client.setLastname("nom" + i);
+            client.setFirstname("John" + i);
+            client.setLastname("Dupont" + i);
             client.setPhone("06000000" + i);
             client.setEmail("reservation" + i + "@camping.oklm");
             daoClient.save(client);

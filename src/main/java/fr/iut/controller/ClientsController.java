@@ -6,15 +6,16 @@ import fr.iut.view.ClientManagerView;
 import javafx.scene.SubScene;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by shellcode on 2/17/17.
  */
 public class ClientsController {
 
-    HomeController homeController;
-    ClientManagerView clientManagerView = new ClientManagerView(this);
-    GenericDAO<Client, Integer> daoClient = new GenericDAO<>(Client.class);
+    private HomeController homeController;
+    private ClientManagerView clientManagerView = new ClientManagerView(this);
+    private GenericDAO<Client, Integer> daoClient;
 
     public ClientsController(HomeController homeController) {
         this.homeController = homeController;
@@ -24,20 +25,18 @@ public class ClientsController {
         return clientManagerView;
     }
 
-    public ArrayList<Client> getClients() {
+    public List<Client> getAllClients() {
 
-        ArrayList<Client> stub = new ArrayList<>();
+        //fix NPE bug
+        if(daoClient == null)
+            daoClient = new GenericDAO<>(Client.class);
 
-        for(int i = 0; i < 50; i++) {
-            Client client = new Client();
-            client.setFirstname("Client");
-            client.setLastname("" + i);
-            client.setPhone("06 00 00 00 " + i);
-            client.setEmail("client" + i + "@camping.oklm");
-            stub.add(client);
-        }
+        System.out.println("finding clients...");
 
-        return stub;
+        List<Client> clients = daoClient.findAll();
+
+        System.out.println("returning clients");
+        return clients;
     }
 
     public void saveClient(Client client) {
