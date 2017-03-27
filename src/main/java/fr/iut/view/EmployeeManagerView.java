@@ -1,5 +1,6 @@
 package fr.iut.view;
 
+import fr.iut.controller.ConnectionController;
 import fr.iut.controller.EmployeesController;
 import fr.iut.persistence.entities.Employee;
 import fr.iut.persistence.entities.Problem;
@@ -106,7 +107,7 @@ public class EmployeeManagerView extends SubScene {
             }
         });
 
-        createScroll(search_field.getText().toString(), true, sort_by.getSelectionModel().getSelectedIndex());
+        createScroll(search_field.getText(), true, sort_by.getSelectionModel().getSelectedIndex());
 
         Button newEmployee = new Button("+");
         newEmployee.setTooltip(new Tooltip("Nouvel employé"));
@@ -119,8 +120,8 @@ public class EmployeeManagerView extends SubScene {
             newEmployeeDialog.addTextField("Téléphone");
             newEmployeeDialog.addTextField("Mail");
             newEmployeeDialog.addTextField("Identifiant");
-            newEmployeeDialog.addTextField("Mot de passe");
-            newEmployeeDialog.addTextField("Retapez le mot de passe");
+            newEmployeeDialog.addPasswordField("Mot de passe");
+            newEmployeeDialog.addPasswordField("Retapez le mot de passe");
             Optional<Map<String, String>> newEmployee_result = newEmployeeDialog.showAndWait();
 
             Employee employee = new Employee();
@@ -130,7 +131,7 @@ public class EmployeeManagerView extends SubScene {
             employee.setEmail(newEmployee_result.get().get("Mail"));
             employee.setLogin(newEmployee_result.get().get("Identifiant"));
             if (Objects.equals(newEmployee_result.get().get("Identifiant"), newEmployee_result.get().get("Retapez le mot de passe")))
-                employee.setPassword(newEmployee_result.get().get("Mot de passe"));
+                employee.setPassword(ConnectionController.hash(newEmployee_result.get().get("Mot de passe")));
 
             controller.saveEmployee(employee);
 
@@ -140,7 +141,7 @@ public class EmployeeManagerView extends SubScene {
                 controller.updateAuthorizations(employee, list);
             });
 
-            createScroll(search_field.getText().toString(), true, sort_by.getSelectionModel().getSelectedIndex());
+            createScroll(search_field.getText(), true, sort_by.getSelectionModel().getSelectedIndex());
         });
 
         sort_options.getChildren().addAll(newEmployee, sort_by_label, sort_by);
@@ -268,7 +269,7 @@ public class EmployeeManagerView extends SubScene {
             createScroll(search_field.getText().toString(), true, sort_by.getSelectionModel().getSelectedIndex());
         });
 
-        Button authorizationButton = new Button("Permissions");
+        Button authorizationButton = new Button("Permissions...");
         authorizationButton.getStylesheets().add(new File("res/style.css").toURI().toString());
         authorizationButton.getStyleClass().add("record-sales");
         authorizationButton.setMinWidth(HomeView.TAB_CONTENT_W / 4);
@@ -352,7 +353,6 @@ public class EmployeeManagerView extends SubScene {
         email.setText(employee.getEmail());
         phone.setText(employee.getPhone());
         login.setText(employee.getLogin());
-        password.setText(employee.getPassword());
 
         currentEmployee = employee;
         editMode = false;

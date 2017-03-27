@@ -109,13 +109,15 @@ public class PermissionsDialog extends Dialog<ArrayList<Boolean>> {
         dialogPane.setContent(wrapper);
 
         setResultConverter((ButtonType dialogButton) -> {
-            ArrayList<Boolean> permissionsArrayList = new ArrayList<>();
             if (dialogButton == okButtonType) {
+                ArrayList<Boolean> permissionsArrayList = new ArrayList<>();
                 for (RadioButton radioButton: radioButtonArrayList) {
                     permissionsArrayList.add(radioButton.isSelected());
                 }
+                return permissionsArrayList;
             }
-            return permissionsArrayList;
+
+            return null;
         });
     }
 
