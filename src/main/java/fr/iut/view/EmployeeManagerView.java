@@ -2,6 +2,7 @@ package fr.iut.view;
 
 import fr.iut.controller.EmployeesController;
 import fr.iut.persistence.entities.Employee;
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.SubScene;
@@ -16,6 +17,7 @@ import javafx.scene.text.Text;
 
 import java.io.File;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -58,7 +60,7 @@ public class EmployeeManagerView extends SubScene {
         newEmployee.getStylesheets().add(new File("res/style.css").toURI().toString());
         newEmployee.getStyleClass().add("record-sales");
         newEmployee.setMinWidth(HomeView.TAB_CONTENT_W / 4);
-        newEmployee.setOnAction(event -> {
+        newEmployee.setOnAction((ActionEvent event) -> {
             InputsListDialog newEmployeeDialog = new InputsListDialog("Nouvel employé");
             newEmployeeDialog.addTextField("Nom");
             newEmployeeDialog.addTextField("Prénom");
@@ -75,7 +77,7 @@ public class EmployeeManagerView extends SubScene {
             employee.setPhone(newEmployee_result.get().get("Téléphone"));
             employee.setEmail(newEmployee_result.get().get("Mail"));
             employee.setLogin(newEmployee_result.get().get("Identifiant"));
-            if (newEmployee_result.get().get("Identifiant") == newEmployee_result.get().get("Retapez le mot de passe"))
+            if (Objects.equals(newEmployee_result.get().get("Identifiant"), newEmployee_result.get().get("Retapez le mot de passe")))
                 employee.setPassword(newEmployee_result.get().get("Mot de passe"));
 
             controller.saveEmployee(employee);
@@ -175,7 +177,7 @@ public class EmployeeManagerView extends SubScene {
                 employee.setEmail(email.getText());
                 employee.setPhone(phone.getText());
                 employee.setLogin(login.getText());
-                if (password.getText() == confirm.getText())
+                if (Objects.equals(password.getText(), confirm.getText()))
                     employee.setPassword(password.getText());
                 controller.updateEmployee(employee);
 
@@ -195,12 +197,13 @@ public class EmployeeManagerView extends SubScene {
             editMode = !editMode;
         });
 
-        Button bookingButton = new Button("Réservations...");
+        Button bookingButton = new Button("Supprimer");
         bookingButton.getStylesheets().add(new File("res/style.css").toURI().toString());
         bookingButton.getStyleClass().add("record-sales");
         bookingButton.setMinWidth(HomeView.TAB_CONTENT_W / 4);
         bookingButton.setOnAction(actionEvent -> {
-            //TODO : aller sur la carte
+            controller.eraseEmployee(currentEmployee);
+            reloadList();
         });
 
         buttonsWrap1.getChildren().addAll(editButton, bookingButton);
@@ -209,7 +212,7 @@ public class EmployeeManagerView extends SubScene {
         detailsWrapper.setSpacing(HomeView.TAB_CONTENT_H / 15);
 
         BorderPane.setMargin(detailsWrapper, new Insets(30));
-        employeeDetailsWrapper.setPadding(new Insets(0, 0, 30, 0));
+        employeeDetailsWrapper.setPadding(new Insets(0, 0, 0, 0));
         employeeDetailsWrapper.setTop(headerDetails);
         employeeDetailsWrapper.setBottom(wrapWrappers);
         employeeDetailsWrapper.setCenter(detailsWrapper);

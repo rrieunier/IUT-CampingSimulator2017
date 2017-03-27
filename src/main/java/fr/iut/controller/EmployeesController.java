@@ -36,4 +36,8 @@ public class EmployeesController {
     public void updateEmployee(Employee employee) {
         daoEmployee.update(employee);
     }
+
+    public void eraseEmployee(Employee employee) {
+        daoEmployee.remove(employee);
+    }
 }

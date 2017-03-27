@@ -2,6 +2,7 @@ package fr.iut.view;
 
 import fr.iut.App;
 import fr.iut.controller.ReservationsController;
+import fr.iut.persistence.entities.Purchase;
 import fr.iut.persistence.entities.Reservation;
 import javafx.beans.NamedArg;
 import javafx.event.EventHandler;
@@ -27,11 +28,11 @@ public class BillSummaryView extends Dialog<Void> {
     /**
      * width of the facture preview window
      */
-    public static final double FACTURE_SUMMARY_WIDTH = App.SCREEN_W/1.5;
+    public static final double BILL_SUMMARY_WIDTH = App.SCREEN_W/1.5;
     /**
      * height of the facture preview window
      */
-    public static final double FACTURE_SUMMARY_HEIGHT = App.SCREEN_H/1.3;
+    public static final double BILL_SUMMARY_HEIGHT = App.SCREEN_H/1.3;
     /**
      * main container
      */
@@ -62,7 +63,8 @@ public class BillSummaryView extends Dialog<Void> {
     private PDDocument facturePDF;
 
     /**
-     * @param reservation
+     * @param reservation reservation to create the facture for
+     * @param controller instance of the controller
      * create view of the facture related to reservation
      */
     public BillSummaryView(@NamedArg("reservation") Reservation reservation,
@@ -84,11 +86,12 @@ public class BillSummaryView extends Dialog<Void> {
 
         // dialog pane
         DialogPane dialogPane = getDialogPane();
-        dialogPane.setMinHeight(FACTURE_SUMMARY_HEIGHT);
+        dialogPane.setMinHeight(BILL_SUMMARY_HEIGHT);
+        dialogPane.setMaxSize(BILL_SUMMARY_WIDTH, BILL_SUMMARY_HEIGHT);
         dialogPane.getStylesheets().add(new File("res/style.css").toURI().toString());
 
-        grid.setMaxHeight(FACTURE_SUMMARY_HEIGHT * 0.8);
-        grid.setPrefWidth(FACTURE_SUMMARY_WIDTH * 0.6);
+        grid.setMaxHeight(BILL_SUMMARY_HEIGHT * 0.8);
+        grid.setPrefWidth(BILL_SUMMARY_WIDTH * 0.6);
         grid.setStyle("-fx-background-color: whitesmoke;");
         grid.setGridLinesVisible(true);
 
@@ -98,7 +101,7 @@ public class BillSummaryView extends Dialog<Void> {
         //build grid
         for (int i = 0; i < 2; i++) {
             ColumnConstraints constraint = new ColumnConstraints();
-            constraint.setPrefWidth(FACTURE_SUMMARY_HEIGHT / 2);
+            constraint.setPrefWidth(BILL_SUMMARY_HEIGHT / 2);
             grid.getColumnConstraints().add(constraint);
         }
         for (int i = 0; i < factureFields.length; i++) {
@@ -127,10 +130,9 @@ public class BillSummaryView extends Dialog<Void> {
         int personCount= this.reservation.getPersonCount();
         float pricePerDay = this.reservation.getSpot().getPricePerDay();
         float totalPurchases = 0;
-        /*
         for (Purchase p : this.reservation.getClient().getPurchases())
             totalPurchases += (p.getProduct().getSellPrice() * p.getQuantity());
-            */
+
         float council_tax = this.reservation.getPersonCount() * this.reservation.getSpot().getCouncilTaxPersonDay() * ((endtime.getTime() - startime.getTime()) / (1000 *60 *60* 24));
         float reduction = (100 - this.reservation.getReduction()) / 100;
 
@@ -168,29 +170,14 @@ public class BillSummaryView extends Dialog<Void> {
 
         // close button
         Button exportButton = new Button("Exporter");
-        exportButton.setPrefWidth(FACTURE_SUMMARY_WIDTH / 5);
+        exportButton.setPrefWidth(BILL_SUMMARY_WIDTH / 5);
         exportButton.getStylesheets().add(new File("res/style.css").toURI().toString());
         exportButton.getStyleClass().add("record-sales");
         exportButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 try {
-                    facturePDF.save("facture_"+reservation.getId());
-                    facturePDF.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        Button printButton = new Button("Imprimer");
-        printButton.setPrefWidth(FACTURE_SUMMARY_WIDTH / 5);
-        printButton.getStylesheets().add(new File("res/style.css").toURI().toString());
-        printButton.getStyleClass().add("record-sales");
-        printButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                try {
+                    controller.exportFacturePDF(facturePDF);
                     facturePDF.close();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -199,7 +186,7 @@ public class BillSummaryView extends Dialog<Void> {
         });
 
         Button okButton = new Button("Terminer");
-        okButton.setPrefWidth(FACTURE_SUMMARY_WIDTH / 5);
+        okButton.setPrefWidth(BILL_SUMMARY_WIDTH / 5);
         okButton.getStylesheets().add(new File("res/style.css").toURI().toString());
         okButton.getStyleClass().add("record-sales");
         okButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -214,19 +201,16 @@ public class BillSummaryView extends Dialog<Void> {
             }
         });
 
-        VBox exportAndPrintBox = new VBox();
-        exportAndPrintBox.getChildren().addAll(exportButton, printButton);
-        exportAndPrintBox.setSpacing(FACTURE_SUMMARY_WIDTH / 40);
-
         VBox buttons = new VBox();
-        buttons.setSpacing(FACTURE_SUMMARY_HEIGHT * 0.6);
-        buttons.getChildren().addAll(exportAndPrintBox, okButton);
+        buttons.setSpacing(BILL_SUMMARY_HEIGHT * 0.05);
+        buttons.getChildren().addAll(exportButton, okButton);
+        buttons.setMargin(exportButton, new Insets(BILL_SUMMARY_WIDTH * 0.4, 0, 0, 0));
 
-        header.setMinWidth(FACTURE_SUMMARY_WIDTH);
+        header.setMinWidth(BILL_SUMMARY_WIDTH);
 
-        HBox.setMargin(grid, new Insets(FACTURE_SUMMARY_HEIGHT / 25, 0, 0, FACTURE_SUMMARY_WIDTH / 20));
-        HBox.setMargin(buttons, new Insets(FACTURE_SUMMARY_HEIGHT / 25, 0, 0, 0));
-        content.setSpacing(FACTURE_SUMMARY_WIDTH * 0.1);
+        HBox.setMargin(grid, new Insets(BILL_SUMMARY_HEIGHT / 25, 0, 0, BILL_SUMMARY_WIDTH / 20));
+        HBox.setMargin(buttons, new Insets(BILL_SUMMARY_HEIGHT / 25, 0, 0, 0));
+        content.setSpacing(BILL_SUMMARY_WIDTH * 0.1);
         content.getChildren().addAll(grid, buttons);
 
         wrapper.setAlignment(Pos.TOP_CENTER);

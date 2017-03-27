@@ -2,10 +2,16 @@ package fr.iut.controller;
 
 import fr.iut.persistence.dao.ReservationsDAO;
 import fr.iut.persistence.entities.Location;
+import fr.iut.persistence.entities.Purchase;
 import fr.iut.persistence.entities.Reservation;
 import fr.iut.view.ReservationsView;
 import javafx.scene.control.ScrollPane;
 import javafx.stage.FileChooser;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDDocumentInformation;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,19 +21,19 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDDocumentInformation;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
-
-/**
- * Created by shellcode on 3/21/17.
- */
 public class ReservationsController {
 
+    /**
+     * instance of the dao for reservations
+     */
     private ReservationsDAO dao = new ReservationsDAO();
+    /**
+     * view related to the controller
+     */
     private ReservationsView reservationsView = new ReservationsView(this);
+    /**
+     * instance of the home controller
+     */
     private HomeController homeController;
 
 
@@ -39,18 +45,32 @@ public class ReservationsController {
         return reservationsView;
     }
 
+    /**
+     * @return whole list of reservations in database
+     */
     public List<Reservation> getReservations() {
         return dao.findAll();
     }
 
+    /**
+     * @param reservation
+     * delete reservation from the database
+     */
     public void removeReservation(Reservation reservation) {
         dao.remove(reservation);
     }
 
+    /**
+     * @param reservation
+     * update a reservation in database
+     */
     public void updateReservation(Reservation reservation) {
         dao.update(reservation);
     }
 
+    /**
+     * @return names of reservations in database
+     */
     public List<String> getAllLocationNames() {
         ArrayList<String> names = new ArrayList<>();
 
@@ -60,6 +80,11 @@ public class ReservationsController {
         return names;
     }
 
+    /**
+     * @param reservation
+     * @return a bill generated as PDF of the reservation
+     * @throws IOException if writing in pdf is impossible
+     */
     public PDDocument makeFacturePDF(Reservation reservation) throws IOException {
 
         PDDocument pdf = new PDDocument();
@@ -107,13 +132,12 @@ public class ReservationsController {
         String taxValue = reservation.getSpot().getCouncilTaxPersonDay() + "€ / jour x " + reservation.getPersonCount() + "pers";
         String pricePerDayValue = reservation.getSpot().getPricePerDay() + "€ / jour";
         ArrayList<String> purchasesValue = new ArrayList<>();
-        /*
+
         for (Purchase p : reservation.getClient().getPurchases()) {
             purchasesValue.add(p.getDatetime().toString().substring(0, 10)
                     + " " + p.getProduct().getName() + " -> "
                     + p.getProduct().getSellPrice() * p.getQuantity() + "€");
         }
-        */
         String reductionValue = reservation.getReduction() + "%";
 
         //prices
@@ -123,11 +147,11 @@ public class ReservationsController {
         float pricePerDayPrice = reservation.getSpot().getPricePerDay() * (reservation.getEndtime().getTime() - reservation.getStarttime().getTime())
                 / (1000 * 60 * 60 * 24);
         float purchasesPrice = 0f;
-        /*
+
         for (Purchase p : reservation.getClient().getPurchases()) {
             purchasesPrice += p.getProduct().getSellPrice() * p.getQuantity();
         }
-        */
+
         float totalPrice = taxPrice + pricePerDayPrice + purchasesPrice * (1 - (reservation.getReduction() / 100));
 
         String warning = "Ce document est un original, toute tentative de reproduction sera passible de poursuites.";
@@ -221,7 +245,11 @@ public class ReservationsController {
             writer.showText(s);
             writer.newLineAtOffset(0, -25);
         }
-        newLineAndShowText(0, -125, reductionValue, writer);
+
+        writer.endText();
+        writer.beginText();
+
+        newLineAndShowText(255, 75, reductionValue, writer);
 
         //troisième colonne
         newLineAndShowText(225, 325, String.valueOf(taxPrice) + "€", writer);
@@ -241,19 +269,30 @@ public class ReservationsController {
         return pdf;
     }
 
-    public void printFacture(PDDocument facture) {
+    /**
+     * @param facture
+     * @throws IOException
+     * export the bill as pdf
+     */
+    public void exportFacturePDF(PDDocument facture) throws IOException {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Exporter la facture");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Portable Document Format", "*.pdf"));
-        File selectedFile = fileChooser.showOpenDialog(homeController.getView().getWindow());
-    }
+        File selectedFile = fileChooser.showSaveDialog(homeController.getView().getWindow());
 
-    public void exportFacturePDF(PDDocument facture) {
-
+        facture.save(selectedFile);
     }
 
     // UTILS=================================
 
+    /**
+     * @param x layout of the new line on x axe
+     * @param y layout of the new line on y axe
+     * @param text text to write in the new line
+     * @param writer writer to use to write text
+     * @throws IOException
+     * utils method creating a new line and writing a text into it
+     */
     private void newLineAndShowText(int x, int y, String text, PDPageContentStream writer) throws IOException {
         writer.newLineAtOffset(x, y);
         writer.showText(text);

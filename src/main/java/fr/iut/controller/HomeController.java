@@ -5,12 +5,7 @@ import fr.iut.State;
 import fr.iut.persistence.dao.GenericDAO;
 import fr.iut.persistence.entities.Product;
 import fr.iut.view.HomeView;
-import fr.iut.view.InputsListDialog;
 import javafx.scene.Scene;
-
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Optional;
 
 
 public class HomeController {
