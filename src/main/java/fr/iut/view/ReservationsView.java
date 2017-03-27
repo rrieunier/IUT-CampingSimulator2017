@@ -23,8 +23,15 @@ import java.util.Date;
  */
 public class ReservationsView extends ScrollPane {
 
+    /**
+     * instance of the controller
+     */
     ReservationsController controller;
 
+    /**
+     * @param controller
+     * reservations list
+     */
     public ReservationsView(ReservationsController controller) {
         this.controller = controller;
 

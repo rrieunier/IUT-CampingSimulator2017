@@ -14,6 +14,12 @@ import java.util.Comparator;
 
 public class StatisticsController {
 
+    /**
+     * @param category
+     * @param selectedChart
+     * @param type
+     * @return a chart depending on the category chosen
+     */
     public ChartView makeChart(@NamedArg("category") SelectedCategory category,
                                @NamedArg("selectedChart") int selectedChart,
                                @NamedArg("type") ChartType type) {
@@ -37,6 +43,11 @@ public class StatisticsController {
     }
 
 
+    /**
+     * @param selectedChart
+     * @param type
+     * @return return charts for the reservation category
+     */
     private ChartView reservationChart(@NamedArg("selectedChart") int selectedChart, @NamedArg("type") ChartType type) {
         GenericDAO<Spot, Integer> dao = new GenericDAO<>(Spot.class);
         ArrayList<Spot> spots = (ArrayList<Spot>) dao.findAll();
@@ -79,7 +90,11 @@ public class StatisticsController {
 
         return new ChartView(ChartType.PIE, objects, comparative, title, "Nom", "Nombre de rés.");
     }
-
+    /**
+     * @param selectedChart
+     * @param type
+     * @return return charts for the client category
+     */
     private ChartView clientChart(@NamedArg("selectedChart") int selectedChart,
                                   @NamedArg("type") ChartType type) {
         GenericDAO<Client, Integer> dao = new GenericDAO<>(Client.class);
@@ -152,6 +167,11 @@ public class StatisticsController {
         return chartView;
     }
 
+    /**
+     * @param selectedChart
+     * @param type
+     * @return return charts for the purchase category
+     */
     private ChartView purchaseChart(@NamedArg("selectedChart") int selectedChart, @NamedArg("type") ChartType type) {
 
         GenericDAO<Product, Integer> dao = new GenericDAO<>(Product.class);
@@ -188,6 +208,11 @@ public class StatisticsController {
         return chartView;
     }
 
+    /**
+     * @param selectedChart
+     * @param type
+     * @return return charts for the employee category
+     */
     private ChartView employeeChart(@NamedArg("selectedChart") int selectedChart,
                                     @NamedArg("type") ChartType type) {
         GenericDAO<Employee, Integer> dao = new GenericDAO<>(Employee.class);
@@ -235,6 +260,11 @@ public class StatisticsController {
         return chartView;
     }
 
+    /**
+     * @param selectedChart
+     * @param type
+     * @return return charts for the problem category
+     */
     private ChartView problemChart(@NamedArg("selectedChart") int selectedChart,
                                    @NamedArg("type") ChartType type) {
         GenericDAO<Client, Integer> dao_client = new GenericDAO<>(Client.class);
@@ -278,6 +308,11 @@ public class StatisticsController {
         return chartView;
     }
 
+    /**
+     * @param selectedChart
+     * @param type
+     * @return return charts for the others category
+     */
     private ChartView otherChart(@NamedArg("selectedChart") int selectedChart,
                                    @NamedArg("type") ChartType type) {
         GenericDAO<Employee, Integer> dao = new GenericDAO<>(Employee.class);

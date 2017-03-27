@@ -91,10 +91,19 @@ public class ProductController {
         dao.update(product);
     }
 
+    /**
+     * @param lastClickedValue
+     * deletes a product from the database
+     */
     public void deleteProduct(Product lastClickedValue) {
         dao.remove(lastClickedValue);
     }
 
+    /**
+     * @param lastClickedValue
+     * @throws IOException
+     * display the chooseSupplierDialog to choose the supplier to restock
+     */
     public void restock(Product lastClickedValue) throws IOException {
         ObservableList<Supplier> choices = FXCollections.observableArrayList();
 
@@ -108,6 +117,11 @@ public class ProductController {
         dialog.showAndWait();
     }
 
+    /**
+     * @param supplier
+     * @throws IOException
+     * browse "mailto:email@supplier.com" to send a mail to the supplier
+     */
     public void sendMailToSupplier(Supplier supplier) throws IOException {
         String supplierEmail = supplier.getEmail();
         String os = System.getProperty("os.name").toLowerCase();

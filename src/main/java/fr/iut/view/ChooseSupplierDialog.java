@@ -7,7 +7,6 @@ import fr.iut.persistence.entities.Supplier;
 import fr.iut.persistence.entities.SupplierProposeProduct;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
-import javafx.scene.CacheHint;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -15,19 +14,46 @@ import javafx.stage.Window;
 
 import java.io.IOException;
 
+/**
+ * dialog that permittes to choose the supplier to restock
+ */
 public class ChooseSupplierDialog extends Dialog<Supplier> {
 
-
+    /**
+     * width of the dialog window
+     */
     public static final double SUPPLIER_CHOOSE_WIDTH = App.SCREEN_W/3;
+    /**
+     * height of the dialog window
+     */
     public static final double SUPPLIER_CHOOSE_HEIGHT = App.SCREEN_H/3;
-
+    /**
+     * pane of the dialog
+     */
     private DialogPane dialogPane;
+    /**
+     * wrapper wrapping content of the dialog
+     */
     private VBox wrapper = new VBox();
+    /**
+     * header of the dialog
+     */
     private HeaderView header = new HeaderView("Choix du fournisseur");
-
+    /**
+     * string representing the price proposed by the current selected supplier
+     */
     private String price = "";
+    /**
+     * field of the price
+     */
     private TextField priceField = new TextField();
 
+    /**
+     * @param choices
+     * @param product
+     * @param controller
+     * return a dialog that permittes to choose the supplier to restock
+     */
     public ChooseSupplierDialog(ObservableList<Supplier> choices, Product product, ProductController controller) {
         setTitle("Réapprovisionement");
         dialogPane = getDialogPane();

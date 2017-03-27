@@ -16,13 +16,31 @@ import java.io.File;
 import java.util.ArrayList;
 
 
+/**
+ * class representing a chart with the table associated
+ */
 public class ChartView extends HBox {
 
+    /**
+     * the chart
+     */
     private Chart chart;
+    /**
+     * datas of the table
+     */
     private TableView<ObservableEntity> table = new TableView<ObservableEntity>();
     private TableColumn strColumn;
     private TableColumn fltColumn;
 
+    /**
+     * @param type
+     * @param objects
+     * @param comparative
+     * @param title
+     * @param firstColName
+     * @param scdColName
+     * build a chart depending on the category
+     */
     public ChartView(ChartType type,
                      ArrayList<String> objects,
                      ArrayList<Float> comparative,
@@ -75,16 +93,29 @@ public class ChartView extends HBox {
         }
     }
 
+    /**
+     * @param side
+     * change legend side of the chart
+     */
     public void setLegendSide(Side side) { chart.setLegendSide(side); }
 
+    /**
+     * @return the chart
+     */
     public Chart getChart() {
         return chart;
     }
 
+    /**
+     * @return the table
+     */
     public TableView getTable() {
         return table;
     }
 
+    /**
+     * secondary class to fill the table
+     */
     public static class ObservableEntity {
             private final SimpleStringProperty str;
             private final SimpleFloatProperty flt;
