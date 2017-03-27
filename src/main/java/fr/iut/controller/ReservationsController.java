@@ -23,8 +23,17 @@ import java.util.List;
 
 public class ReservationsController {
 
+    /**
+     * instance of the dao for reservations
+     */
     private ReservationsDAO dao = new ReservationsDAO();
+    /**
+     * view related to the controller
+     */
     private ReservationsView reservationsView = new ReservationsView(this);
+    /**
+     * instance of the home controller
+     */
     private HomeController homeController;
 
 
@@ -36,18 +45,32 @@ public class ReservationsController {
         return reservationsView;
     }
 
+    /**
+     * @return whole list of reservations in database
+     */
     public List<Reservation> getReservations() {
         return dao.findAll();
     }
 
+    /**
+     * @param reservation
+     * delete reservation from the database
+     */
     public void removeReservation(Reservation reservation) {
         dao.remove(reservation);
     }
 
+    /**
+     * @param reservation
+     * update a reservation in database
+     */
     public void updateReservation(Reservation reservation) {
         dao.update(reservation);
     }
 
+    /**
+     * @return names of reservations in database
+     */
     public List<String> getAllLocationNames() {
         ArrayList<String> names = new ArrayList<>();
 
@@ -57,6 +80,11 @@ public class ReservationsController {
         return names;
     }
 
+    /**
+     * @param reservation
+     * @return a bill generated as PDF of the reservation
+     * @throws IOException if writing in pdf is impossible
+     */
     public PDDocument makeFacturePDF(Reservation reservation) throws IOException {
 
         PDDocument pdf = new PDDocument();
@@ -241,10 +269,11 @@ public class ReservationsController {
         return pdf;
     }
 
-    public void printFacture(PDDocument facture) {
-
-    }
-
+    /**
+     * @param facture
+     * @throws IOException
+     * export the bill as pdf
+     */
     public void exportFacturePDF(PDDocument facture) throws IOException {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Exporter la facture");
@@ -256,6 +285,14 @@ public class ReservationsController {
 
     // UTILS=================================
 
+    /**
+     * @param x layout of the new line on x axe
+     * @param y layout of the new line on y axe
+     * @param text text to write in the new line
+     * @param writer writer to use to write text
+     * @throws IOException
+     * utils method creating a new line and writing a text into it
+     */
     private void newLineAndShowText(int x, int y, String text, PDPageContentStream writer) throws IOException {
         writer.newLineAtOffset(x, y);
         writer.showText(text);
