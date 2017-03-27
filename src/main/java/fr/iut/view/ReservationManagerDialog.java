@@ -6,7 +6,6 @@ import fr.iut.persistence.entities.Reservation;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -17,11 +16,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Date;
 
 /**
  * Created by shellcode on 3/23/17.

@@ -98,12 +98,15 @@ public class ProductManagerView extends SubScene {
                 FXCollections.observableArrayList("Nom (alphabétique)", "Nom (alphabétique inverse)", "Quantité (croissante)",
                         "Quantité (décroissante)", "Prix (croissant)", "Prix (décroissant)");
         ComboBox<String> sort_by = new ComboBox<>(options);
+        sort_by.setValue(options.get(0));
         Label sort_by_label = new Label("Tri par: ");
+        sort_by_label.setStyle("-fx-text-fill: whitesmoke; -fx-font-size: 18px");
         sort_by_label.setLabelFor(sort_by);
 
         HBox search_bar = new HBox();
         TextField search_field = new TextField();
         Label search_label = new Label("Rechercher: ");
+        search_label.setStyle("-fx-text-fill: whitesmoke; -fx-font-size: 18px");
         search_label.setLabelFor(search_field);
 
         HBox body = new HBox();
@@ -221,6 +224,7 @@ public class ProductManagerView extends SubScene {
         sort_options.getChildren().addAll(add_product, sort_by_label, sort_by);
         search_bar.getChildren().addAll(search_label, search_field);
 
+        sort_options.setSpacing(10);
         sort_options.setAlignment(Pos.CENTER);
         search_bar.setAlignment(Pos.CENTER);
 
