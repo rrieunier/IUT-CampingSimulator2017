@@ -33,7 +33,7 @@ public class Notification implements EntityModel<Integer> {
     /**
      * Employees concerned about this notification.
      */
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(name="Employee_Notification",
             joinColumns=@JoinColumn(name="notification_id"),
             inverseJoinColumns=@JoinColumn(name="employee_id")

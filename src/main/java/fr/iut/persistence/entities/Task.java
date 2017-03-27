@@ -1,8 +1,5 @@
 package fr.iut.persistence.entities;
 
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-
 import javax.persistence.*;
 import java.sql.Timestamp;
 
@@ -43,14 +40,12 @@ public class Task implements EntityModel<Integer> {
      * Employee who is attributed to this task.
      */
     @ManyToOne(optional = false)
-    @Cascade(CascadeType.ALL)
     private Employee employee;
 
     /**
      * Location on which the task is planned.
      */
     @ManyToOne(optional = true)
-    @Cascade(CascadeType.ALL)
     private Location location;
 
     public Integer getId() {

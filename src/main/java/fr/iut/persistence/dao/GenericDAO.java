@@ -1,8 +1,8 @@
 package fr.iut.persistence.dao;
 
 import fr.iut.persistence.entities.EntityModel;
-import org.hibernate.Session;
 
+import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaQuery;
 import java.util.List;
 
@@ -16,9 +16,9 @@ public class GenericDAO<T extends EntityModel, Id> {
      */
     private Class<T> persistentClass;
     /**
-     * Hibernate session.
+     * Hibernate entity manager.
      */
-    protected Session session = HibernateUtil.getSession();
+    protected EntityManager em = HibernateUtil.getEntityManagerFactory().createEntityManager();
 
     /**
      * Constructor.
@@ -36,16 +36,12 @@ public class GenericDAO<T extends EntityModel, Id> {
      * @return entity inserted
      */
     public T save(T entity) {
+        em.getTransaction().begin();
 
-        session.beginTransaction();
+        em.persist(entity);
+        em.flush();
 
-        try {
-            session.save(entity);
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-            session.getTransaction().rollback();
-        }
+        em.getTransaction().commit();
 
         return entity;
     }
@@ -58,15 +54,12 @@ public class GenericDAO<T extends EntityModel, Id> {
      */
     public T update(T entity) {
 
-        session.beginTransaction();
+        em.getTransaction().begin();
 
-        try {
-            session.update(entity);
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-            session.getTransaction().rollback();
-        }
+        em.merge(entity);
+        em.flush();
+
+        em.getTransaction().commit();
 
         return entity;
     }
@@ -78,33 +71,26 @@ public class GenericDAO<T extends EntityModel, Id> {
      */
     public void remove(T entity) {
 
-        session.beginTransaction();
-
-        try {
-            session.remove(entity);
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-            session.getTransaction().rollback();
-        }
+        em.getTransaction().begin();
+        em.remove(entity);
+        em.flush();
+        em.getTransaction().commit();
     }
 
     /**
      * Removes all entities from database.
      */
     public void removeAll() {
-        session.beginTransaction();
 
-        try {
-            for (T t : findAll()) {
-                session.remove(t);
-            }
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-            session.getTransaction().rollback();
+        em.getTransaction().begin();
+
+        for (T t : findAll()) {
+            em.remove(t);
         }
 
+        em.flush();
+
+        em.getTransaction().commit();
     }
 
     /**
@@ -114,17 +100,17 @@ public class GenericDAO<T extends EntityModel, Id> {
      * @return Entity with the matching Id.
      */
     public T findById(Id id) {
-        return session.find(persistentClass, id);
+        return em.find(persistentClass, id);
     }
 
     /**
      * @return List of all the entities.
      */
     public List<T> findAll() {
-        CriteriaQuery<T> criteria = session.getCriteriaBuilder().createQuery(persistentClass);
+        CriteriaQuery<T> criteria = em.getCriteriaBuilder().createQuery(persistentClass);
         criteria.select(criteria.from(persistentClass));
 
-        return session.createQuery(criteria).getResultList();
+        return em.createQuery(criteria).getResultList();
     }
 
     /**
@@ -134,7 +120,7 @@ public class GenericDAO<T extends EntityModel, Id> {
 
         String query = "select count(e.id) from " + persistentClass.getName() + " e";
 
-        return session.createQuery(query)
+        return em.createQuery(query)
                 .getFirstResult();
     }
 }

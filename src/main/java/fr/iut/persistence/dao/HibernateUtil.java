@@ -1,8 +1,7 @@
 package fr.iut.persistence.dao;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 /**
  * Created by Sydpy on 2/27/17.
@@ -10,29 +9,16 @@ import org.hibernate.cfg.Configuration;
 public class HibernateUtil {
 
     /**
-     * Hibernate's Session.
+     * Hibernate's entity manager factory.
      */
-    private static Session session = buildSessionFactory().openSession();
+    private static EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("campingUnit");
 
-    /**
-     * Initialize a sessionFactory.
-     *
-     * @return the sessionFactory created.
-     */
-    private static SessionFactory buildSessionFactory() {
-        try {
-            return new Configuration().configure().buildSessionFactory();
-        } catch (Exception ex) {
-            System.err.println("Initial SessionFactory creation failed." + ex);
-            throw new ExceptionInInitializerError(ex);
-        }
-    }
 
-    public static Session getSession() {
-        return session;
+    public static EntityManagerFactory getEntityManagerFactory() {
+        return entityManagerFactory;
     }
 
     public static void shutdown() {
-        session.close();
+        entityManagerFactory.close();
     }
 }

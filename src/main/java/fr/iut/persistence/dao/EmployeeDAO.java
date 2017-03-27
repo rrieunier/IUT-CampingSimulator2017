@@ -3,9 +3,9 @@ package fr.iut.persistence.dao;
 import fr.iut.persistence.entities.Authorization;
 import fr.iut.persistence.entities.Employee;
 import fr.iut.persistence.exception.InvalidLoginPasswordException;
-import org.hibernate.query.Query;
 
 import javax.persistence.NoResultException;
+import javax.persistence.Query;
 import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.List;
@@ -37,7 +37,7 @@ public class EmployeeDAO extends GenericDAO<Employee, Integer> {
     public Employee findByLogin(String login) {
 
         String hql = "from Employee where login = :login";
-        Query query = session.createQuery(hql);
+        Query query = em.createQuery(hql);
         query.setParameter("login", login);
 
         try {
@@ -54,7 +54,7 @@ public class EmployeeDAO extends GenericDAO<Employee, Integer> {
      */
     public List<Employee> findByFirstName(String firstName) {
         String hql = "from Employee where firstName = :firstName";
-        Query query = session.createQuery(hql);
+        Query query = em.createQuery(hql);
         query.setParameter("firstName", firstName);
 
         return query.getResultList();
@@ -67,7 +67,7 @@ public class EmployeeDAO extends GenericDAO<Employee, Integer> {
      */
     public List<Employee> findByLastName(String lastName) {
         String hql = "from Employee where lastName = :lastName";
-        Query query = session.createQuery(hql);
+        Query query = em.createQuery(hql);
         query.setParameter("lastName", lastName);
 
         return query.getResultList();
