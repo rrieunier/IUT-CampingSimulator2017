@@ -6,6 +6,8 @@ import fr.iut.persistence.entities.Supplier;
 import fr.iut.persistence.entities.SupplierProposeProduct;
 import fr.iut.view.ChooseSupplierDialog;
 import fr.iut.view.InputsListDialog;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.awt.*;
 import java.io.IOException;
@@ -94,40 +96,41 @@ public class ProductController {
     }
 
     public void restock(Product lastClickedValue) throws IOException {
-        List<Supplier> choices = new ArrayList<>();
+        ObservableList<Supplier> choices = FXCollections.observableArrayList();
 
         for (SupplierProposeProduct s : lastClickedValue.getSupplierProposeProducts()) {
             if (Objects.equals(s.getProduct().getId(), lastClickedValue.getId()))
                 choices.add(s.getSupplier());
         }
 
-        ChooseSupplierDialog dialog = new ChooseSupplierDialog(choices.size() > 0 ? choices.get(0) : null,
-                (ArrayList<Supplier>) choices, lastClickedValue);
+        ChooseSupplierDialog dialog = new ChooseSupplierDialog(choices, lastClickedValue, this);
 
-        Optional<Supplier> result = dialog.showAndWait();
+        dialog.showAndWait();
+    }
 
-        String supplierEmail = result.get().getEmail();
+    public void sendMailToSupplier(Supplier supplier) throws IOException {
+        String supplierEmail = supplier.getEmail();
         String os = System.getProperty("os.name").toLowerCase();
 
         if (os.contains("win")) { // windows
             Runtime rt = Runtime.getRuntime();
             String url = "mailto:" + supplierEmail;
-            rt.exec( "rundll32 url.dll,FileProtocolHandler " + url);
+            rt.exec("rundll32 url.dll,FileProtocolHandler " + url);
         } else if (os.contains("mac")) { // macos
             Runtime rt = Runtime.getRuntime();
             String url = "mailto:" + supplierEmail;
-            rt.exec( "open" + url);
+            rt.exec("open" + url);
         } else { // linux
             Runtime rt = Runtime.getRuntime();
             String url = "mailto:" + supplierEmail;
             String[] browsers = {"epiphany", "firefox", "mozilla", "konqueror",
-                    "netscape","opera","links","lynx"};
+                    "netscape", "opera", "links", "lynx"};
 
             StringBuffer cmd = new StringBuffer();
-            for (int i=0; i<browsers.length; i++)
+            for (int i = 0; i < browsers.length; i++)
                 cmd.append(i == 0 ? "" : " || ").append(browsers[i]).append(" \"").append(url).append("\" ");
 
-            rt.exec(new String[] { "sh", "-c", cmd.toString() });
+            rt.exec(new String[]{"sh", "-c", cmd.toString()});
         }
     }
 }
