@@ -15,14 +15,15 @@ public class GenericDAOTest {
     public void testPersistence() throws Exception {
 
         Client client = new Client();
-        client.setId(12345678);
         client.setFirstname(TestUtils.randomString());
         client.setLastname(TestUtils.randomString());
 
         GenericDAO<Client, Integer> dao = new GenericDAO<>(Client.class);
 
         dao.save(client);
-        Client saved = dao.findById(client.getId());
+        assertEquals(1, dao.findAll().size());
+
+        Client saved = dao.findAll().get(0);
 
         assertNotNull(saved);
         assertNotNull(saved.getFirstname());
@@ -30,13 +31,13 @@ public class GenericDAOTest {
         assertEquals(client.getFirstname(), saved.getFirstname());
         assertEquals(client.getLastname(), saved.getLastname());
 
+        dao.removeAll();
     }
 
     @Test
     public void testUpdate() throws Exception {
 
         Client client = new Client();
-        client.setId(67906);
         client.setFirstname(TestUtils.randomString());
         client.setLastname(TestUtils.randomString());
 
@@ -44,19 +45,24 @@ public class GenericDAOTest {
 
         dao.save(client);
 
-        Client saved = dao.findById(client.getId());
+        assertEquals(1, dao.findAll().size());
+
+        Client saved = dao.findAll().get(0);
 
         saved.setFirstname(TestUtils.randomString());
         dao.update(saved);
 
-        Client updated = dao.findById(saved.getId());
-        
+        assertEquals(1, dao.findAll().size());
+
+        Client updated = dao.findAll().get(0);
+
         assertNotNull(updated);
         assertNotNull(updated.getFirstname());
         assertNotNull(updated.getId());
         assertEquals(saved.getFirstname(), updated.getFirstname());
         assertEquals(saved.getId(), updated.getId());
 
+        dao.removeAll();
     }
 
     @Test
@@ -88,5 +94,7 @@ public class GenericDAOTest {
         clientDao.removeAll();
 
         assertEquals(0, clientDao.count());
+
+        clientDao.removeAll();
     }
 }
