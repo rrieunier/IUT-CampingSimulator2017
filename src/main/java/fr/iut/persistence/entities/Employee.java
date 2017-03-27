@@ -51,13 +51,13 @@ public class Employee implements EntityModel<Integer> {
     /**
      * Employee's login if it's a user.
      */
-    @Column(length = 20, unique = true)
+    @Column(length = 20, unique = true, nullable = false)
     private String login;
 
     /**
      * Employee's password if it's a user.
      */
-    @Column
+    @Column(nullable = false)
     private String password;
 
     /**
