@@ -1,10 +1,8 @@
 package fr.iut.controller;
 
 import fr.iut.persistence.dao.EmployeeDAO;
-import fr.iut.persistence.dao.GenericDAO;
 import fr.iut.persistence.entities.Authorization;
 import fr.iut.persistence.entities.Employee;
-import fr.iut.persistence.entities.Problem;
 import fr.iut.view.EmployeeManagerView;
 import javafx.scene.SubScene;
 
