@@ -19,7 +19,8 @@ public class EmployeeDAOTest {
 
     @BeforeClass
     public static void setUp() {
-        HibernateUtil.loadPersistenceUnit("campingTestUnit");
+        if (HibernateUtil.getEntityManagerFactory() == null)
+            HibernateUtil.loadPersistenceUnit("campingTestUnit");
     }
 
     @Test
