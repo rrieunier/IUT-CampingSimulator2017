@@ -255,11 +255,13 @@ public class HomeView extends Scene {
             notification_text.setText("Vous avez " + count + " notifications en attente.");
 
             if(count > 0 && blinkAnimation == null) {
+                System.out.println("Creating blinker");
                 blinkAnimation = createBlinker(notification_text);
                 blinkAnimation.play();
             }
 
             else if(count == 0 && blinkAnimation != null) {
+                System.out.println("Removing blinker");
                 stopBlinkAnimation();
                 notification_text.setOpacity(1); //Because de blink animation can let the notification_text vanished
             }

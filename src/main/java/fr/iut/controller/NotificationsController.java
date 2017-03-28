@@ -66,7 +66,6 @@ public class NotificationsController {
      * The notification is set solved and removed from the DB
      */
     public void solve(Notification notification) {
-        notifications.remove(notification);
         dao.setSolved(notification);
     }
 
@@ -86,10 +85,10 @@ public class NotificationsController {
                 int old_notifs_count = notifications.size();
                 notifications = dao.findAll();
 
-                System.out.println("old size : " + old_notifs_count + " and  " + notifications.size() + " notifications waiting...");
-
-                if(listener != null && notifications.size() != old_notifs_count)
+                if(listener != null && notifications.size() != old_notifs_count) {
+                    System.out.println("Notifications count changed, notify listener");
                     listener.onUnsolvedNotificationsCountChanged(notifications.size());
+                }
 
                 try {
                     //La boucle permet de pas attendre 3 secondes la fin du programme si jamais les requetes doivent s'arrêter
