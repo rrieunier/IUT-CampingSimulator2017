@@ -69,9 +69,9 @@ public class PermissionsDialog extends Dialog<ArrayList<Boolean>> {
             gridPane.getColumnConstraints().add(column);
         }
 
-        for(int i = 0; i < 7; i++){
+        for(int i = 0; i < 8; i++){
             RowConstraints row = new RowConstraints();
-            row.setPercentHeight(20);
+            row.setPercentHeight(15);
             gridPane.getRowConstraints().add(row);
         }
 
@@ -93,6 +93,18 @@ public class PermissionsDialog extends Dialog<ArrayList<Boolean>> {
         for(int i=0; i<labels.length; i++) {
             add(labels[i], i);
         }
+
+        Text text = new Text("Statistiques");
+        text.setStyle("-fx-font-weight: bold;" +
+                "-fx-font-size: 17px");
+        text.setFill(Color.WHITESMOKE);
+        gridPane.add(text, 0, labels.length+1);
+
+        RadioButton readButtonStat = new RadioButton();
+        GridPane.setHalignment(readButtonStat, HPos.CENTER);
+        gridPane.add(readButtonStat, 1,labels.length+1);
+
+        radioButtonArrayList.add(readButtonStat);
 
         ButtonType okButtonType = new ButtonType("Valider", ButtonBar.ButtonData.OK_DONE);
         dialogPane.getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
