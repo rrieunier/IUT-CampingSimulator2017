@@ -6,6 +6,7 @@ import fr.iut.view.ClientManagerView;
 import javafx.scene.SubScene;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -14,7 +15,8 @@ import java.util.List;
 public class ClientsController {
 
     private HomeController homeController;
-    private GenericDAO<Client, Integer> daoClient;
+    private GenericDAO<Client, Integer> daoClient = new GenericDAO<>(Client.class);
+    private ArrayList<Client> clients = new ArrayList<>();
 
     public ClientsController(HomeController homeController) {
         this.homeController = homeController;
@@ -24,21 +26,42 @@ public class ClientsController {
         return new ClientManagerView(this);
     }
 
-    public List<Client> getAllClients() {
-
-        //fix NPE bug
-        if(daoClient == null)
-            daoClient = new GenericDAO<>(Client.class);
-
-        System.out.println("finding clients...");
-
-        List<Client> clients = daoClient.findAll(); //May cause NPE
-
-        System.out.println("returning clients");
-        return clients;
+    public void createClients() {
+        clients = (ArrayList<Client>) daoClient.findAll();
     }
+
+    public void sortClients(int sort_options){
+        clients.sort(new Comparator<Client>() {
+            @Override
+            public int compare(Client o1, Client o2) {
+                double result = 0;
+                switch (sort_options){
+                    case 1:
+                        result = o2.getLastname().toLowerCase().compareTo(o1.getLastname().toLowerCase());
+                        break;
+                    case 2:
+                        result = o1.getFirstname().compareTo(o2.getFirstname());
+                        break;
+                    case 3:
+                        result = o2.getFirstname().compareTo(o1.getFirstname());
+                        break;
+                    default:
+                        result = o1.getLastname().toLowerCase().compareTo(o2.getLastname().toLowerCase());
+                        break;
+                }
+                return (int) result;
+            }
+        });
+
+    }
+
+    public ArrayList<Client> getClients() { return clients; }
 
     public void saveClient(Client client) {
         daoClient.save(client);
     }
+
+    public void updateClient(Client client) { daoClient.update(client); }
+
+    public void eraseClient(Client client) { daoClient.remove(client); }
 }

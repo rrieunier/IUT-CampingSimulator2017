@@ -2,12 +2,18 @@ package fr.iut.view;
 
 import fr.iut.controller.ClientsController;
 import fr.iut.persistence.entities.Client;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.SubScene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -22,6 +28,7 @@ import java.util.Optional;
  */
 public class ClientManagerView extends SubScene {
 
+    private VBox clients;
     ClientsController controller;
 
     boolean editMode = false;
@@ -30,9 +37,10 @@ public class ClientManagerView extends SubScene {
 
     Client currentClient = null;
 
-    public ClientManagerView(ClientsController controller) {
+    public ClientManagerView(ClientsController c) {
         super(new BorderPane(), HomeView.TAB_CONTENT_W, HomeView.TAB_CONTENT_H);
-        this.controller = controller;
+        this.controller = c;
+        controller.createClients();
 
         BorderPane root = (BorderPane) getRoot();
         root.setBorder(new Border(new BorderStroke(Color.DARKGRAY, BorderStrokeStyle.SOLID, new CornerRadii(2), new BorderWidths(5))));
@@ -44,37 +52,58 @@ public class ClientManagerView extends SubScene {
         VBox wrapper1 = new VBox();
         wrapper1.setSpacing(10);
         BorderPane.setMargin(wrapper1, new Insets(20));
-        VBox clients = new VBox();
+        clients = new VBox();
         clients.setSpacing(3);
         ScrollPane clientsScroll = new ScrollPane(clients);
         clientsScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         clientsScroll.setMaxWidth(HomeView.TAB_CONTENT_W / 4);
+        clientsScroll.setMinWidth(HomeView.TAB_CONTENT_W/4);
 
-        int i = 0;
-        for(Client client : controller.getAllClients()) {
-            HBox clientBox = new HBox();
-            clientBox.setOnMouseClicked(mouseEvent -> updateDetail(client));
 
-            clientBox.setMinWidth(HomeView.TAB_CONTENT_W / 4);
-            clientBox.setPadding(new Insets(20));
+        HBox search_bar = new HBox();
+        Label search_label = new Label("Rechercher: ");
+        search_label.setStyle("-fx-text-fill: whitesmoke; -fx-font-size: 18px");
+        TextField search_field = new TextField();
+        search_field.setPrefWidth(HomeView.TAB_CONTENT_W / 7);
+        search_field.setPromptText("Nom du client");
 
-            Text clientText = new Text(client.getFirstname() + " " + client.getLastname());
-            clientText.setFont(new Font(16));
-            clientText.setFill(Color.WHITE);
-            clientBox.getChildren().add(clientText);
+        search_label.setLabelFor(search_field);
+        search_bar.setAlignment(Pos.CENTER);
+        search_bar.getChildren().addAll(search_label, search_field);
+        header.setRight(search_bar);
 
-            if(i++ % 2 == 1)
-                clientBox.setStyle("-fx-background-color: #336699;");
-            else
-                clientBox.setStyle("-fx-background-color: #0F355C;");
+        HBox sort_options = new HBox();
+        sort_options.setSpacing(10);
+        sort_options.setAlignment(Pos.CENTER);
+        ObservableList<String> options =
+                FXCollections.observableArrayList("Nom (alphabétique)", "Nom (alphabétique inverse)", "Prénom (alphabétique)", "Prénom (alphabétique inverse)" );
+        ComboBox<String> sort_by = new ComboBox<>(options);
+        sort_by.getSelectionModel().select(0);
+        sort_by.valueProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                createScroll(search_field.getText().toString(), false, sort_by.getSelectionModel().getSelectedIndex());
+            }
+        });
+        Label sort_by_label = new Label("Tri par: ");
+        sort_by_label.setStyle("-fx-text-fill: whitesmoke; -fx-font-size: 18px");
+        sort_by_label.setLabelFor(sort_by);
 
-            clients.getChildren().add(clientBox);
-        }
 
-        Button newClient = new Button("Nouveau Client");
+        search_field.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (event.getCode().equals(KeyCode.ENTER)) {
+                    createScroll(search_field.getText().toString(), false, sort_by.getSelectionModel().getSelectedIndex());
+                    search_field.clear();
+                }
+            }
+        });
+
+        Button newClient = new Button("+");
+        newClient.setTooltip(new Tooltip("Nouveau client"));
         newClient.getStylesheets().add(new File("res/style.css").toURI().toString());
         newClient.getStyleClass().add("record-sales");
-        newClient.setMinWidth(HomeView.TAB_CONTENT_W / 4);
         newClient.setOnAction(event -> {
             InputsListDialog newClientDialog = new InputsListDialog("Nouveau Client");
             newClientDialog.addTextField("Nom");
@@ -90,10 +119,18 @@ public class ClientManagerView extends SubScene {
             client.setEmail(newClient_result.get().get("Mail"));
 
             controller.saveClient(client);
+
+            createScroll(search_field.getText(), true, sort_by.getSelectionModel().getSelectedIndex());
         });
 
+        sort_options.getChildren().addAll(newClient, sort_by_label, sort_by);
 
-        wrapper1.getChildren().addAll(clientsScroll, newClient);
+        header.setLeft(sort_options);
+
+        createScroll(search_field.getText(), true, 0);
+
+
+        wrapper1.getChildren().addAll(clientsScroll);
 
         root.setLeft(wrapper1);
 
@@ -154,6 +191,10 @@ public class ClientManagerView extends SubScene {
                 email.setDisable(true);
                 phone.setDisable(true);
                 editButton.setText("Modifier");
+
+                createScroll(search_field.getText().toString(), true, sort_by.getSelectionModel().getSelectedIndex());
+
+                controller.updateClient(currentClient);
             }
 
             else {
@@ -162,7 +203,6 @@ public class ClientManagerView extends SubScene {
                 email.setDisable(false);
                 phone.setDisable(false);
                 editButton.setText("Sauvegarder");
-                //TODO : saveOrUpdate du client dans la BDD
             }
 
             editMode = !editMode;
@@ -178,13 +218,15 @@ public class ClientManagerView extends SubScene {
 
         buttonsWrap1.getChildren().addAll(editButton, bookingButton);
 
-        Button billButton = new Button("Facturer");
-        billButton.getStylesheets().add(new File("res/style.css").toURI().toString());
-        billButton.getStyleClass().add("record-sales");
-        billButton.setMinWidth(HomeView.TAB_CONTENT_W / 4);
+        Button removeButton = new Button("Supprimer");
+        removeButton.getStylesheets().add(new File("res/style.css").toURI().toString());
+        removeButton.getStyleClass().add("record-sales");
+        removeButton.setMinWidth(HomeView.TAB_CONTENT_W / 4);
 
-        billButton.setOnAction(actionEvent -> {
-            //TODO : générer facture
+        removeButton.setOnAction(actionEvent -> {
+            controller.eraseClient(currentClient);
+
+            createScroll(search_field.getText().toString(), true, sort_by.getSelectionModel().getSelectedIndex());
         });
 
         Button reducButton = new Button("Réductions...");
@@ -197,7 +239,7 @@ public class ClientManagerView extends SubScene {
             //TODO : stocker la reduction qqpart
         });
 
-        buttonsWrap2.getChildren().addAll(billButton, reducButton);
+        buttonsWrap2.getChildren().addAll(removeButton, reducButton);
 
         detailsWrapper.getChildren().addAll(namesField, email, phone);
         detailsWrapper.setSpacing(HomeView.TAB_CONTENT_H / 15);
@@ -209,6 +251,58 @@ public class ClientManagerView extends SubScene {
         clientDetailsWrapper.setCenter(detailsWrapper);
         BorderPane.setAlignment(wrapWrappers, Pos.CENTER);
         root.setCenter(clientDetailsWrapper);
+    }
+
+    private void createElement(Client c, int i){
+        HBox clientsBox = new HBox();
+
+        clientsBox.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                for (int j = 0; j < clients.getChildren().size(); j++) {
+                    if (j % 2 == 1)
+                        clients.getChildren().get(j).setStyle("-fx-background-color: #336699;");
+                    else
+                        clients.getChildren().get(j).setStyle("-fx-background-color: #0F355C;");
+                }
+
+                currentClient = c;
+                updateDetail(c);
+                clientsBox.setStyle("-fx-background-color: #ff6600;");
+            }
+        });
+
+        clientsBox.setMinWidth(HomeView.TAB_CONTENT_W / 4);
+        clientsBox.setPadding(new Insets(20));
+
+        Text clientText = new Text(c.getFirstname() + " " + c.getLastname());
+        clientText.setFont(new Font(20));
+        clientText.setFill(Color.WHITE);
+        clientsBox.getChildren().add(clientText);
+
+        if (i % 2 == 1)
+            clientsBox.setStyle("-fx-background-color: #336699;");
+        else
+            clientsBox.setStyle("-fx-background-color: #0F355C;");
+
+        clients.getChildren().add(clientsBox);
+    }
+
+    private void createScroll(String search, boolean refresh, int sort_options){
+        clients.getChildren().clear();
+
+        int i = 0;
+        if(refresh)
+            controller.createClients();
+
+        controller.sortClients(sort_options);
+
+        for (Client client : controller.getClients()) {
+            if (client.getFirstname().toLowerCase().contains(search) || client.getLastname().toLowerCase().contains(search)) {
+                createElement(client, i);
+                i++;
+            }
+        }
     }
 
     private void updateDetail(Client client) {

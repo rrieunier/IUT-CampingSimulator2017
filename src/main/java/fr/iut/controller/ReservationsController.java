@@ -82,7 +82,7 @@ public class ReservationsController {
      * @return retrieves all clients from clients controller
      */
     public List<Client> getAllClients() {
-        return homeController.getClientsController().getAllClients();
+        return homeController.getClientsController().getClients();
     }
 
     /**
