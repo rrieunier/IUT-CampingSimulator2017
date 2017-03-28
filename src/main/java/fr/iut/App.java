@@ -2,20 +2,13 @@ package fr.iut;
 
 import fr.iut.controller.ConnectionController;
 import fr.iut.controller.HomeController;
-import fr.iut.controller.MapController;
 import fr.iut.controller.SubscribeController;
 import fr.iut.persistence.dao.HibernateUtil;
 import fr.iut.view.ConnectionView;
-import fr.iut.view.HomeView;
-import fr.iut.view.MapCreatorView;
 import fr.iut.view.SubscribeView;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
-import org.hibernate.Hibernate;
 
 import java.awt.*;
 
@@ -35,6 +28,7 @@ public class App extends Application {
     private HomeController homeController;
 
     public static void main(String[] args) {
+        HibernateUtil.loadPersistenceUnit("campingUnit");
         launch(args);
     }
 
