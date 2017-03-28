@@ -3,11 +3,15 @@ package fr.iut.view;
 import fr.iut.App;
 import fr.iut.controller.HomeController;
 import fr.iut.controller.NotificationsController;
-import fr.iut.persistence.dao.EmployeeDAO;
+import fr.iut.controller.ReservationsController;
 import fr.iut.persistence.entities.Authorization;
 import fr.iut.persistence.entities.Employee;
 import javafx.animation.*;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -42,6 +46,9 @@ public class HomeView extends Scene {
     private ToggleButton selectedTab = null;
     private Timeline blinkAnimation;
     private Text notification_text;
+    private TextField search_field;
+
+    SingleSelectionModel<Tab> selectionModelMainTabs;
 
     public HomeView(HomeController controller, Employee connectedEmployee) {
         super(new BorderPane(), App.SCREEN_W, App.SCREEN_H);
@@ -55,6 +62,8 @@ public class HomeView extends Scene {
         tabPane.setTabMinWidth(App.SCREEN_W/2 - 57);
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         tabPane.getStylesheets().add(new File("res/style.css").toURI().toString());
+
+        selectionModelMainTabs = tabPane.getSelectionModel();
 
         Tab tabManagment = new Tab(), tabMap = new Tab();
         buildManagmentTab(tabManagment);
@@ -192,22 +201,66 @@ public class HomeView extends Scene {
         Text reservationsText = new Text("Réservations :");
         reservationsText.setFont(new Font(20));
         reservationsText.setFill(Color.WHITE);
-        reservationsWrapper.getChildren().add(reservationsText);
 
-        ReservationsView reservationsView = (ReservationsView) controller.getReservationsController().getView();
+        ReservationsController reservationsController = controller.getReservationsController();
+
+        ReservationsView reservationsView = (ReservationsView) reservationsController.getView();
         reservationsView.setMinWidth(TAB_CONTENT_W / 4);
         BorderPane.setMargin(reservationsWrapper, new Insets(20));
         VBox.setVgrow(reservationsView, Priority.ALWAYS);
-        reservationsWrapper.getChildren().add(reservationsView);
+
+        ObservableList<String> options =
+                FXCollections.observableArrayList("Nom (alphabétique)", "Nom (alphabétique inverse)", "Date (récent)",
+                        "Date (ancien)");
+
+        ComboBox<String> sort_by = new ComboBox<>(options);
+        sort_by.getSelectionModel().select(2); //sort by date by default
+        sort_by.valueProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+
+                switch (sort_by.getSelectionModel().getSelectedIndex()) {
+                    case 0: reservationsController.setSortType(ReservationsController.SortType.SORT_BY_NAME); break;
+                    case 1: reservationsController.setSortType(ReservationsController.SortType.SORT_BY_DATE_DESC); break;
+                    case 2: reservationsController.setSortType(ReservationsController.SortType.SORT_BY_DATE); break;
+                    case 3: reservationsController.setSortType(ReservationsController.SortType.SORT_BY_DATE_DESC); break;
+                }
+
+                reservationsView.refresh();
+            }
+        });
+
+        Label sort_by_label = new Label("Tri par: ");
+        sort_by_label.setStyle("-fx-text-fill: whitesmoke; -fx-font-size: 18px");
+
+        HBox sortWrap = new HBox(sort_by_label, sort_by);
+        sortWrap.setSpacing(10);
+        sortWrap.setAlignment(Pos.CENTER);
+
+        Label search_label = new Label("Rechercher: ");
+        search_label.setStyle("-fx-text-fill: whitesmoke; -fx-font-size: 18px");
+        search_field = new TextField();
+        search_field.setPrefWidth(HomeView.TAB_CONTENT_W / 7);
+        search_field.setPromptText("Nom du client...");
+
+        search_field.textProperty().addListener((observable, oldValue, newValue) -> {
+            reservationsController.setFilter(newValue);
+            reservationsView.refresh();
+        });
+
+        HBox search_bar = new HBox(search_label, search_field);
+        search_bar.setAlignment(Pos.CENTER);
+        search_bar.setSpacing(10);
 
         Button newResaButton = new Button("Nouvelle réservation");
         newResaButton.getStyleClass().add("record-sales");
         newResaButton.setOnAction(actionEvent -> {
-            ReservationManagerDialog reservationManagerDialog = new ReservationManagerDialog(controller.getReservationsController());
+            ReservationManagerDialog reservationManagerDialog = new ReservationManagerDialog(reservationsController);
             reservationManagerDialog.showAndWait();
             reservationsView.refresh();
         });
-        reservationsWrapper.getChildren().add(newResaButton);
+
+        reservationsWrapper.getChildren().addAll(reservationsText, sortWrap, search_bar, reservationsView, newResaButton);
 
         reservationsWrapper.setSpacing(10);
 
@@ -340,5 +393,17 @@ public class HomeView extends Scene {
             blinkAnimation.stop();
             blinkAnimation = null;
         }
+    }
+
+    public void goToMapTab() {
+        selectionModelMainTabs.select(1);
+    }
+
+    public void goToManagmentTab() {
+        selectionModelMainTabs.select(0);
+    }
+
+    public void searchReservationsByClientId(Integer id) {
+        search_field.setText("client_id:" + id);
     }
 }

@@ -192,7 +192,7 @@ public class ClientManagerView extends SubScene {
                 phone.setDisable(true);
                 editButton.setText("Modifier");
 
-                createScroll(search_field.getText().toString(), true, sort_by.getSelectionModel().getSelectedIndex());
+                createScroll(search_field.getText(), true, sort_by.getSelectionModel().getSelectedIndex());
 
                 controller.updateClient(currentClient);
             }
@@ -213,7 +213,7 @@ public class ClientManagerView extends SubScene {
         bookingButton.getStyleClass().add("record-sales");
         bookingButton.setMinWidth(HomeView.TAB_CONTENT_W / 4);
         bookingButton.setOnAction(actionEvent -> {
-            //TODO : aller sur la carte
+            controller.displayReservations(currentClient);
         });
 
         buttonsWrap1.getChildren().addAll(editButton, bookingButton);
@@ -226,7 +226,7 @@ public class ClientManagerView extends SubScene {
         removeButton.setOnAction(actionEvent -> {
             controller.eraseClient(currentClient);
 
-            createScroll(search_field.getText().toString(), true, sort_by.getSelectionModel().getSelectedIndex());
+            createScroll(search_field.getText(), true, sort_by.getSelectionModel().getSelectedIndex());
         });
 
         Button reducButton = new Button("Réductions...");

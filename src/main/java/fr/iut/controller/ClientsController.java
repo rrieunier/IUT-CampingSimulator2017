@@ -64,4 +64,8 @@ public class ClientsController {
     public void updateClient(Client client) { daoClient.update(client); }
 
     public void eraseClient(Client client) { daoClient.remove(client); }
+
+    public void displayReservations(Client currentClient) {
+        homeController.displayReservations(currentClient);
+    }
 }

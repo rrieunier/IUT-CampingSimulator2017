@@ -1,7 +1,10 @@
 package fr.iut.controller;
 
 import fr.iut.persistence.dao.ReservationsDAO;
-import fr.iut.persistence.entities.*;
+import fr.iut.persistence.entities.Client;
+import fr.iut.persistence.entities.Purchase;
+import fr.iut.persistence.entities.Reservation;
+import fr.iut.persistence.entities.Spot;
 import fr.iut.view.ReservationsView;
 import javafx.scene.control.ScrollPane;
 import javafx.stage.FileChooser;
@@ -18,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ReservationsController {
 
@@ -25,6 +29,29 @@ public class ReservationsController {
      * instance of the dao for reservations
      */
     private ReservationsDAO dao = new ReservationsDAO();
+
+
+    /**
+     * Different types of sorting
+     */
+    public enum SortType {
+        NONE,
+        SORT_BY_NAME,
+        SORT_BY_NAME_DESC,
+        SORT_BY_DATE,
+        SORT_BY_DATE_DESC
+    }
+
+    /**
+     * How the reservations will be sorted, default is by date, the more recent at the top
+     */
+    private SortType sortType = SortType.SORT_BY_DATE_DESC;
+
+
+    /**
+     * Filters the reservations by client name or firstname
+     */
+    private String filter = null;
 
     /**
      * instance of the home controller
@@ -44,7 +71,53 @@ public class ReservationsController {
      * @return whole list of reservations in database
      */
     public List<Reservation> getReservations() {
-        return dao.findAll();
+        List<Reservation> reservations = dao.findAll();
+
+        if(filter != null && filter.length() > 0) {
+
+            String parts[] = filter.split(":");
+
+            if(parts.length == 2 && parts[0].equals("client_id")) //S'il y a le mot clé by_id dans le filtre, alors on affiche que les reservations faites par le client avec l'id précisé
+                reservations = reservations.stream().filter(res -> res.getClient().getId() == Integer.parseInt(parts[1])).collect(Collectors.toList());
+
+            else //Sinon on recherche dans le nom et prénoms
+                reservations = reservations.stream().filter(res -> res.getClient().getFirstname().contains(filter) || res.getClient().getLastname().contains(filter)).collect(Collectors.toList());
+        }
+
+        reservations.sort((r1, r2) -> {
+
+            switch (sortType) {
+                case SORT_BY_NAME:
+                    return r1.getClient().getLastname().compareTo(r2.getClient().getLastname());
+
+                case SORT_BY_NAME_DESC:
+                    return r2.getClient().getLastname().compareTo(r1.getClient().getLastname());
+
+                case SORT_BY_DATE:
+                    return r1.getReservationDate().compareTo(r2.getReservationDate());
+
+                case SORT_BY_DATE_DESC:
+                    return r2.getReservationDate().compareTo(r1.getReservationDate());
+
+                default: return 0;
+            }
+        });
+
+        return reservations;
+    }
+
+    /**
+     * Defines a sort type for the reservations
+     */
+    public void setSortType(SortType sortType) {
+        this.sortType = sortType;
+    }
+
+    /**
+     * defines a filter for the reservations
+     */
+    public void setFilter(String filter) {
+        this.filter = filter;
     }
 
     /**

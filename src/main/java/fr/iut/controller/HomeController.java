@@ -3,6 +3,7 @@ package fr.iut.controller;
 import fr.iut.App;
 import fr.iut.State;
 import fr.iut.persistence.dao.GenericDAO;
+import fr.iut.persistence.entities.Client;
 import fr.iut.persistence.entities.Employee;
 import fr.iut.persistence.entities.Product;
 import fr.iut.view.HomeView;
@@ -30,6 +31,7 @@ public class HomeController {
     private ProductController productController = new ProductController(this);
 
     private Employee connectedEmployee;
+    private HomeView homeView;
 
     public HomeController(App app, Employee connectedEmployee) {
         this.app = app;
@@ -37,7 +39,16 @@ public class HomeController {
     }
 
     public Scene getView() {
-        return new HomeView(this, connectedEmployee);
+        return (homeView = new HomeView(this, connectedEmployee));
+    }
+
+    /**
+     * This method creates a link between the reservations button in the clients submenu on the first tab and the reservations on the 2nd tab
+     * @param currentClient is the client of who we want to see the reservations
+     */
+    public void displayReservations(Client currentClient) {
+        homeView.goToMapTab();
+        homeView.searchReservationsByClientId(currentClient.getId());
     }
 
     /**

@@ -88,7 +88,7 @@ public class IncidentsController {
         problems.sort(new Comparator<Problem>() {
             @Override
             public int compare(Problem o1, Problem o2) {
-                double result = 0;
+                int result;
                 switch (sort_options){
                     case 1:
                         result = o2.getDescription().toLowerCase().compareTo(o1.getDescription().toLowerCase());
@@ -109,7 +109,7 @@ public class IncidentsController {
                         result = o1.getDescription().toLowerCase().compareTo(o2.getDescription().toLowerCase());
                         break;
                 }
-                return (int) result;
+                return result;
             }
         });
     }

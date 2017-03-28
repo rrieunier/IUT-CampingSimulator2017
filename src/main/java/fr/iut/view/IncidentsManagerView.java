@@ -109,7 +109,7 @@ public class IncidentsManagerView extends SubScene{
         sort_by.valueProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                createScroll(search_field.getText().toString(), false, sort_by.getSelectionModel().getSelectedIndex());
+                createScroll(search_field.getText(), false, sort_by.getSelectionModel().getSelectedIndex());
             }
         });
         Label sort_by_label = new Label("Tri par: ");
@@ -121,7 +121,7 @@ public class IncidentsManagerView extends SubScene{
             @Override
             public void handle(KeyEvent event) {
                 if (event.getCode().equals(KeyCode.ENTER)) {
-                    createScroll(search_field.getText().toString(), false, sort_by.getSelectionModel().getSelectedIndex());
+                    createScroll(search_field.getText(), false, sort_by.getSelectionModel().getSelectedIndex());
                     search_field.clear();
                 }
             }
@@ -140,7 +140,7 @@ public class IncidentsManagerView extends SubScene{
             problem.setDescription(newIncident_result.get().get("Description"));
 
             controller.saveIncident(problem);
-            createScroll(search_field.getText().toString(), true, sort_by.getSelectionModel().getSelectedIndex());
+            createScroll(search_field.getText(), true, sort_by.getSelectionModel().getSelectedIndex());
         });
 
         HBox resolvedBox = new HBox();
@@ -152,7 +152,7 @@ public class IncidentsManagerView extends SubScene{
         resolved.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                createScroll(search_field.getText().toString(), false, sort_by.getSelectionModel().getSelectedIndex());
+                createScroll(search_field.getText(), false, sort_by.getSelectionModel().getSelectedIndex());
             }
         });
         resolved_label.setStyle("-fx-text-fill: whitesmoke; -fx-font-size: 18px");
@@ -164,7 +164,7 @@ public class IncidentsManagerView extends SubScene{
         header.setLeft(sort_options);
         root.setTop(header);
 
-        createScroll(search_field.getText().toString(), true, 0);
+        createScroll(search_field.getText(), true, 0);
 
         wrapper.getChildren().add(incidentsScroll);
 
@@ -215,9 +215,9 @@ public class IncidentsManagerView extends SubScene{
                 solutionDatetime.setDisable(true);
                 editButton.setText("Modifier");
 
-                controller.updateIncident(lastClikedCopy, description.getText().toString(),
-                        appearanceDatetime.getText().toString(), solutionDatetime.getText().toString());
-                createScroll(search_field.getText().toString(), true, sort_by.getSelectionModel().getSelectedIndex());
+                controller.updateIncident(lastClikedCopy, description.getText(),
+                        appearanceDatetime.getText(), solutionDatetime.getText());
+                createScroll(search_field.getText(), true, sort_by.getSelectionModel().getSelectedIndex());
             }
 
             else {
@@ -238,7 +238,7 @@ public class IncidentsManagerView extends SubScene{
         resolvedButton.setOnAction(actionEvent -> {
             final Problem lastClikedCopy = lastClickedValue;
             controller.resolveIncident(lastClikedCopy);
-            createScroll(search_field.getText().toString(), true, sort_by.getSelectionModel().getSelectedIndex());
+            createScroll(search_field.getText(), true, sort_by.getSelectionModel().getSelectedIndex());
         });
 
         buttonsWrap.setSpacing(10);
