@@ -2,6 +2,7 @@ package fr.iut.persistence.dao;
 
 import fr.iut.persistence.TestUtils;
 import fr.iut.persistence.entities.Client;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -10,6 +11,11 @@ import static org.junit.Assert.*;
  * Created by Sydpy on 3/6/17.
  */
 public class GenericDAOTest {
+
+    @BeforeClass
+    public static void setUp() {
+        HibernateUtil.loadPersistenceUnit("campingTestUnit");
+    }
 
     @Test
     public void testPersistence() throws Exception {

@@ -2,6 +2,7 @@ package fr.iut.persistence.dao;
 
 import fr.iut.persistence.TestUtils;
 import fr.iut.persistence.entities.Employee;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.List;
@@ -15,6 +16,11 @@ import static org.junit.Assert.*;
 public class EmployeeDAOTest {
 
     private EmployeeDAO employeeDAO = new EmployeeDAO();
+
+    @BeforeClass
+    public static void setUp() {
+        HibernateUtil.loadPersistenceUnit("campingTestUnit");
+    }
 
     @Test
     public void testFindByLogin() throws Exception {

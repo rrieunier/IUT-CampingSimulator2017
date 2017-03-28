@@ -3,7 +3,9 @@ package fr.iut.persistence.entities;
 import fr.iut.persistence.TestUtils;
 import fr.iut.persistence.dao.EmployeeDAO;
 import fr.iut.persistence.dao.GenericDAO;
+import fr.iut.persistence.dao.HibernateUtil;
 import fr.iut.persistence.dao.NotificationDAO;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.sql.Timestamp;
@@ -16,6 +18,12 @@ import static org.junit.Assert.assertEquals;
  * Created by Sydpy on 3/22/17.
  */
 public class ProblemListenerTest {
+
+    @BeforeClass
+    public static void setUp() {
+        HibernateUtil.loadPersistenceUnit("campingTestUnit");
+    }
+
     @Test
     public void postPersist() throws Exception {
 

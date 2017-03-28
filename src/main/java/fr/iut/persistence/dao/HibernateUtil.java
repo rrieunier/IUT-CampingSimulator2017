@@ -11,8 +11,7 @@ public class HibernateUtil {
     /**
      * Hibernate's entity manager factory.
      */
-    private static EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("campingUnit");
-
+    private static EntityManagerFactory entityManagerFactory = null;
 
     public static EntityManagerFactory getEntityManagerFactory() {
         return entityManagerFactory;
@@ -20,5 +19,9 @@ public class HibernateUtil {
 
     public static void shutdown() {
         entityManagerFactory.close();
+    }
+
+    public static void loadPersistenceUnit(String unitName) {
+        entityManagerFactory = Persistence.createEntityManagerFactory(unitName);
     }
 }
