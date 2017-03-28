@@ -117,9 +117,9 @@ public class Problem implements EntityModel<Integer> {
                 employeeDAO.findAllWithAuthorization(Authorization.PROBLEM_READ);
 
         Notification notification = new Notification();
-        notification.setTitle("Nouveau problem ! ID : " + getId());
+        notification.setTitle("Nouveau problème !");
         notification.setEmployees(allWithAuthorization);
-        notification.setContent("Description : \n" + getDescription());
+        notification.setContent(getDescription());
 
         GenericDAO<Notification, Integer> notificationDAO = new GenericDAO<>(Notification.class);
         notificationDAO.save(notification);
