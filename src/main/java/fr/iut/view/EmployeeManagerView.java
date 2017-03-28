@@ -44,9 +44,9 @@ public class EmployeeManagerView extends SubScene {
 
     Employee currentEmployee = null;
 
-    public EmployeeManagerView(EmployeesController controller) {
+    public EmployeeManagerView(EmployeesController c) {
         super(new BorderPane(), HomeView.TAB_CONTENT_W, HomeView.TAB_CONTENT_H);
-        this.controller = controller;
+        this.controller = c;
         controller.createEmployees();
 
         BorderPane root = (BorderPane) getRoot();
@@ -65,6 +65,8 @@ public class EmployeeManagerView extends SubScene {
         ScrollPane employeesScroll = new ScrollPane(employees);
         employeesScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         employeesScroll.setMaxWidth(HomeView.TAB_CONTENT_W / 4);
+        employeesScroll.setMinWidth(HomeView.TAB_CONTENT_W/4);
+
 
 
         HBox search_bar = new HBox();
@@ -72,7 +74,7 @@ public class EmployeeManagerView extends SubScene {
         search_label.setStyle("-fx-text-fill: whitesmoke; -fx-font-size: 18px");
         TextField search_field = new TextField();
         search_field.setPrefWidth(HomeView.TAB_CONTENT_W / 7);
-        search_field.setPromptText("Nom de l'incident");
+        search_field.setPromptText("Nom de l'employée");
 
         search_label.setLabelFor(search_field);
         search_bar.setAlignment(Pos.CENTER);
@@ -234,15 +236,16 @@ public class EmployeeManagerView extends SubScene {
                 password.setDisable(true);
                 confirm.setDisable(true);
 
-                Employee employee = new Employee();
-                employee.setFirstName(firstname.getText());
-                employee.setLastName(name.getText());
-                employee.setEmail(email.getText());
-                employee.setPhone(phone.getText());
-                employee.setLogin(login.getText());
+                currentEmployee.setFirstName(firstname.getText());
+                currentEmployee.setLastName(name.getText());
+                currentEmployee.setEmail(email.getText());
+                currentEmployee.setPhone(phone.getText());
+                currentEmployee.setLogin(login.getText());
                 if (Objects.equals(password.getText(), confirm.getText()))
-                    employee.setPassword(password.getText());
-                controller.updateEmployee(employee);
+                    currentEmployee.setPassword(password.getText());
+                controller.updateEmployee(currentEmployee);
+
+                createScroll(search_field.getText().toString(), true, sort_by.getSelectionModel().getSelectedIndex());
 
                 editButton.setText("Modifier");
             } else {
@@ -256,15 +259,14 @@ public class EmployeeManagerView extends SubScene {
                 editButton.setText("Sauvegarder");
             }
 
-            createScroll(search_field.getText().toString(), true, sort_by.getSelectionModel().getSelectedIndex());
             editMode = !editMode;
         });
 
-        Button bookingButton = new Button("Supprimer");
-        bookingButton.getStylesheets().add(new File("res/style.css").toURI().toString());
-        bookingButton.getStyleClass().add("record-sales");
-        bookingButton.setMinWidth(HomeView.TAB_CONTENT_W / 4);
-        bookingButton.setOnAction(actionEvent -> {
+        Button deleteButton = new Button("Supprimer");
+        deleteButton.getStylesheets().add(new File("res/style.css").toURI().toString());
+        deleteButton.getStyleClass().add("record-sales");
+        deleteButton.setMinWidth(HomeView.TAB_CONTENT_W / 4);
+        deleteButton.setOnAction(actionEvent -> {
             controller.eraseEmployee(currentEmployee);
             createScroll(search_field.getText().toString(), true, sort_by.getSelectionModel().getSelectedIndex());
         });
@@ -282,7 +284,7 @@ public class EmployeeManagerView extends SubScene {
             });
         });
 
-        buttonsWrap1.getChildren().addAll(editButton, bookingButton);
+        buttonsWrap1.getChildren().addAll(editButton, deleteButton);
         buttonsWrap2.getChildren().add(authorizationButton);
 
         detailsWrapper.getChildren().addAll(namesField, email, phone, login, passField);
