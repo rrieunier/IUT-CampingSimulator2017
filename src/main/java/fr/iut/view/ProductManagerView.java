@@ -4,6 +4,7 @@ package fr.iut.view;
 import fr.iut.controller.ProductController;
 import fr.iut.persistence.dao.GenericDAO;
 import fr.iut.persistence.entities.Product;
+import fr.iut.persistence.entities.Restocking;
 import fr.iut.persistence.entities.Supplier;
 import fr.iut.persistence.entities.SupplierProposeProduct;
 import javafx.beans.NamedArg;
@@ -137,47 +138,48 @@ public class ProductManagerView extends SubScene {
         HBox buttons = new HBox();
         buttons.setSpacing(HomeView.TAB_CONTENT_W / 10);
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 4; i++) {
             Button button = new Button();
             if (i == 0) {
+                button.setText("Vendre");
+                button.setOnMouseClicked(event -> {
+                    controller.sell(lastClickedValue);
+                    buildProductsList(0, "", true);
+                    actualiseDetails();
+                });
+            }
+            else if (i == 1) {
                 button.setText("Réaprovisionner");
-                button.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent event) {
-                        try {
-                            controller.restock(lastClickedValue);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-            } else if (i == 1) {
-                button.setText("Supprimer");
-                button.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent event) {
-                        controller.deleteProduct(lastClickedValue);
+                button.setOnMouseClicked(event -> {
+                    try {
+                        controller.restock(lastClickedValue);
                         buildProductsList(0, "", true);
-                        if (!products_list.isEmpty()) {
-                            lastClicked = (StackPane) products_box.getChildren().get(0);
-                            lastClicked.setStyle("-fx-background-color: #ff6600;");
-                            lastClickedValue = shown_list.get(0);
-                        }
                         actualiseDetails();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
                 });
-            } else {
-                button.setText("Modifier");
-                button.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent event) {
-                        controller.modifyProduct(lastClickedValue);
-                        buildProductsList(0, "", true);
+            } else if (i == 2) {
+                button.setText("Supprimer");
+                button.setOnMouseClicked(event -> {
+                    controller.deleteProduct(lastClickedValue);
+                    buildProductsList(0, "", true);
+                    if (!products_list.isEmpty()) {
                         lastClicked = (StackPane) products_box.getChildren().get(0);
                         lastClicked.setStyle("-fx-background-color: #ff6600;");
                         lastClickedValue = shown_list.get(0);
-                        actualiseDetails();
                     }
+                    actualiseDetails();
+                });
+            } else {
+                button.setText("Modifier");
+                button.setOnMouseClicked(event -> {
+                    controller.modifyProduct(lastClickedValue);
+                    buildProductsList(0, "", true);
+                    lastClicked = (StackPane) products_box.getChildren().get(0);
+                    lastClicked.setStyle("-fx-background-color: #ff6600;");
+                    lastClickedValue = shown_list.get(0);
+                    actualiseDetails();
                 });
             }
 
@@ -390,7 +392,25 @@ public class ProductManagerView extends SubScene {
                             ((Label) node).setText(String.valueOf(lastClickedValue.getCriticalQuantity()));
                             break;
                         case 3:
-                            ((Label) node).setText(String.valueOf("Dernier réapprovisionement inconnu..."));
+                            GenericDAO<Restocking, Integer> dao = new GenericDAO<>(Restocking.class);
+                            ArrayList<Restocking> restockings = new ArrayList<>();
+                            Restocking later = null;
+                            for (Restocking r : restockings) {
+                                if (r.getProduct().equals(lastClickedValue)) {
+                                    later = r;
+                                    break;
+                                }
+                            }
+                            for (Restocking r : restockings) {
+                                if (later.getDatetime().getTime() - r.getDatetime().getTime() < 0
+                                        && r.getProduct().equals(lastClickedValue))
+                                    later = r;
+                            }
+                            if (later != null) {
+                                ((Label) node).setText(String.valueOf(later.getDatetime()));
+                            } else {
+                                ((Label) node).setText("Dernier réapprovisionnement inconnu");
+                            }
                             break;
                     }
                 }

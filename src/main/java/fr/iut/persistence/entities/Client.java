@@ -131,4 +131,6 @@ public class Client implements EntityModel<Integer> {
     public void setPurchases(Set<Purchase> purchases) {
         this.purchases = purchases;
     }
+
+    public String toString() { return getLastname() + " " + getFirstname(); }
 }

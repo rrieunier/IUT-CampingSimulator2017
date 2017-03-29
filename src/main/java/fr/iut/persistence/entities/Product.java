@@ -1,5 +1,8 @@
 package fr.iut.persistence.entities;
 
+import fr.iut.persistence.dao.EmployeeDAO;
+import fr.iut.persistence.dao.GenericDAO;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
