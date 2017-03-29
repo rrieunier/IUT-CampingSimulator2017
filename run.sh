@@ -23,3 +23,8 @@ echo -n "Copying dependencies..."
 mvn dependency:copy-dependencies > /dev/null
 echo "Done"
 mvn -Dmaven.test.skip=true -q package exec:java -Dexec.mainClass=fr.iut.App -e
+
+echo "Executing Database creation script"
+echo -n "MySQL user : "
+read user
+mysql -u $user -p < camping-db-creation.sql
