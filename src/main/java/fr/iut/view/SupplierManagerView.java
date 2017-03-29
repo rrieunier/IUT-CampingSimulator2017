@@ -228,6 +228,7 @@ public class SupplierManagerView extends SubScene{
                 productListDialog.checkProducts(controller.getProductsProposeBySupplier(lastClikedCopy));
                 Optional<ArrayList<Pair<Product, Float>>> result = productListDialog.showAndWait();
                 result.ifPresent(list -> {
+                    controller.cleanSupplierProposeProduct(lastClikedCopy);
                     controller.saveOrUpdateProductsSupplier(lastClikedCopy, list, true);
                 });
             }

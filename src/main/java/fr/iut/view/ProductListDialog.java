@@ -88,7 +88,7 @@ public class ProductListDialog extends Dialog<ArrayList<Pair<Product, Float>>> {
     public void checkProducts(ArrayList<SupplierProposeProduct> supplierProposeProducts){
         for (int i = 0; i < supplierProposeProducts.size(); i++) {
             for (int j = 0; j < arrayListProducts.size(); j++) {
-                if (supplierProposeProducts.get(i).getProduct() == arrayListProducts.get(j).getKey().getKey()){
+                if (supplierProposeProducts.get(i).getProduct().getId() == arrayListProducts.get(j).getKey().getKey().getId()){
                     arrayListProducts.get(j).getValue().setSelected(true);
                     arrayListProducts.get(j).getKey().getValue().setText(Float.toString(supplierProposeProducts.get(i).getSellPrice()));
                 }

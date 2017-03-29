@@ -80,7 +80,7 @@ public class NotificationsController {
         new Thread(() -> {
 
             while(querying) {
-                System.out.println("querying notifications in database...");
+                //System.out.println("querying notifications in database...");
 
                 int old_notifs_count = notifications.size();
                 notifications = dao.findAll();

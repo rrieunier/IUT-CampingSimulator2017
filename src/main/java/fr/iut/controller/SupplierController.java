@@ -48,7 +48,6 @@ public class SupplierController {
 
     public void saveOrUpdateProductsSupplier(Supplier supplier, ArrayList<Pair<Product, Float>> products, boolean update){
         for (Pair<Product, Float> p : products) {
-            System.out.println("avant"+supplier.getSupplierProposeProducts().size());
             SupplierProposeProduct supplierProposeProduct = new SupplierProposeProduct();
             supplierProposeProduct.setProduct(p.getKey());
             supplierProposeProduct.setSellPrice(p.getValue());
@@ -57,7 +56,15 @@ public class SupplierController {
                 daoProposeProduct.save(supplierProposeProduct);
             else
                 daoProposeProduct.update(supplierProposeProduct);
-            System.out.println("apres"+supplier.getSupplierProposeProducts().size());
+        }
+    }
+
+    public void cleanSupplierProposeProduct(Supplier supplier){
+        List<SupplierProposeProduct> list = daoProposeProduct.findAll();
+        for (SupplierProposeProduct prod :
+                list) {
+            if(prod.getSupplier().getId() == supplier.getId())
+                daoProposeProduct.remove(prod);
         }
     }
 
@@ -66,8 +73,7 @@ public class SupplierController {
         List<SupplierProposeProduct> list = daoProposeProduct.findAll();
         for (SupplierProposeProduct prod :
                 list) {
-            if(prod.getSupplier() == supplier){
-                System.out.println("YEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEN A UNNNNNNNNNNNNNNNNNNNNNN AU MOINSSSSSSSSSSSSSSSS");
+            if(prod.getSupplier().getId() == supplier.getId()){
                 productsPropose.add(prod);
             }
         }
