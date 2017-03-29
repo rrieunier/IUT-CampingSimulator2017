@@ -56,7 +56,7 @@ public class EmployeeManagerView extends SubScene {
         root.setStyle("-fx-background-color: rgb(12, 27, 51);");
 
 
-        HeaderView headerView = new HeaderView("Gestion des employees");
+        HeaderView headerView = new HeaderView("Gestion des employés");
         root.setTop(headerView);
 
         VBox wrapper1 = new VBox();
@@ -76,7 +76,7 @@ public class EmployeeManagerView extends SubScene {
         search_label.setStyle("-fx-text-fill: whitesmoke; -fx-font-size: 18px");
         TextField search_field = new TextField();
         search_field.setPrefWidth(HomeView.TAB_CONTENT_W / 7);
-        search_field.setPromptText("Nom de l'employée");
+        search_field.setPromptText("Nom de l'employé");
 
         search_label.setLabelFor(search_field);
         search_bar.setAlignment(Pos.CENTER);
