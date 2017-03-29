@@ -31,14 +31,29 @@ import java.util.Optional;
  */
 public class SupplierManagerView extends SubScene{
 
+    /**
+     * controller
+     */
     private SupplierController controller;
 
+    /**
+     * list of supplier
+     */
     private VBox suppliers;
 
+    /**
+     * if editMode is possible or not
+     */
     private Boolean editMode = false;
 
+    /**
+     * list of textfields
+     */
     private TextField name, phone, website, mail;
 
+    /**
+     * last Supplier propose
+     */
     private Supplier lastClickedValue;
 
 
@@ -274,7 +289,11 @@ public class SupplierManagerView extends SubScene{
 
         root.setCenter(supplierDetailsWrapper);
     }
-    
+
+    /**
+     * @param supplier
+     * update the details
+     */
     private void updateDetail(Supplier supplier){
         name.setText(supplier.getName());
         phone.setText(supplier.getPhone());
@@ -282,6 +301,11 @@ public class SupplierManagerView extends SubScene{
         mail.setText(supplier.getEmail());
     }
 
+    /**
+     * @param s
+     * @param i
+     * add an Element in the scroll
+     */
     private void createElement(Supplier s, int i){
         HBox suppliersBox = new HBox();
 
@@ -312,6 +336,13 @@ public class SupplierManagerView extends SubScene{
 
         suppliers.getChildren().add(suppliersBox);
     }
+
+    /**
+     * @param search
+     * @param refresh
+     * @param sort_options
+     * create the scroll
+     */
     private void createScroll(String search, boolean refresh, int sort_options){
         suppliers.getChildren().clear();
 
