@@ -1,6 +1,8 @@
 package fr.iut.view;
 
 import fr.iut.controller.SupplierController;
+import fr.iut.persistence.dao.EmployeeDAO;
+import fr.iut.persistence.entities.Authorization;
 import fr.iut.persistence.entities.Product;
 import fr.iut.persistence.entities.Supplier;
 import javafx.beans.value.ChangeListener;
@@ -105,6 +107,7 @@ public class SupplierManagerView extends SubScene{
         });
 
         Button newSupplier = new Button("+");
+        newSupplier.setDisable(!EmployeeDAO.getConnectedUser().hasPermission(Authorization.SUPPLIER_UPDATE));
         newSupplier.setTooltip(new Tooltip("Ajouter un nouveau fournisseur..."));
         newSupplier.getStylesheets().add(new File("res/style.css").toURI().toString());
         newSupplier.getStyleClass().add("record-sales");
@@ -189,6 +192,7 @@ public class SupplierManagerView extends SubScene{
         buttons.setAlignment(Pos.CENTER);
 
         Button editButton = new Button("Modifier");
+        editButton.setDisable(!EmployeeDAO.getConnectedUser().hasPermission(Authorization.SUPPLIER_UPDATE));
         editButton.getStylesheets().add(new File("res/style.css").toURI().toString());
         editButton.getStyleClass().add("record-sales");
         editButton.setMinWidth(HomeView.TAB_CONTENT_W / 4);
@@ -218,6 +222,7 @@ public class SupplierManagerView extends SubScene{
         });
 
         Button editProductButton = new Button("Ajouter / Modifier produits");
+        editProductButton.setDisable(!EmployeeDAO.getConnectedUser().hasPermission(Authorization.SUPPLIER_UPDATE));
         editProductButton.getStylesheets().add(new File("res/style.css").toURI().toString());
         editProductButton.getStyleClass().add("record-sales");
         editProductButton.setMinWidth(HomeView.TAB_CONTENT_W / 4);
@@ -248,6 +253,7 @@ public class SupplierManagerView extends SubScene{
         });
 
         Button removeButton = new Button("Supprimer");
+        removeButton.setDisable(!EmployeeDAO.getConnectedUser().hasPermission(Authorization.SUPPLIER_UPDATE));
         removeButton.getStylesheets().add(new File("res/style.css").toURI().toString());
         removeButton.getStyleClass().add("record-sales");
         removeButton.setMinWidth(HomeView.TAB_CONTENT_W / 4);

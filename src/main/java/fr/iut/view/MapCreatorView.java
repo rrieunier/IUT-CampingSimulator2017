@@ -2,6 +2,8 @@ package fr.iut.view;
 
 import fr.iut.App;
 import fr.iut.controller.MapController;
+import fr.iut.persistence.dao.EmployeeDAO;
+import fr.iut.persistence.entities.Authorization;
 import fr.iut.persistence.entities.Spot;
 import fr.iut.persistence.entities.SpotType;
 import javafx.geometry.Bounds;
@@ -54,6 +56,8 @@ public class MapCreatorView extends SubScene {
     private ItemMap selectedItem;
     private double mouseX;
     private double mouseY;
+
+    private boolean employeeHasWriteMapPermission;
 
     /**
      * The available items are all the SpotType values
@@ -131,6 +135,8 @@ public class MapCreatorView extends SubScene {
         super(new StackPane(), App.SCREEN_W * 2/3, App.SCREEN_H * 3/4);
         this.controller = controller;
 
+        employeeHasWriteMapPermission = EmployeeDAO.getConnectedUser().hasPermission(Authorization.MAP_UPDATE);
+
         availableItems[0] = new ItemMap(SpotType.HOUSE);
         availableItems[1] = new ItemMap(SpotType.TRAILER);
         availableItems[2] = new ItemMap(SpotType.RESTAURANT);
@@ -176,7 +182,8 @@ public class MapCreatorView extends SubScene {
         mapViewPort.setPannable(true);
         scrollContainer.getChildren().add(mapViewPort);
 
-        handleDropItem();
+        if(employeeHasWriteMapPermission)
+            handleDropItem();
 
         HBox items = new HBox();
         buildDraggableItems(items);
@@ -188,63 +195,65 @@ public class MapCreatorView extends SubScene {
         StackPane.setMargin(buttonReset, new Insets(20, 20, 0, 0));
         scrollContainer.getChildren().add(buttonReset);
 
-        buttonReset.setOnMouseClicked(mouseEvent -> {
+        if(employeeHasWriteMapPermission) {
+            buttonReset.setOnMouseClicked(mouseEvent -> {
 
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Attention");
-            alert.setHeaderText("Vous êtes sur le point de supprimer la carte et tous les emplacements crées, cette opération est irréversible.");
-            alert.setContentText("Voulez vous vraiment tout supprimer ?");
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Attention");
+                alert.setHeaderText("Vous êtes sur le point de supprimer la carte et tous les emplacements crées, cette opération est irréversible.");
+                alert.setContentText("Voulez vous vraiment tout supprimer ?");
 
-            Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == ButtonType.OK){
-                mapFile = null;
-                mapInBdd = null;
-                mapPane.setAlignment(Pos.CENTER);
-                mapPane.setPrefWidth(MAP_VIEWPORT_WIDTH);
-                mapPane.setMinWidth(MAP_VIEWPORT_WIDTH);
-                mapPane.setPrefHeight(MAP_VIEWPORT_HEIGHT);
-                mapPane.setMinHeight(MAP_VIEWPORT_HEIGHT);
-                mapPane.getChildren().removeAll(mapPane.getChildren());
-                mapPane.setStyle("-fx-background-color: black;");
-                importMapText.setFont(Font.font("DejaVu Sans", 20));
-                importMapText.setFill(Color.WHITE);
-                mapPane.getChildren().add(importMapText);
-                buttonReset.setVisible(false);
-                mapViewPort.setMaxWidth(MAP_VIEWPORT_WIDTH);
-                mapViewPort.setMaxHeight(MAP_VIEWPORT_HEIGHT);
-                controller.removeMapAndAllSpots();
-            }
-        });
-
-        mapPane.setOnMouseClicked(mouseEvent -> {
-            if(mapFile == null && mapInBdd == null) {
-                FileChooser fileChooser = new FileChooser();
-                fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-                fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Images", "*.png")); //On autorise que les images png
-                mapFile = fileChooser.showOpenDialog(controller.getMainWindow());
-
-                if (mapFile != null) {
-
-                    System.out.println("map picture size : " + mapFile.length());
-
-                    if(mapFile.length() > 16000000) {
-                        Alert alert = new Alert(Alert.AlertType.ERROR);
-                        alert.setHeaderText(null);
-                        alert.setContentText("Votre image est trop volumineuse ! Maximum : 16Mo");
-                        mapFile = null;
-                        return;
-                    }
-
-                    Image image = new Image(mapFile.toURI().toString());
-
-                    buttonReset.setVisible(true);
-
-                    adaptMapPaneToImage(image);
-
-                    controller.storeMap(mapFile);
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.OK) {
+                    mapFile = null;
+                    mapInBdd = null;
+                    mapPane.setAlignment(Pos.CENTER);
+                    mapPane.setPrefWidth(MAP_VIEWPORT_WIDTH);
+                    mapPane.setMinWidth(MAP_VIEWPORT_WIDTH);
+                    mapPane.setPrefHeight(MAP_VIEWPORT_HEIGHT);
+                    mapPane.setMinHeight(MAP_VIEWPORT_HEIGHT);
+                    mapPane.getChildren().removeAll(mapPane.getChildren());
+                    mapPane.setStyle("-fx-background-color: black;");
+                    importMapText.setFont(Font.font("DejaVu Sans", 20));
+                    importMapText.setFill(Color.WHITE);
+                    mapPane.getChildren().add(importMapText);
+                    buttonReset.setVisible(false);
+                    mapViewPort.setMaxWidth(MAP_VIEWPORT_WIDTH);
+                    mapViewPort.setMaxHeight(MAP_VIEWPORT_HEIGHT);
+                    controller.removeMapAndAllSpots();
                 }
-            }
-        });
+            });
+
+            mapPane.setOnMouseClicked(mouseEvent -> {
+                if (mapFile == null && mapInBdd == null) {
+                    FileChooser fileChooser = new FileChooser();
+                    fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+                    fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Images", "*.png")); //On autorise que les images png
+                    mapFile = fileChooser.showOpenDialog(controller.getMainWindow());
+
+                    if (mapFile != null) {
+
+                        System.out.println("map picture size : " + mapFile.length());
+
+                        if (mapFile.length() > 16000000) {
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setHeaderText(null);
+                            alert.setContentText("Votre image est trop volumineuse ! Maximum : 16Mo");
+                            mapFile = null;
+                            return;
+                        }
+
+                        Image image = new Image(mapFile.toURI().toString());
+
+                        buttonReset.setVisible(true);
+
+                        adaptMapPaneToImage(image);
+
+                        controller.storeMap(mapFile);
+                    }
+                }
+            });
+        }
 
         VBox.setMargin(items, new Insets(30, 0, 20, 0));
         verticalWrap.getChildren().addAll(scrollContainer, items);
@@ -265,41 +274,41 @@ public class MapCreatorView extends SubScene {
             ImageView itemBigImage = new ImageView(availableItem.getBigImage());
             ImageView itemSmallImage = new ImageView(availableItem.getSmallImage());
 
-            itemBigImage.setOnMousePressed(mouseEvent -> {
-                if (mapFile != null || mapInBdd != null) {
-                    selectedItem = availableItem;
-                    draggingIcon = itemSmallImage;
-                    draggingIcon.setManaged(false);//très important, permet de dire au parent (Le stackpane, de ne pas gérer de la position de l'image) lors de son déplacement drag&drop
-                    stackPaneRoot.getChildren().add(draggingIcon);
+            if(employeeHasWriteMapPermission) {
+                itemBigImage.setOnMousePressed(mouseEvent -> {
+                    if (mapFile != null || mapInBdd != null) {
+                        selectedItem = availableItem;
+                        draggingIcon = itemSmallImage;
+                        draggingIcon.setManaged(false);//très important, permet de dire au parent (Le stackpane, de ne pas gérer de la position de l'image) lors de son déplacement drag&drop
+                        stackPaneRoot.getChildren().add(draggingIcon);
 
-                    Point2D mouse_pos = sceneToLocal(mouseEvent.getSceneX(), mouseEvent.getSceneY());
-                    mouseX = mouse_pos.getX();
-                    mouseY = mouse_pos.getY();
+                        Point2D mouse_pos = sceneToLocal(mouseEvent.getSceneX(), mouseEvent.getSceneY());
+                        mouseX = mouse_pos.getX();
+                        mouseY = mouse_pos.getY();
 
-                    draggingIcon.relocate(mouseX - draggingIcon.getImage().getWidth() / 2, mouseY - draggingIcon.getImage().getHeight() / 2);
-                }
+                        draggingIcon.relocate(mouseX - draggingIcon.getImage().getWidth() / 2, mouseY - draggingIcon.getImage().getHeight() / 2);
+                    } else {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Impossible");
+                        alert.setHeaderText("Merci de choisir une carte avant de créer des emplacements.");
+                        alert.setContentText(null);
+                        alert.show();
+                    }
+                });
 
-                else {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Impossible");
-                    alert.setHeaderText("Merci de choisir une carte avant de créer des emplacements.");
-                    alert.setContentText(null);
-                    alert.show();
-                }
-            });
+                itemBigImage.setOnMouseDragged(mouseEvent -> {
+                    if (selectedItem != null) {
+                        Point2D mouse_pos = sceneToLocal(mouseEvent.getSceneX(), mouseEvent.getSceneY());
+                        double deltaX = mouse_pos.getX() - mouseX;
+                        double deltaY = mouse_pos.getY() - mouseY;
 
-            itemBigImage.setOnMouseDragged(mouseEvent -> {
-                if (selectedItem != null) {
-                    Point2D mouse_pos = sceneToLocal(mouseEvent.getSceneX(), mouseEvent.getSceneY());
-                    double deltaX = mouse_pos.getX() - mouseX;
-                    double deltaY = mouse_pos.getY() - mouseY;
+                        draggingIcon.relocate(draggingIcon.getLayoutX() + deltaX, draggingIcon.getLayoutY() + deltaY);
 
-                    draggingIcon.relocate(draggingIcon.getLayoutX() + deltaX, draggingIcon.getLayoutY() + deltaY);
-
-                    mouseX = mouse_pos.getX();
-                    mouseY = mouse_pos.getY();
-                }
-            });
+                        mouseX = mouse_pos.getX();
+                        mouseY = mouse_pos.getY();
+                    }
+                });
+            }
 
             items.getChildren().add(itemBigImage);
         }
@@ -359,6 +368,15 @@ public class MapCreatorView extends SubScene {
         Optional<Map<String, String>> edit_result = new LocationDialog(bigIcon, spot).showAndWait();
 
         edit_result.ifPresent(mapEditResult -> {
+
+            if(!employeeHasWriteMapPermission) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Impossible");
+                alert.setHeaderText("Vous n'avez pas la permission de modifier les emplacements.");
+                alert.setContentText(null);
+                alert.show();
+                return;
+            }
 
             if(mapEditResult.containsKey("remove")) {
                 mapPane.getChildren().remove(imageOnMap);
