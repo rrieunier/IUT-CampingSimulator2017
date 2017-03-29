@@ -4,6 +4,7 @@ import fr.iut.persistence.entities.EntityModel;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -35,6 +36,7 @@ public class GenericDAO<T extends EntityModel, Id> {
      * @param entity new entity.
      * @return entity inserted
      */
+    @Transactional
     public T save(T entity) {
         em.getTransaction().begin();
 
@@ -42,7 +44,6 @@ public class GenericDAO<T extends EntityModel, Id> {
         em.flush();
 
         em.getTransaction().commit();
-
         return entity;
     }
 
@@ -52,6 +53,7 @@ public class GenericDAO<T extends EntityModel, Id> {
      * @param entity entity to update
      * @return entity updated
      */
+    @Transactional
     public T update(T entity) {
 
         em.getTransaction().begin();
@@ -69,6 +71,7 @@ public class GenericDAO<T extends EntityModel, Id> {
      *
      * @param entity Entity to remove.
      */
+    @Transactional
     public void remove(T entity) {
 
         em.getTransaction().begin();
@@ -80,6 +83,7 @@ public class GenericDAO<T extends EntityModel, Id> {
     /**
      * Removes all entities from database.
      */
+    @Transactional
     public void removeAll() {
 
         em.getTransaction().begin();

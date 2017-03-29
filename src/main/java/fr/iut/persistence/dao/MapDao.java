@@ -20,7 +20,6 @@ public class MapDao extends GenericDAO<Map, Integer> {
     /**
      * @return The Map stored in database.
      */
-    @Transactional(rollbackOn = Exception.class)
     public Map getMap(){
         List<Map> all = findAll();
 
