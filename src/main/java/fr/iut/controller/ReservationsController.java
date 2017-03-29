@@ -80,8 +80,10 @@ public class ReservationsController {
             if(parts.length == 2 && parts[0].equals("client_id")) //S'il y a le mot clé by_id dans le filtre, alors on affiche que les reservations faites par le client avec l'id précisé
                 reservations = reservations.stream().filter(res -> res.getClient().getId() == Integer.parseInt(parts[1])).collect(Collectors.toList());
 
-            else //Sinon on recherche dans le nom et prénoms
-                reservations = reservations.stream().filter(res -> res.getClient().getFirstname().contains(filter) || res.getClient().getLastname().contains(filter)).collect(Collectors.toList());
+            else //Sinon on recherche dans le nom et prénoms du client ainsi que dans le nom des emplacements
+                reservations = reservations.stream().filter(    res -> res.getClient().getFirstname().toLowerCase().contains(filter)
+                                                            ||  res.getClient().getLastname().toLowerCase().contains(filter)
+                                                            ||  res.getSpot().getName().toLowerCase().contains(filter)).collect(Collectors.toList());
         }
 
         reservations.sort((r1, r2) -> {
@@ -117,7 +119,7 @@ public class ReservationsController {
      * defines a filter for the reservations
      */
     public void setFilter(String filter) {
-        this.filter = filter;
+        this.filter = filter.toLowerCase();
     }
 
     /**
@@ -211,26 +213,28 @@ public class ReservationsController {
         String pricePerDayValue = reservation.getSpot().getPricePerDay() + "€ / jour";
         ArrayList<String> purchasesValue = new ArrayList<>();
 
-        for (Purchase p : reservation.getClient().getPurchases()) {
-            purchasesValue.add(p.getDatetime().toString().substring(0, 10)
-                    + " " + p.getProduct().getName() + " -> "
-                    + p.getProduct().getSellPrice() * p.getQuantity() + "€");
+        if (reservation.getClient().getPurchases() != null) {
+            for (Purchase p : reservation.getClient().getPurchases()) {
+                purchasesValue.add(p.getDatetime().toString().substring(0, 10)
+                        + " " + p.getProduct().getName() + " -> "
+                        + p.getProduct().getSellPrice() * p.getQuantity() + "€");
+            }
         }
         String reductionValue = reservation.getReduction() + "%";
 
         //prices
         float taxPrice = reservation.getPersonCount() * reservation.getSpot().getCouncilTaxPersonDay()
-                * (reservation.getEndtime().getTime() - reservation.getStarttime().getTime())
-                / (1000 * 60 * 60 * 24);
-        float pricePerDayPrice = reservation.getSpot().getPricePerDay() * (reservation.getEndtime().getTime() - reservation.getStarttime().getTime())
-                / (1000 * 60 * 60 * 24);
-        float purchasesPrice = 0f;
+                * ((reservation.getEndtime().getTime() - reservation.getStarttime().getTime())
+                / (1000 * 60 * 60 * 24));
+        float pricePerDayPrice = reservation.getSpot().getPricePerDay() * ((reservation.getEndtime().getTime() - reservation.getStarttime().getTime())
+                / (1000 * 60 * 60 * 24));
 
+        float purchasesPrice = 0f;
         for (Purchase p : reservation.getClient().getPurchases()) {
             purchasesPrice += p.getProduct().getSellPrice() * p.getQuantity();
         }
 
-        float totalPrice = taxPrice + pricePerDayPrice + purchasesPrice * (1 - (reservation.getReduction() / 100));
+        float totalPrice = (taxPrice + pricePerDayPrice + purchasesPrice) * ((100 - reservation.getReduction()) / 100);
 
         String warning = "Ce document est un original, toute tentative de reproduction sera passible de poursuites.";
 

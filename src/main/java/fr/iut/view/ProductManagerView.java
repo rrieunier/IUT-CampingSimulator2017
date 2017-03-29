@@ -6,6 +6,7 @@ import fr.iut.persistence.dao.EmployeeDAO;
 import fr.iut.persistence.dao.GenericDAO;
 import fr.iut.persistence.entities.Authorization;
 import fr.iut.persistence.entities.Product;
+import fr.iut.persistence.entities.Restocking;
 import fr.iut.persistence.entities.Supplier;
 import fr.iut.persistence.entities.SupplierProposeProduct;
 import javafx.beans.NamedArg;
@@ -140,21 +141,28 @@ public class ProductManagerView extends SubScene {
         HBox buttons = new HBox();
         buttons.setSpacing(HomeView.TAB_CONTENT_W / 10);
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 4; i++) {
             Button button = new Button();
             if (i == 0) {
+                button.setText("Vendre");
+                button.setOnMouseClicked(event -> {
+                    controller.sell(lastClickedValue);
+                    buildProductsList(0, "", true);
+                    actualiseDetails();
+                });
+            }
+            else if (i == 1) {
                 button.setText("Réaprovisionner");
-                button.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent event) {
-                        try {
-                            controller.restock(lastClickedValue);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                button.setOnMouseClicked(event -> {
+                    try {
+                        controller.restock(lastClickedValue);
+                        buildProductsList(0, "", true);
+                        actualiseDetails();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
                 });
-            } else if (i == 1) {
+            } else if (i == 2) {
                 button.setText("Supprimer");
                 button.setDisable(!EmployeeDAO.getConnectedUser().hasPermission(Authorization.PRODUCT_UPDATE));
                 button.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -395,7 +403,26 @@ public class ProductManagerView extends SubScene {
                             ((Label) node).setText(String.valueOf(lastClickedValue.getCriticalQuantity()));
                             break;
                         case 3:
-                            ((Label) node).setText(String.valueOf("Dernier réapprovisionement inconnu..."));
+                            GenericDAO<Restocking, Integer> dao = new GenericDAO<>(Restocking.class);
+                            ArrayList<Restocking> restockings = (ArrayList<Restocking>) dao.findAll();
+                            Restocking later = null;
+                            for (Restocking r : restockings) {
+                                if (Objects.equals(r.getProduct().getId(), lastClickedValue.getId())) {
+                                    later = r;
+                                    break;
+                                }
+                            }
+                            for (Restocking r : restockings) {
+                                if (later != null && later.getDatetime().getTime() - r.getDatetime().getTime() < 0
+                                        && Objects.equals(r.getProduct().getId(), lastClickedValue.getId())) {
+                                    later = r;
+                                }
+                            }
+                            if (later != null) {
+                                ((Label) node).setText(String.valueOf(later.getDatetime()));
+                            } else {
+                                ((Label) node).setText("Dernier réapprovisionnement inconnu");
+                            }
                             break;
                     }
                 }

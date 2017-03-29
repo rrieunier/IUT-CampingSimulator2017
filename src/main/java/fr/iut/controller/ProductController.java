@@ -1,12 +1,11 @@
 package fr.iut.controller;
 
 import fr.iut.persistence.dao.GenericDAO;
-import fr.iut.persistence.entities.Product;
-import fr.iut.persistence.entities.Supplier;
-import fr.iut.persistence.entities.SupplierProposeProduct;
+import fr.iut.persistence.entities.*;
 import fr.iut.view.ChooseSupplierDialog;
 import fr.iut.view.InputsListDialog;
 import fr.iut.view.ProductManagerView;
+import fr.iut.view.SellProductDialog;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.SubScene;
@@ -17,6 +16,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by damnhotuser on 21/03/17.
@@ -121,6 +121,8 @@ public class ProductController {
         ChooseSupplierDialog dialog = new ChooseSupplierDialog(choices, lastClickedValue, this);
 
         dialog.showAndWait();
+
+        dao.update(lastClickedValue);
     }
 
     /**
@@ -152,5 +154,17 @@ public class ProductController {
 
             rt.exec(new String[]{"sh", "-c", cmd.toString()});
         }
+    }
+
+    public void sell(Product lastClickedValue) {
+        ObservableList<Client> choices = FXCollections.observableArrayList();
+        GenericDAO<Client, Integer> clientDao = new GenericDAO<>(Client.class);
+        for (Client c : clientDao.findAll())
+            choices.add(c);
+
+        SellProductDialog dialog = new SellProductDialog(choices, lastClickedValue, this);
+        dialog.showAndWait();
+
+        dao.update(lastClickedValue);
     }
 }

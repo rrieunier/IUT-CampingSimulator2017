@@ -5,12 +5,14 @@ import fr.iut.State;
 import fr.iut.persistence.dao.EmployeeDAO;
 import fr.iut.persistence.dao.GenericDAO;
 import fr.iut.persistence.entities.Employee;
+import fr.iut.persistence.entities.Log;
 import fr.iut.persistence.exception.InvalidLoginPasswordException;
 import fr.iut.view.ConnectionView;
 import javafx.scene.Scene;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Timestamp;
 import java.util.List;
 
 
@@ -40,6 +42,14 @@ public class ConnectionController {
 
         try {
             daoEmployee.connectUser(username, hash(password));
+
+            GenericDAO<Log, Integer> logDao = new GenericDAO<>(Log.class);
+            Log connLog = new Log();
+            connLog.setDatetime(new Timestamp(System.currentTimeMillis()));
+            connLog.setAction("[CONNECTION] by " + username);
+            connLog.setEmployee(employee);
+            logDao.save(connLog);
+
             return true;
         } catch (InvalidLoginPasswordException e) {
             return false;
