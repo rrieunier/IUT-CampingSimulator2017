@@ -45,13 +45,13 @@ public class Supplier implements EntityModel<Integer> {
     /**
      * Restockings made by this supplier.
      */
-    @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL)
+    @OneToMany(orphanRemoval = true, mappedBy = "supplier", cascade = CascadeType.ALL)
     private Set<Restocking> restockings = new HashSet<>();
 
     /**
      * Product propositions by this supplier.
      */
-    @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL)
+    @OneToMany(orphanRemoval = true, mappedBy = "supplier", cascade = CascadeType.ALL)
     private Set<SupplierProposeProduct> supplierProposeProducts = new HashSet<>();
 
     public Integer getId() {

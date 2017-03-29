@@ -40,7 +40,7 @@ public class Location implements EntityModel<Integer> {
     /**
      * Tasks planned on this location.
      */
-    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL)
+    @OneToMany(orphanRemoval = true, mappedBy = "location", cascade = CascadeType.ALL)
     private Set<Task> tasks;
 
     /**
