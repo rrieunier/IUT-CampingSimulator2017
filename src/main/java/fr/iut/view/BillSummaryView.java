@@ -133,10 +133,11 @@ public class BillSummaryView extends Dialog<Void> {
         for (Purchase p : this.reservation.getClient().getPurchases())
             totalPurchases += (p.getProduct().getSellPrice() * p.getQuantity());
 
-        float council_tax = this.reservation.getPersonCount() * this.reservation.getSpot().getCouncilTaxPersonDay() * ((endtime.getTime() - startime.getTime()) / (1000 *60 *60* 24));
+        float duration = (endtime.getTime() - startime.getTime()) / (1000 *60 *60* 24);
+        float council_tax = this.reservation.getPersonCount() * this.reservation.getSpot().getCouncilTaxPersonDay() * duration;
         float reduction = (100 - this.reservation.getReduction()) / 100;
 
-        float total = ((endtime.getTime() - startime.getTime()) / (1000 *60 *60* 24) * pricePerDay + (personCount * council_tax)) * reduction;
+        float total = (council_tax + (duration * pricePerDay) + totalPurchases) * reduction;
 
         for (Node node : grid.getChildren()) {
             if (node instanceof Label && GridPane.getColumnIndex(node) == 1) {

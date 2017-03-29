@@ -211,26 +211,28 @@ public class ReservationsController {
         String pricePerDayValue = reservation.getSpot().getPricePerDay() + "€ / jour";
         ArrayList<String> purchasesValue = new ArrayList<>();
 
-        for (Purchase p : reservation.getClient().getPurchases()) {
-            purchasesValue.add(p.getDatetime().toString().substring(0, 10)
-                    + " " + p.getProduct().getName() + " -> "
-                    + p.getProduct().getSellPrice() * p.getQuantity() + "€");
+        if (reservation.getClient().getPurchases() != null) {
+            for (Purchase p : reservation.getClient().getPurchases()) {
+                purchasesValue.add(p.getDatetime().toString().substring(0, 10)
+                        + " " + p.getProduct().getName() + " -> "
+                        + p.getProduct().getSellPrice() * p.getQuantity() + "€");
+            }
         }
         String reductionValue = reservation.getReduction() + "%";
 
         //prices
         float taxPrice = reservation.getPersonCount() * reservation.getSpot().getCouncilTaxPersonDay()
-                * (reservation.getEndtime().getTime() - reservation.getStarttime().getTime())
-                / (1000 * 60 * 60 * 24);
-        float pricePerDayPrice = reservation.getSpot().getPricePerDay() * (reservation.getEndtime().getTime() - reservation.getStarttime().getTime())
-                / (1000 * 60 * 60 * 24);
-        float purchasesPrice = 0f;
+                * ((reservation.getEndtime().getTime() - reservation.getStarttime().getTime())
+                / (1000 * 60 * 60 * 24));
+        float pricePerDayPrice = reservation.getSpot().getPricePerDay() * ((reservation.getEndtime().getTime() - reservation.getStarttime().getTime())
+                / (1000 * 60 * 60 * 24));
 
+        float purchasesPrice = 0f;
         for (Purchase p : reservation.getClient().getPurchases()) {
             purchasesPrice += p.getProduct().getSellPrice() * p.getQuantity();
         }
 
-        float totalPrice = taxPrice + pricePerDayPrice + purchasesPrice * (1 - (reservation.getReduction() / 100));
+        float totalPrice = (taxPrice + pricePerDayPrice + purchasesPrice) * ((100 - reservation.getReduction()) / 100);
 
         String warning = "Ce document est un original, toute tentative de reproduction sera passible de poursuites.";
 

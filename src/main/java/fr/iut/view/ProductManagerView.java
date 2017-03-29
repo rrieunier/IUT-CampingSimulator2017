@@ -404,18 +404,19 @@ public class ProductManagerView extends SubScene {
                             break;
                         case 3:
                             GenericDAO<Restocking, Integer> dao = new GenericDAO<>(Restocking.class);
-                            ArrayList<Restocking> restockings = new ArrayList<>();
+                            ArrayList<Restocking> restockings = (ArrayList<Restocking>) dao.findAll();
                             Restocking later = null;
                             for (Restocking r : restockings) {
-                                if (r.getProduct().equals(lastClickedValue)) {
+                                if (Objects.equals(r.getProduct().getId(), lastClickedValue.getId())) {
                                     later = r;
                                     break;
                                 }
                             }
                             for (Restocking r : restockings) {
-                                if (later.getDatetime().getTime() - r.getDatetime().getTime() < 0
-                                        && r.getProduct().equals(lastClickedValue))
+                                if (later != null && later.getDatetime().getTime() - r.getDatetime().getTime() < 0
+                                        && Objects.equals(r.getProduct().getId(), lastClickedValue.getId())) {
                                     later = r;
+                                }
                             }
                             if (later != null) {
                                 ((Label) node).setText(String.valueOf(later.getDatetime()));
