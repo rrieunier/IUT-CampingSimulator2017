@@ -2,7 +2,6 @@ package fr.iut.persistence.dao;
 
 import fr.iut.persistence.entities.Map;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -29,7 +28,6 @@ public class MapDao extends GenericDAO<Map, Integer> {
     /**
      * @param map Update the map stored in database.
      */
-    @Transactional(rollbackOn = Exception.class)
     public void setMap(Map map){
 
         removeAll();
@@ -39,7 +37,6 @@ public class MapDao extends GenericDAO<Map, Integer> {
     /**
      * Removes the Map from database.
      */
-    @Transactional(rollbackOn = Exception.class)
     public void remove(){
         removeAll();
     }

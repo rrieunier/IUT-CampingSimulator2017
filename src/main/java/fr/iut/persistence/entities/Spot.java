@@ -57,7 +57,7 @@ public class Spot extends Location {
     /**
      * Reservations made to this spot.
      */
-    @OneToMany(orphanRemoval = true, mappedBy = "spot", cascade = {CascadeType.ALL})
+    @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "spot", cascade = {CascadeType.ALL})
     private Set<Reservation> reservations = new HashSet<>();
 
     public float getPricePerDay() {

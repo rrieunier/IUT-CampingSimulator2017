@@ -4,7 +4,6 @@ import fr.iut.persistence.entities.EntityModel;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -16,10 +15,6 @@ public class GenericDAO<T extends EntityModel, Id> {
      * Entity class handled by this instance.
      */
     private Class<T> persistentClass;
-    /**
-     * Hibernate entity manager.
-     */
-    protected EntityManager em = HibernateUtil.getEntityManagerFactory().createEntityManager();
 
     /**
      * Constructor.
@@ -36,14 +31,20 @@ public class GenericDAO<T extends EntityModel, Id> {
      * @param entity new entity.
      * @return entity inserted
      */
-    @Transactional
     public T save(T entity) {
+
+        EntityManager em = HibernateUtil.getEntityManagerFactory().createEntityManager();
+
         em.getTransaction().begin();
 
         em.persist(entity);
         em.flush();
+        em.clear();
 
         em.getTransaction().commit();
+
+        em.close();
+
         return entity;
     }
 
@@ -53,15 +54,18 @@ public class GenericDAO<T extends EntityModel, Id> {
      * @param entity entity to update
      * @return entity updated
      */
-    @Transactional
     public T update(T entity) {
+        EntityManager em = HibernateUtil.getEntityManagerFactory().createEntityManager();
 
         em.getTransaction().begin();
 
-        em.merge(entity);
+        em.persist(em.merge(entity));
         em.flush();
+        em.clear();
 
         em.getTransaction().commit();
+
+        em.close();
 
         return entity;
     }
@@ -71,30 +75,37 @@ public class GenericDAO<T extends EntityModel, Id> {
      *
      * @param entity Entity to remove.
      */
-    @Transactional
     public void remove(T entity) {
 
+        EntityManager em = HibernateUtil.getEntityManagerFactory().createEntityManager();
+
         em.getTransaction().begin();
-        em.remove(entity);
+        em.remove(em.merge(entity));
         em.flush();
+        em.clear();
         em.getTransaction().commit();
+
+        em.close();
     }
 
     /**
      * Removes all entities from database.
      */
-    @Transactional
     public void removeAll() {
+        EntityManager em = HibernateUtil.getEntityManagerFactory().createEntityManager();
 
         em.getTransaction().begin();
 
         for (T t : findAll()) {
-            em.remove(t);
+            em.remove(em.merge(t));
         }
 
         em.flush();
+        em.clear();
 
         em.getTransaction().commit();
+
+        em.close();
     }
 
     /**
@@ -104,22 +115,29 @@ public class GenericDAO<T extends EntityModel, Id> {
      * @return Entity with the matching Id.
      */
     public T findById(Id id) {
-        return em.find(persistentClass, id);
+        EntityManager em = HibernateUtil.getEntityManagerFactory().createEntityManager();
+
+        T t = em.find(persistentClass, id);
+
+        em.close();
+
+        return t;
     }
 
     /**
      * @return List of all the entities.
      */
     public List<T> findAll() {
+        EntityManager em = HibernateUtil.getEntityManagerFactory().createEntityManager();
+
         CriteriaQuery<T> criteria = em.getCriteriaBuilder().createQuery(persistentClass);
         criteria.select(criteria.from(persistentClass));
 
-        return em.createQuery(criteria).getResultList();
+        List<T> resultList = em.createQuery(criteria).getResultList();
+
+        em.close();
+
+        return resultList;
     }
 
-    @Override
-    protected void finalize() throws Throwable {
-        em.close();
-        super.finalize();
-    }
 }

@@ -25,13 +25,13 @@ public class SupplierProposeProduct implements EntityModel<Integer> {
     /**
      * Supplier who proposes.
      */
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private Supplier supplier;
 
     /**
      * Product proposed.
      */
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private Product product;
 
     public Integer getId() {
