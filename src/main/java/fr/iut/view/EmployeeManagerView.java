@@ -2,6 +2,8 @@ package fr.iut.view;
 
 import fr.iut.controller.ConnectionController;
 import fr.iut.controller.EmployeesController;
+import fr.iut.persistence.dao.EmployeeDAO;
+import fr.iut.persistence.entities.Authorization;
 import fr.iut.persistence.entities.Employee;
 import fr.iut.persistence.entities.Problem;
 import fr.iut.persistence.entities.Product;
@@ -112,6 +114,7 @@ public class EmployeeManagerView extends SubScene {
         createScroll(search_field.getText(), true, sort_by.getSelectionModel().getSelectedIndex());
 
         Button newEmployee = new Button("+");
+        newEmployee.setDisable(!EmployeeDAO.getConnectedUser().hasPermission(Authorization.EMPLOYEE_UPDATE));
         newEmployee.setTooltip(new Tooltip("Nouvel employé"));
         newEmployee.getStylesheets().add(new File("res/style.css").toURI().toString());
         newEmployee.getStyleClass().add("record-sales");
@@ -222,6 +225,7 @@ public class EmployeeManagerView extends SubScene {
         wrapWrappers.setAlignment(Pos.CENTER);
 
         Button editButton = new Button("Modifier");
+        editButton.setDisable(!EmployeeDAO.getConnectedUser().hasPermission(Authorization.EMPLOYEE_UPDATE));
         editButton.getStylesheets().add(new File("res/style.css").toURI().toString());
         editButton.getStyleClass().add("record-sales");
         editButton.setMinWidth(HomeView.TAB_CONTENT_W / 4);
@@ -245,7 +249,7 @@ public class EmployeeManagerView extends SubScene {
                     currentEmployee.setPassword(password.getText());
                 controller.updateEmployee(currentEmployee);
 
-                createScroll(search_field.getText().toString(), true, sort_by.getSelectionModel().getSelectedIndex());
+                createScroll(search_field.getText(), true, sort_by.getSelectionModel().getSelectedIndex());
 
                 editButton.setText("Modifier");
             } else {
@@ -263,15 +267,17 @@ public class EmployeeManagerView extends SubScene {
         });
 
         Button deleteButton = new Button("Supprimer");
+        deleteButton.setDisable(!EmployeeDAO.getConnectedUser().hasPermission(Authorization.EMPLOYEE_UPDATE));
         deleteButton.getStylesheets().add(new File("res/style.css").toURI().toString());
         deleteButton.getStyleClass().add("record-sales");
         deleteButton.setMinWidth(HomeView.TAB_CONTENT_W / 4);
         deleteButton.setOnAction(actionEvent -> {
             controller.eraseEmployee(currentEmployee);
-            createScroll(search_field.getText().toString(), true, sort_by.getSelectionModel().getSelectedIndex());
+            createScroll(search_field.getText(), true, sort_by.getSelectionModel().getSelectedIndex());
         });
 
         Button authorizationButton = new Button("Permissions...");
+        authorizationButton.setDisable(!EmployeeDAO.getConnectedUser().hasPermission(Authorization.EMPLOYEE_UPDATE));
         authorizationButton.getStylesheets().add(new File("res/style.css").toURI().toString());
         authorizationButton.getStyleClass().add("record-sales");
         authorizationButton.setMinWidth(HomeView.TAB_CONTENT_W / 4);

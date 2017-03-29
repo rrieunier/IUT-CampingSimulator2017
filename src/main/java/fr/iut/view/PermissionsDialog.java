@@ -89,7 +89,7 @@ public class PermissionsDialog extends Dialog<ArrayList<Boolean>> {
             gridPane.add(text, i+1, 0);
         }
 
-        String[] labels = {"Clients", "Incidents", "Salariés", "Fournisseurs", "Stocks", "Carte"};
+        String[] labels = {"Clients", "Incidents", "Salariés", "Fournisseurs", "Stocks", "Carte", "Reservation"};
         for(int i=0; i<labels.length; i++) {
             add(labels[i], i);
         }
