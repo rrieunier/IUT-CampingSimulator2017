@@ -57,13 +57,13 @@ public class Reservation implements EntityModel<Integer> {
     /**
      * Client who made this reservation.
      */
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private Client client;
 
     /**
      * Spot reserved.
      */
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private Spot spot;
 
     public Integer getId() {

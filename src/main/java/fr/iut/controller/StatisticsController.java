@@ -36,10 +36,6 @@ public class StatisticsController {
                 return clientChart(selectedChart, type);
             case PURCHASES:
                 return purchaseChart(selectedChart, type);
-            case EMPLOYEES:
-                return employeeChart(selectedChart, type);
-            case PROBLEMS:
-                return problemChart(selectedChart, type);
             case OTHERS:
                 return otherChart(selectedChart, type);
             case NONE:
@@ -93,8 +89,10 @@ public class StatisticsController {
             default:
                 break;
         }
+        ChartView chart = new ChartView(ChartType.PIE, objects, comparative, title, "Nom", "Nombre de rés.");
+        chart.setLegendSide(Side.BOTTOM);
 
-        return new ChartView(ChartType.PIE, objects, comparative, title, "Nom", "Nombre de rés.");
+        return chart;
     }
     /**
      * @param selectedChart
@@ -210,106 +208,6 @@ public class StatisticsController {
         }
 
         ChartView chartView = new ChartView(ChartType.PIE, objects, comparative, title, "Nom", "Nombre de ventes");
-        chartView.setLegendSide(Side.BOTTOM);
-        return chartView;
-    }
-
-    /**
-     * @param selectedChart
-     * @param type
-     * @return return charts for the employee category
-     */
-    private ChartView employeeChart(@NamedArg("selectedChart") int selectedChart,
-                                    @NamedArg("type") ChartType type) {
-        GenericDAO<Employee, Integer> dao = new GenericDAO<>(Employee.class);
-        ArrayList<Employee> employees = (ArrayList<Employee>) dao.findAll();
-        ArrayList<String> objects = new ArrayList<>();
-        ArrayList<Float> comparative = new ArrayList<>();
-        ChartView chartView = null;
-
-        switch (selectedChart) {
-            case 0:
-                employees.sort((o1, o2) -> {
-                    int sum1 = 0;
-                    int sum2 = 1;
-                    for (Task t : o1.getTasks()) {
-                        sum1 += t.getEndtime().getTime() - t.getStarttime().getTime();
-                    }
-                    for (Task t : o2.getTasks()) {
-                        sum2 += t.getEndtime().getTime() - t.getStarttime().getTime();
-                    }
-                    return sum2 - sum1;
-                });
-
-                for (Employee e : employees) {
-                    int sum = 0;
-                    for (Task t : e.getTasks())
-                        sum += t.getEndtime().getTime() - t.getStarttime().getTime();
-                    objects.add(e.getFirstName() + " " + e.getLastName());
-                    comparative.add((float) ((sum / 60000.0) / 60.0));
-                }
-
-                comparative.sort((o1, o2) -> (int) (o2 - o1));
-
-                chartView = new ChartView(type, objects, comparative,
-                        "Employés travaillant le plus", "Nom", "Nombre d'heures de travail");
-                
-                break;
-
-            default:
-                break;
-        }
-
-
-        assert chartView != null;
-        chartView.setLegendSide(Side.BOTTOM);
-        return chartView;
-    }
-
-    /**
-     * @param selectedChart
-     * @param type
-     * @return return charts for the problem category
-     */
-    private ChartView problemChart(@NamedArg("selectedChart") int selectedChart,
-                                   @NamedArg("type") ChartType type) {
-        GenericDAO<Client, Integer> dao_client = new GenericDAO<>(Client.class);
-        ArrayList<Client> clients = (ArrayList<Client>) dao_client.findAll();
-        GenericDAO<Location, Integer> dao_location = new GenericDAO<>(Location.class);
-        ArrayList<Location> locations = (ArrayList<Location>) dao_location.findAll();
-        ArrayList<String> objects = new ArrayList<>();
-        ArrayList<Float> comparative = new ArrayList<>();
-        String title = null;
-
-        switch (selectedChart) {
-            case 0:
-                clients.sort((o1, o2) -> o2.getProblems().size() - o1.getProblems().size());
-
-                for (Client c : clients) {
-                    objects.add(c.getFirstname() + " " + c.getLastname());
-                    comparative.add((float) c.getProblems().size());
-                }
-                comparative.sort((o1, o2) -> (int) (o2 - o1));
-
-                title = "Clients ayant reportés \nle plus de problèmes";
-
-                break;
-
-            case 1:
-                locations.sort((o1, o2) -> o2.getProblems().size() - o1.getProblems().size());
-
-                for (Location c : locations) {
-                    objects.add(c.getName());
-                    comparative.add((float) c.getProblems().size());
-                }
-
-                comparative.sort((o1, o2) -> (int) (o2 - o1));
-
-                title = "Lieu ayant le plus de problèmes";
-                break;
-        }
-
-        ChartView chartView = new ChartView(ChartType.PIE, objects, comparative, title, "Nom", "Nombre de prob.");
         chartView.setLegendSide(Side.BOTTOM);
         return chartView;
     }

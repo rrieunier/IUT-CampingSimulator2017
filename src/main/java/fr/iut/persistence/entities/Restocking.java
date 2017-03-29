@@ -33,13 +33,13 @@ public class Restocking implements EntityModel<Integer> {
     /**
      * Product restocked.
      */
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private Product product;
 
     /**
      * Supplier who did this restocking.
      */
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private Supplier supplier;
 
     public Integer getId() {

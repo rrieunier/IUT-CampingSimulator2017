@@ -39,13 +39,13 @@ public class Task implements EntityModel<Integer> {
     /**
      * Employee who is attributed to this task.
      */
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private Employee employee;
 
     /**
      * Location on which the task is planned.
      */
-    @ManyToOne(optional = true)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Location location;
 
     public Integer getId() {

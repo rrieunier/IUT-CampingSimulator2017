@@ -4,9 +4,9 @@ import fr.iut.persistence.entities.Authorization;
 import fr.iut.persistence.entities.Employee;
 import fr.iut.persistence.exception.InvalidLoginPasswordException;
 
+import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
-import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,18 +33,23 @@ public class EmployeeDAO extends GenericDAO<Employee, Integer> {
      * @param login Login of the Employee.
      * @return The Employee with the matching login.
      */
-    @Transactional(rollbackOn = Exception.class)
     public Employee findByLogin(String login) {
+        EntityManager em = HibernateUtil.getEntityManagerFactory().createEntityManager();
 
         String hql = "from Employee where login = :login";
         Query query = em.createQuery(hql);
         query.setParameter("login", login);
 
+        Employee employee = null;
         try {
-            return (Employee) query.getSingleResult();
+             employee = (Employee) query.getSingleResult();
         } catch (NoResultException e) {
-            return null;
+            e.printStackTrace();
         }
+
+        em.close();
+
+        return employee;
     }
 
     /**
@@ -53,11 +58,17 @@ public class EmployeeDAO extends GenericDAO<Employee, Integer> {
      * @return The Employee with the matching first name.
      */
     public List<Employee> findByFirstName(String firstName) {
+        EntityManager em = HibernateUtil.getEntityManagerFactory().createEntityManager();
+
         String hql = "from Employee where firstName = :firstName";
         Query query = em.createQuery(hql);
         query.setParameter("firstName", firstName);
 
-        return query.getResultList();
+        List resultList = query.getResultList();
+
+        em.close();
+
+        return resultList;
     }
 
     /**
@@ -66,11 +77,17 @@ public class EmployeeDAO extends GenericDAO<Employee, Integer> {
      * @return The Employee with the matching last name.
      */
     public List<Employee> findByLastName(String lastName) {
+
+        EntityManager em = HibernateUtil.getEntityManagerFactory().createEntityManager();
+
         String hql = "from Employee where lastName = :lastName";
         Query query = em.createQuery(hql);
         query.setParameter("lastName", lastName);
 
-        return query.getResultList();
+        List resultList = query.getResultList();
+        em.close();
+
+        return resultList;
     }
 
     /**
@@ -80,7 +97,6 @@ public class EmployeeDAO extends GenericDAO<Employee, Integer> {
      * @return The connected Employee.
      * @throws InvalidLoginPasswordException If the login/password is invalid.
      */
-    @Transactional(rollbackOn = Exception.class)
     public Employee connectUser(String login, String password) throws InvalidLoginPasswordException {
 
         Employee byLogin = findByLogin(login);

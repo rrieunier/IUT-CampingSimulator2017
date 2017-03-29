@@ -56,13 +56,13 @@ public class Client implements EntityModel<Integer> {
     /**
      * Reservations made by the client.
      */
-    @OneToMany(orphanRemoval = true, mappedBy = "client", cascade = {CascadeType.ALL})
+    @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "client", cascade = {CascadeType.ALL})
     private Set<Reservation> reservations;
 
     /**
      * Purchases made by the client.
      */
-    @OneToMany(orphanRemoval = true, mappedBy = "client", cascade = {CascadeType.ALL})
+    @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "client", cascade = {CascadeType.ALL})
     private Set<Purchase> purchases;
 
     public Integer getId() {

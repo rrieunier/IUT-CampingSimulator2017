@@ -32,13 +32,13 @@ public class Purchase implements EntityModel<Integer> {
     /**
      * Client who made this purchase.
      */
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private Client client;
 
     /**
      * Product which was purchased.
      */
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private Product product;
 
     public Integer getId() {

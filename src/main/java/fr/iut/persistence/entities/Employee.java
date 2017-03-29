@@ -64,7 +64,7 @@ public class Employee implements EntityModel<Integer> {
      * Authorizations granted to this employee if it's a user.
      */
     @Column
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     private Set<Authorization> authorizations;
 
@@ -81,13 +81,13 @@ public class Employee implements EntityModel<Integer> {
     /**
      * Tasks attributed to this employee.
      */
-    @OneToMany(orphanRemoval = true, mappedBy = "employee", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "employee", cascade = CascadeType.ALL)
     private Set<Task> tasks;
 
     /**
      * Logs made by this employee if it's a user.
      */
-    @OneToMany(orphanRemoval = true, mappedBy = "employee", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "employee", cascade = CascadeType.ALL)
     private Set<Log> logs;
 
     public Integer getId() {
