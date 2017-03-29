@@ -30,11 +30,11 @@ public class ClientsController {
         clients = (ArrayList<Client>) daoClient.findAll();
     }
 
-    public void sortClients(int sort_options){
+    public void sortClients(int sort_options) {
         clients.sort(new Comparator<Client>() {
             @Override
             public int compare(Client o1, Client o2) {
-                double result = 0;
+                int result;
                 switch (sort_options){
                     case 1:
                         result = o2.getLastname().toLowerCase().compareTo(o1.getLastname().toLowerCase());
@@ -49,7 +49,7 @@ public class ClientsController {
                         result = o1.getLastname().toLowerCase().compareTo(o2.getLastname().toLowerCase());
                         break;
                 }
-                return (int) result;
+                return result;
             }
         });
 

@@ -30,3 +30,4 @@ read user
 mysql -u $user -p < camping-db-creation.sql
 
 cp target/campingsimulator2017-1.0-SNAPSHOT.jar .
+mvn clean

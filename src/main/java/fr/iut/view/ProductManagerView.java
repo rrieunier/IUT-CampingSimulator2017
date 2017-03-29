@@ -2,7 +2,9 @@ package fr.iut.view;
 
 
 import fr.iut.controller.ProductController;
+import fr.iut.persistence.dao.EmployeeDAO;
 import fr.iut.persistence.dao.GenericDAO;
+import fr.iut.persistence.entities.Authorization;
 import fr.iut.persistence.entities.Product;
 import fr.iut.persistence.entities.Restocking;
 import fr.iut.persistence.entities.Supplier;
@@ -83,6 +85,7 @@ public class ProductManagerView extends SubScene {
 
         HBox sort_options = new HBox();
         Button add_product = new Button("+");
+        add_product.setDisable(!EmployeeDAO.getConnectedUser().hasPermission(Authorization.PRODUCT_UPDATE));
         add_product.setTooltip(new Tooltip("Ajouter un nouveau produit..."));
         add_product.getStylesheets().add(new File("res/style.css").toURI().toString());
         add_product.getStyleClass().add("record-sales");
@@ -161,25 +164,33 @@ public class ProductManagerView extends SubScene {
                 });
             } else if (i == 2) {
                 button.setText("Supprimer");
-                button.setOnMouseClicked(event -> {
-                    controller.deleteProduct(lastClickedValue);
-                    buildProductsList(0, "", true);
-                    if (!products_list.isEmpty()) {
-                        lastClicked = (StackPane) products_box.getChildren().get(0);
-                        lastClicked.setStyle("-fx-background-color: #ff6600;");
-                        lastClickedValue = shown_list.get(0);
+                button.setDisable(!EmployeeDAO.getConnectedUser().hasPermission(Authorization.PRODUCT_UPDATE));
+                button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        controller.deleteProduct(lastClickedValue);
+                        buildProductsList(0, "", true);
+                        if (!products_list.isEmpty()) {
+                            lastClicked = (StackPane) products_box.getChildren().get(0);
+                            lastClicked.setStyle("-fx-background-color: #ff6600;");
+                            lastClickedValue = shown_list.get(0);
+                        }
+                        actualiseDetails();
                     }
-                    actualiseDetails();
                 });
             } else {
                 button.setText("Modifier");
-                button.setOnMouseClicked(event -> {
-                    controller.modifyProduct(lastClickedValue);
-                    buildProductsList(0, "", true);
-                    lastClicked = (StackPane) products_box.getChildren().get(0);
-                    lastClicked.setStyle("-fx-background-color: #ff6600;");
-                    lastClickedValue = shown_list.get(0);
-                    actualiseDetails();
+                button.setDisable(!EmployeeDAO.getConnectedUser().hasPermission(Authorization.PRODUCT_UPDATE));
+                button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        controller.modifyProduct(lastClickedValue);
+                        buildProductsList(0, "", true);
+                        lastClicked = (StackPane) products_box.getChildren().get(0);
+                        lastClicked.setStyle("-fx-background-color: #ff6600;");
+                        lastClickedValue = shown_list.get(0);
+                        actualiseDetails();
+                    }
                 });
             }
 

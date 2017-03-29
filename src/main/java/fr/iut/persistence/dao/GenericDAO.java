@@ -117,14 +117,9 @@ public class GenericDAO<T extends EntityModel, Id> {
         return em.createQuery(criteria).getResultList();
     }
 
-    /**
-     * @return the number of entities T in database
-     */
-    public int count() {
-
-        String query = "select count(e.id) from " + persistentClass.getName() + " e";
-
-        return em.createQuery(query)
-                .getFirstResult();
+    @Override
+    protected void finalize() throws Throwable {
+        em.close();
+        super.finalize();
     }
 }

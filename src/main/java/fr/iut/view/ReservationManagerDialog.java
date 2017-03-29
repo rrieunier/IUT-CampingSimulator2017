@@ -24,6 +24,8 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Created by shellcode on 3/23/17.
@@ -149,6 +151,17 @@ public class ReservationManagerDialog extends Dialog<Void> {
         Button billButton = new Button("Facture");
         billButton.getStyleClass().add("record-sales");
 
+        Button reductionButton = new Button("Reduction");
+        reductionButton.getStyleClass().add("record-sales");
+        reductionButton.setOnAction(action ->{
+            ReductionsDialog reductionsDialog = new ReductionsDialog();
+            Optional<Float> result = reductionsDialog.showAndWait();
+            result.ifPresent(list -> {
+                this.reservationToEdit.setReduction(result.get());
+                System.out.println(result.get());
+            });
+        });
+
         if(reservationToEdit != null) {
             billButton.setOnAction(action -> {
                 BillSummaryView billSummaryView = new BillSummaryView(this.reservationToEdit, controller);
@@ -194,8 +207,10 @@ public class ReservationManagerDialog extends Dialog<Void> {
         grid.add(locationText, 0, 4);
         grid.add(locationComboBox, 1, 4);
 
+        grid.add(reductionButton, 1,5);
+
         if(reservationToEdit != null)
-            grid.add(billButton, 1, 5);
+            grid.add(billButton, 2, 5);
 
         wrapper.getChildren().add(grid);
 

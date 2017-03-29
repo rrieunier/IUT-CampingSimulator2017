@@ -1,6 +1,8 @@
 package fr.iut.view;
 
 import fr.iut.controller.SupplierController;
+import fr.iut.persistence.dao.EmployeeDAO;
+import fr.iut.persistence.entities.Authorization;
 import fr.iut.persistence.entities.Product;
 import fr.iut.persistence.entities.Supplier;
 import javafx.beans.value.ChangeListener;
@@ -31,14 +33,29 @@ import java.util.Optional;
  */
 public class SupplierManagerView extends SubScene{
 
+    /**
+     * controller
+     */
     private SupplierController controller;
 
+    /**
+     * list of supplier
+     */
     private VBox suppliers;
 
+    /**
+     * if editMode is possible or not
+     */
     private Boolean editMode = false;
 
+    /**
+     * list of textfields
+     */
     private TextField name, phone, website, mail;
 
+    /**
+     * last Supplier propose
+     */
     private Supplier lastClickedValue;
 
 
@@ -105,6 +122,7 @@ public class SupplierManagerView extends SubScene{
         });
 
         Button newSupplier = new Button("+");
+        newSupplier.setDisable(!EmployeeDAO.getConnectedUser().hasPermission(Authorization.SUPPLIER_UPDATE));
         newSupplier.setTooltip(new Tooltip("Ajouter un nouveau fournisseur..."));
         newSupplier.getStylesheets().add(new File("res/style.css").toURI().toString());
         newSupplier.getStyleClass().add("record-sales");
@@ -189,6 +207,7 @@ public class SupplierManagerView extends SubScene{
         buttons.setAlignment(Pos.CENTER);
 
         Button editButton = new Button("Modifier");
+        editButton.setDisable(!EmployeeDAO.getConnectedUser().hasPermission(Authorization.SUPPLIER_UPDATE));
         editButton.getStylesheets().add(new File("res/style.css").toURI().toString());
         editButton.getStyleClass().add("record-sales");
         editButton.setMinWidth(HomeView.TAB_CONTENT_W / 4);
@@ -218,6 +237,7 @@ public class SupplierManagerView extends SubScene{
         });
 
         Button editProductButton = new Button("Ajouter / Modifier produits");
+        editProductButton.setDisable(!EmployeeDAO.getConnectedUser().hasPermission(Authorization.SUPPLIER_UPDATE));
         editProductButton.getStylesheets().add(new File("res/style.css").toURI().toString());
         editProductButton.getStyleClass().add("record-sales");
         editProductButton.setMinWidth(HomeView.TAB_CONTENT_W / 4);
@@ -248,6 +268,7 @@ public class SupplierManagerView extends SubScene{
         });
 
         Button removeButton = new Button("Supprimer");
+        removeButton.setDisable(!EmployeeDAO.getConnectedUser().hasPermission(Authorization.SUPPLIER_UPDATE));
         removeButton.getStylesheets().add(new File("res/style.css").toURI().toString());
         removeButton.getStyleClass().add("record-sales");
         removeButton.setMinWidth(HomeView.TAB_CONTENT_W / 4);
@@ -274,7 +295,11 @@ public class SupplierManagerView extends SubScene{
 
         root.setCenter(supplierDetailsWrapper);
     }
-    
+
+    /**
+     * @param supplier
+     * update the details
+     */
     private void updateDetail(Supplier supplier){
         name.setText(supplier.getName());
         phone.setText(supplier.getPhone());
@@ -282,6 +307,11 @@ public class SupplierManagerView extends SubScene{
         mail.setText(supplier.getEmail());
     }
 
+    /**
+     * @param s
+     * @param i
+     * add an Element in the scroll
+     */
     private void createElement(Supplier s, int i){
         HBox suppliersBox = new HBox();
 
@@ -312,6 +342,13 @@ public class SupplierManagerView extends SubScene{
 
         suppliers.getChildren().add(suppliersBox);
     }
+
+    /**
+     * @param search
+     * @param refresh
+     * @param sort_options
+     * create the scroll
+     */
     private void createScroll(String search, boolean refresh, int sort_options){
         suppliers.getChildren().clear();
 

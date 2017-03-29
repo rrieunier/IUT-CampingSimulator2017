@@ -21,18 +21,18 @@ import java.util.Map;
 /**
  * Created by theo on 13/02/17.
  */
-public class ReductionsDialog extends Dialog<Map<String, Integer>> {
+public class ReductionsDialog extends Dialog<Float> {
 
     public static final double REDUCTIONS_HEIGHT = App.SCREEN_H / 3;
     public static final double REDUCTIONS_WIDTH = App.SCREEN_W / 3;
 
     private GridPane gridPane = new GridPane();
-    private ArrayList<Map<Text, Pair<RadioButton, Integer>>> reductionsArrayList = new ArrayList<>();
+    private ArrayList<Map<Text, Pair<RadioButton, Float>>> reductionsArrayList = new ArrayList<>();
 
 
     private App app; //TODO : il faut un controller, pas une instance de App
 
-    private void add(String name, int i, Integer value){
+    private void add(String name, int i, Float value){
         Text text = new Text(name);
         text.setStyle("-fx-font-weight: bold;" +
                 "-fx-font-size: 17px");
@@ -53,7 +53,7 @@ public class ReductionsDialog extends Dialog<Map<String, Integer>> {
             @Override
             public void handle(ActionEvent event) {
                 for (int i = 0; i < reductionsArrayList.size(); i++){
-                    for (Map.Entry<Text, Pair<RadioButton, Integer>> entry : reductionsArrayList.get(i).entrySet()){
+                    for (Map.Entry<Text, Pair<RadioButton, Float>> entry : reductionsArrayList.get(i).entrySet()){
                         if(entry.getValue().getKey().isSelected())
                             entry.getValue().getKey().setSelected(false);
                     }
@@ -62,8 +62,8 @@ public class ReductionsDialog extends Dialog<Map<String, Integer>> {
             }
         });
 
-        Pair<RadioButton, Integer> pair = new Pair<>(radioButton, value);
-        Map<Text, Pair<RadioButton, Integer>> map = new HashMap<>();
+        Pair<RadioButton, Float> pair = new Pair<>(radioButton, value);
+        Map<Text, Pair<RadioButton, Float>> map = new HashMap<>();
         map.put(text, pair);
         reductionsArrayList.add(map);
     }
@@ -97,7 +97,7 @@ public class ReductionsDialog extends Dialog<Map<String, Integer>> {
         wrapper.getChildren().add(header);
 
         String[] labels = {"Etudiant", "Senior", "Famille", "Groupe", "Autres" };
-        Integer[] values = {5, 5, 10, 10, 0};
+        Float[] values = {5f, 5f, 10f, 10f, 0f};
         for (int i = 0; i < labels.length; i++) {
             add(labels[i], i, values[i]);
         }
@@ -124,25 +124,26 @@ public class ReductionsDialog extends Dialog<Map<String, Integer>> {
         dialogPane.setContent(wrapper);
 
         setResultConverter( dialogButton -> {
-            Map<String, Integer> map = null;
+            Float res = null;
 
             if (dialogButton == okButtonType){
-                map = new HashMap<>(1);
+                //map = new HashMap<>(1);
                 if(textField.getLength() > 0){
-                    for(Map.Entry<Text, Pair<RadioButton, Integer>> textPairEntry : reductionsArrayList.get(reductionsArrayList.size()-1).entrySet()){
-                        Pair<RadioButton, Integer> pair = new Pair<>(textPairEntry.getValue().getKey(), Integer.valueOf(textField.getText().toString()));
+                    for(Map.Entry<Text, Pair<RadioButton, Float>> textPairEntry : reductionsArrayList.get(reductionsArrayList.size()-1).entrySet()){
+                        Pair<RadioButton, Float> pair = new Pair<>(textPairEntry.getValue().getKey(), Float.valueOf(textField.getText().toString()));
                         textPairEntry.setValue(pair);
                     }
                 }
 
                 for (int i = 0; i < reductionsArrayList.size(); i++){
-                    for (Map.Entry<Text, Pair<RadioButton, Integer>> entry : reductionsArrayList.get(i).entrySet()){
+                    for (Map.Entry<Text, Pair<RadioButton, Float>> entry : reductionsArrayList.get(i).entrySet()){
                         if(entry.getValue().getKey().isSelected())
-                            map.put(entry.getKey().getText().toString(), entry.getValue().getValue());
+                            res = entry.getValue().getValue();
+                            //map.put(entry.getValue().getValue());
                     }
                 }
             }
-            return map;
+            return res;
         });
     }
 }
