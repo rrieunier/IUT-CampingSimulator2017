@@ -21,6 +21,7 @@ import javafx.scene.text.Text;
 import javafx.util.Pair;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
@@ -237,7 +238,12 @@ public class SupplierManagerView extends SubScene{
         contactButton.getStyleClass().add("record-sales");
         contactButton.setMinWidth(HomeView.TAB_CONTENT_W / 4);
         contactButton.setOnAction(event -> {
-            // TODO
+            final Supplier lastClikedCopy = lastClickedValue;
+            try {
+                controller.sendMailToSupplier(lastClikedCopy);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         });
 
         Button removeButton = new Button("Supprimer");

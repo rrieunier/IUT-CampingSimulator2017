@@ -1,15 +1,21 @@
 package fr.iut.view;
 
 import fr.iut.App;
+import fr.iut.persistence.entities.Client;
+import fr.iut.persistence.entities.Location;
+import fr.iut.persistence.entities.Spot;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.util.StringConverter;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.StringJoiner;
+import java.util.*;
 
 /**
  * Created by theo on 17/02/17.
@@ -21,6 +27,7 @@ public class InputsListDialog extends Dialog<Map<String,String>>{
     public static final double WINDOW_HEIGHT = App.SCREEN_H/1.3;
     private ArrayList<TextField> textFields = new ArrayList<>();
     private VBox wrapper;
+
 
     public void addTextField(String text){
         TextField textField = new TextField();
@@ -41,6 +48,7 @@ public class InputsListDialog extends Dialog<Map<String,String>>{
         textFields.add(passwordField);
         wrapper.getChildren().add(passwordField);
     }
+
 
     public InputsListDialog(String title){
         setTitle(title);
@@ -82,4 +90,6 @@ public class InputsListDialog extends Dialog<Map<String,String>>{
         });
 
     }
+
+    public VBox getWrapper() { return wrapper; }
 }
