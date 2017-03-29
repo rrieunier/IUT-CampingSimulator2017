@@ -348,7 +348,8 @@ public class EmployeeManagerView extends SubScene {
         controller.sortEmployees(sort_options);
 
         for (Employee employee : controller.getEmployees()) {
-            if (employee.getFirstName().toLowerCase().contains(search) || employee.getLastName().toLowerCase().contains(search)) {
+            //On test que l'id soit différent de 1 car le 1er est l'admin et on ne doit pas pouvoir éditer ses informations
+            if (employee.getId() != 1 && (employee.getFirstName().toLowerCase().contains(search) || employee.getLastName().toLowerCase().contains(search))) {
                 createElement(employee, i);
                 i++;
             }
