@@ -233,17 +233,7 @@ public class ClientManagerView extends SubScene {
             createScroll(search_field.getText(), true, sort_by.getSelectionModel().getSelectedIndex());
         });
 
-        Button reducButton = new Button("Réductions...");
-        reducButton.getStylesheets().add(new File("res/style.css").toURI().toString());
-        reducButton.getStyleClass().add("record-sales");
-        reducButton.setMinWidth(HomeView.TAB_CONTENT_W / 4);
-
-        reducButton.setOnAction(actionEvent -> {
-            Optional<Map<String, Integer>> permissions_result = new ReductionsDialog().showAndWait();
-            //TODO : stocker la reduction qqpart
-        });
-
-        buttonsWrap2.getChildren().addAll(removeButton, reducButton);
+        buttonsWrap2.getChildren().addAll(removeButton);
 
         detailsWrapper.getChildren().addAll(namesField, email, phone);
         detailsWrapper.setSpacing(HomeView.TAB_CONTENT_H / 15);

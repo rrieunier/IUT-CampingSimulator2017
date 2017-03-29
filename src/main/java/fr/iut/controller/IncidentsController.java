@@ -1,17 +1,17 @@
 package fr.iut.controller;
 
 import fr.iut.persistence.dao.GenericDAO;
+import fr.iut.persistence.entities.Client;
+import fr.iut.persistence.entities.Location;
 import fr.iut.persistence.entities.Problem;
+import fr.iut.persistence.entities.Spot;
 import fr.iut.view.IncidentsManagerView;
 import javafx.scene.SubScene;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.Date;
+import java.util.*;
 
 /**
  * Created by theo on 01/03/17.
@@ -70,12 +70,14 @@ public class IncidentsController {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        try {
-            parsedDate = dateFormat.parse(sol);
-            Timestamp timestamp = new java.sql.Timestamp(parsedDate.getTime());
-            p.setSolutionDatetime(timestamp);
-        } catch (ParseException e) {
-            e.printStackTrace();
+        if(sol != null){
+            try {
+                parsedDate = dateFormat.parse(sol);
+                Timestamp timestamp = new java.sql.Timestamp(parsedDate.getTime());
+                p.setSolutionDatetime(timestamp);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
 
         daoIncidents.update(p);
@@ -128,5 +130,15 @@ public class IncidentsController {
 
     public ArrayList<Problem> getIncidents() {
         return problems;
+    }
+
+    public List<Client> getClients(){
+        GenericDAO<Client, Integer> daoClients = new GenericDAO<>(Client.class);
+        return daoClients.findAll();
+    }
+
+    public List<Location> getLocations(){
+        GenericDAO<Location, Integer> daoLocations = new GenericDAO<>(Location.class);
+        return daoLocations.findAll();
     }
 }

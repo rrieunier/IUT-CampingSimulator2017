@@ -8,6 +8,7 @@ import fr.iut.view.SupplierManagerView;
 import javafx.scene.SubScene;
 import javafx.util.Pair;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -58,16 +59,56 @@ public class SupplierController {
         }
     }
 
+    public void cleanSupplierProposeProduct(Supplier supplier){
+        List<SupplierProposeProduct> list = daoProposeProduct.findAll();
+        for (SupplierProposeProduct prod :
+                list) {
+            if(prod.getSupplier().getId() == supplier.getId())
+                daoProposeProduct.remove(prod);
+        }
+    }
+
     public ArrayList<SupplierProposeProduct> getProductsProposeBySupplier(Supplier supplier){
         ArrayList<SupplierProposeProduct> productsPropose = new ArrayList<>();
         List<SupplierProposeProduct> list = daoProposeProduct.findAll();
         for (SupplierProposeProduct prod :
                 list) {
-            if(prod.getSupplier() == supplier){
+            if(prod.getSupplier().getId() == supplier.getId()){
                 productsPropose.add(prod);
             }
         }
         return productsPropose;
+    }
+
+    /**
+     * @param supplier
+     * @throws IOException
+     * browse "mailto:email@supplier.com" to send a mail to the supplier
+     */
+    public void sendMailToSupplier(Supplier supplier) throws IOException {
+        String supplierEmail = supplier.getEmail();
+        String os = System.getProperty("os.name").toLowerCase();
+
+        if (os.contains("win")) { // windows
+            Runtime rt = Runtime.getRuntime();
+            String url = "mailto:" + supplierEmail;
+            rt.exec("rundll32 url.dll,FileProtocolHandler " + url);
+        } else if (os.contains("mac")) { // macos
+            Runtime rt = Runtime.getRuntime();
+            String url = "mailto:" + supplierEmail;
+            rt.exec("open" + url);
+        } else { // linux
+            Runtime rt = Runtime.getRuntime();
+            String url = "mailto:" + supplierEmail;
+            String[] browsers = {"epiphany", "firefox", "mozilla", "konqueror",
+                    "netscape", "opera", "links", "lynx"};
+
+            StringBuffer cmd = new StringBuffer();
+            for (int i = 0; i < browsers.length; i++)
+                cmd.append(i == 0 ? "" : " || ").append(browsers[i]).append(" \"").append(url).append("\" ");
+
+            rt.exec(new String[]{"sh", "-c", cmd.toString()});
+        }
     }
 
     public void sortSuppliers(int sort_options){

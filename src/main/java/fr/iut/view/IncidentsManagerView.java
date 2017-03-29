@@ -1,6 +1,8 @@
 package fr.iut.view;
 
 import fr.iut.controller.IncidentsController;
+import fr.iut.persistence.entities.Client;
+import fr.iut.persistence.entities.Location;
 import fr.iut.persistence.dao.EmployeeDAO;
 import fr.iut.persistence.entities.Authorization;
 import fr.iut.persistence.entities.Problem;
@@ -21,12 +23,10 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.util.StringConverter;
 
 import java.io.File;
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 
@@ -111,7 +111,7 @@ public class IncidentsManagerView extends SubScene{
         sort_by.valueProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                createScroll(search_field.getText(), false, sort_by.getSelectionModel().getSelectedIndex());
+                createScroll(search_field.getText().toString(), false, sort_by.getSelectionModel().getSelectedIndex());
             }
         });
         Label sort_by_label = new Label("Tri par: ");
@@ -123,7 +123,7 @@ public class IncidentsManagerView extends SubScene{
             @Override
             public void handle(KeyEvent event) {
                 if (event.getCode().equals(KeyCode.ENTER)) {
-                    createScroll(search_field.getText(), false, sort_by.getSelectionModel().getSelectedIndex());
+                    createScroll(search_field.getText().toString(), false, sort_by.getSelectionModel().getSelectedIndex());
                     search_field.clear();
                 }
             }
@@ -137,13 +137,81 @@ public class IncidentsManagerView extends SubScene{
         newIncident.setOnAction(event -> {
             InputsListDialog newIncidentDialog = new InputsListDialog("Nouvel incident");
             newIncidentDialog.addTextField("Description");
+
+            ComboBox<Client> clientsComboBox = null;
+            ComboBox<Location> locationComboBox = null;
+
+            Text clientText = new Text("Client potentiel : ");
+            clientText.setFont(new Font(20));
+            clientText.setFill(Color.WHITE);
+
+            ObservableList<Client> clients = FXCollections.observableArrayList();
+            clients.addAll(controller.getClients());
+
+            clientsComboBox = new ComboBox<>(clients);
+
+            clientsComboBox.setConverter(new StringConverter<Client>() {
+                @Override
+                public String toString(Client client) {
+                    return client.getFirstname() + " " + client.getLastname();
+                }
+
+                @Override
+                public Client fromString(String s) {
+                    return null;
+                }
+            });
+
+            HBox hBoxClient = new HBox();
+            hBoxClient.setSpacing(5);
+            hBoxClient.getChildren().addAll(clientText, clientsComboBox);
+
+            newIncidentDialog.getWrapper().getChildren().addAll(hBoxClient);
+
+            Text locationText = new Text("Emplacement potentiel : ");
+            locationText.setFont(new Font(20));
+            locationText.setFill(Color.WHITE);
+
+            ObservableList<Location> locations = FXCollections.observableArrayList();
+            locations.addAll(controller.getLocations());
+
+            locationComboBox = new ComboBox<>(locations);
+
+            locationComboBox.setConverter(new StringConverter<Location>() {
+                @Override
+                public String toString(Location location) {
+                    return location.getName();
+                }
+
+                @Override
+                public Location fromString(String s) {
+                    return null;
+                }
+            });
+
+            HBox hBoxSpot = new HBox();
+            hBoxSpot.setSpacing(5);
+            hBoxSpot.getChildren().addAll(locationText, locationComboBox);
+
+            newIncidentDialog.getWrapper().getChildren().addAll(hBoxSpot);
+
+
             Optional<Map<String, String>> newIncident_result = newIncidentDialog.showAndWait();
 
             Problem problem = new Problem();
             problem.setDescription(newIncident_result.get().get("Description"));
+            HashSet<Client> clientsSet = new HashSet<>();
+            clientsSet.add(clientsComboBox.getValue());
+            HashSet<Location> locationsSet = new HashSet<>();
+            locationsSet.add(locationComboBox.getValue());
+            problem.setClients(clientsSet);
+            problem.setLocations(locationsSet);
 
             controller.saveIncident(problem);
-            createScroll(search_field.getText(), true, sort_by.getSelectionModel().getSelectedIndex());
+
+            // TODO : a verifier que les clients / locations fonctionnent...
+
+            createScroll(search_field.getText().toString(), true, sort_by.getSelectionModel().getSelectedIndex());
         });
 
         HBox resolvedBox = new HBox();
@@ -155,7 +223,7 @@ public class IncidentsManagerView extends SubScene{
         resolved.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                createScroll(search_field.getText(), false, sort_by.getSelectionModel().getSelectedIndex());
+                createScroll(search_field.getText().toString(), false, sort_by.getSelectionModel().getSelectedIndex());
             }
         });
         resolved_label.setStyle("-fx-text-fill: whitesmoke; -fx-font-size: 18px");
@@ -167,7 +235,7 @@ public class IncidentsManagerView extends SubScene{
         header.setLeft(sort_options);
         root.setTop(header);
 
-        createScroll(search_field.getText(), true, 0);
+        createScroll(search_field.getText().toString(), true, 0);
 
         wrapper.getChildren().add(incidentsScroll);
 
@@ -218,8 +286,15 @@ public class IncidentsManagerView extends SubScene{
                 solutionDatetime.setDisable(true);
                 editButton.setText("Modifier");
 
-                controller.updateIncident(lastClikedCopy, description.getText(),
-                        appearanceDatetime.getText(), solutionDatetime.getText());
+                if(lastClikedCopy.isSolved()){
+                    controller.updateIncident(lastClikedCopy, description.getText(),
+                            appearanceDatetime.getText(), solutionDatetime.getText());
+                }
+                else{
+                    controller.updateIncident(lastClikedCopy, description.getText(),
+                            appearanceDatetime.getText(), null);
+                }
+
                 createScroll(search_field.getText(), true, sort_by.getSelectionModel().getSelectedIndex());
             }
 
@@ -242,7 +317,7 @@ public class IncidentsManagerView extends SubScene{
         resolvedButton.setOnAction(actionEvent -> {
             final Problem lastClikedCopy = lastClickedValue;
             controller.resolveIncident(lastClikedCopy);
-            createScroll(search_field.getText(), true, sort_by.getSelectionModel().getSelectedIndex());
+            createScroll(search_field.getText().toString(), true, sort_by.getSelectionModel().getSelectedIndex());
         });
 
         buttonsWrap.setSpacing(10);
