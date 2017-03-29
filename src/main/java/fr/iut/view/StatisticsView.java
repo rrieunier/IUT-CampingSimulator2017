@@ -28,7 +28,7 @@ enum StatisticsState {
  */
 public class StatisticsView extends SubScene {
 
-    private static final int NUMBER_OF_CATEGORIES = 6;
+    private static final int NUMBER_OF_CATEGORIES = 4;
     private static final double CATEGORIE_BUTTON_SIZE = HomeView.TAB_CONTENT_W / 6;
 
     /**
@@ -113,7 +113,7 @@ public class StatisticsView extends SubScene {
     public void buildInterface(@NamedArg("body") GridPane body) {
         body.getChildren().clear();
 
-        String[] categories_labels = {"Réservations", "Clients", "Produits / Achats", "Salariés", "Incidents", "Autres"};
+        String[] categories_labels = {"Réservations", "Clients", "Produits / Achats", "Autres"};
 
         switch (this.statisticsState) {
             case CATEGORIES:
@@ -165,18 +165,6 @@ public class StatisticsView extends SubScene {
                         };
                         break;
 
-                    case EMPLOYEES:
-                        options = new String[]{
-                                "Employés travaillant \nle plus",
-                        };
-                        break;
-
-                    case PROBLEMS:
-                        options = new String[]{
-                                "Problèmes en fonction \ndes clients",
-                                "Problèmes en fonction \ndu lieu"
-                        };
-                        break;
 
                     case OTHERS:
                         options = new String[]{
@@ -196,15 +184,12 @@ public class StatisticsView extends SubScene {
                     button.setAlignment(Pos.CENTER);
                     button.getStylesheets().add(new File("res/style.css").toURI().toString());
                     button.getStyleClass().add("record-sales");
-                    button.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                        @Override
-                        public void handle(MouseEvent event) {
-                            statisticsState = StatisticsState.GRAPHIC;
-                            selectedStat = finalI;
-                            buildInterface(body);
-                        }
+                    button.setOnMouseClicked(event -> {
+                        statisticsState = StatisticsState.GRAPHIC;
+                        selectedStat = finalI;
+                        buildInterface(body);
                     });
-                    body.add(button, i % 3, (int) i / 3);
+                    body.add(button, i % 3, i / 3);
                 }
 
                 break;
