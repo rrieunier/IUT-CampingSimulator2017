@@ -80,8 +80,10 @@ public class ReservationsController {
             if(parts.length == 2 && parts[0].equals("client_id")) //S'il y a le mot clé by_id dans le filtre, alors on affiche que les reservations faites par le client avec l'id précisé
                 reservations = reservations.stream().filter(res -> res.getClient().getId() == Integer.parseInt(parts[1])).collect(Collectors.toList());
 
-            else //Sinon on recherche dans le nom et prénoms
-                reservations = reservations.stream().filter(res -> res.getClient().getFirstname().contains(filter) || res.getClient().getLastname().contains(filter)).collect(Collectors.toList());
+            else //Sinon on recherche dans le nom et prénoms du client ainsi que dans le nom des emplacements
+                reservations = reservations.stream().filter(    res -> res.getClient().getFirstname().toLowerCase().contains(filter)
+                                                            ||  res.getClient().getLastname().toLowerCase().contains(filter)
+                                                            ||  res.getSpot().getName().toLowerCase().contains(filter)).collect(Collectors.toList());
         }
 
         reservations.sort((r1, r2) -> {
@@ -117,7 +119,7 @@ public class ReservationsController {
      * defines a filter for the reservations
      */
     public void setFilter(String filter) {
-        this.filter = filter;
+        this.filter = filter.toLowerCase();
     }
 
     /**
