@@ -19,7 +19,7 @@
         <class>fr.iut.persistence.entities.Task</class>
         <class>fr.iut.persistence.entities.Notification</class>
         <properties>
-            <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/Camping"/>
+            <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/Camping?useSSL=false"/>
             <property name="hibernate.connection.username" value="camping"/>
             <property name="hibernate.connection.password" value="camping"/>
             <property name="hibernate.connection.driver_class" value="com.mysql.cj.jdbc.Driver"/>
