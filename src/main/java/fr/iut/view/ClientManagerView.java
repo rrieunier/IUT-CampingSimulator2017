@@ -1,6 +1,8 @@
 package fr.iut.view;
 
 import fr.iut.controller.ClientsController;
+import fr.iut.persistence.dao.EmployeeDAO;
+import fr.iut.persistence.entities.Authorization;
 import fr.iut.persistence.entities.Client;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -82,7 +84,7 @@ public class ClientManagerView extends SubScene {
         sort_by.valueProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                createScroll(search_field.getText().toString(), false, sort_by.getSelectionModel().getSelectedIndex());
+                createScroll(search_field.getText(), false, sort_by.getSelectionModel().getSelectedIndex());
             }
         });
         Label sort_by_label = new Label("Tri par: ");
@@ -94,13 +96,14 @@ public class ClientManagerView extends SubScene {
             @Override
             public void handle(KeyEvent event) {
                 if (event.getCode().equals(KeyCode.ENTER)) {
-                    createScroll(search_field.getText().toString(), false, sort_by.getSelectionModel().getSelectedIndex());
+                    createScroll(search_field.getText(), false, sort_by.getSelectionModel().getSelectedIndex());
                     search_field.clear();
                 }
             }
         });
 
         Button newClient = new Button("+");
+        newClient.setDisable(!EmployeeDAO.getConnectedUser().hasPermission(Authorization.CLIENT_UPDATE));
         newClient.setTooltip(new Tooltip("Nouveau client"));
         newClient.getStylesheets().add(new File("res/style.css").toURI().toString());
         newClient.getStyleClass().add("record-sales");
@@ -180,6 +183,7 @@ public class ClientManagerView extends SubScene {
         wrapWrappers.setAlignment(Pos.CENTER);
 
         Button editButton = new Button("Modifier");
+        editButton.setDisable(!EmployeeDAO.getConnectedUser().hasPermission(Authorization.CLIENT_UPDATE));
         editButton.getStylesheets().add(new File("res/style.css").toURI().toString());
         editButton.getStyleClass().add("record-sales");
         editButton.setMinWidth(HomeView.TAB_CONTENT_W / 4);
@@ -192,9 +196,8 @@ public class ClientManagerView extends SubScene {
                 phone.setDisable(true);
                 editButton.setText("Modifier");
 
-                createScroll(search_field.getText(), true, sort_by.getSelectionModel().getSelectedIndex());
-
                 controller.updateClient(currentClient);
+                createScroll(search_field.getText(), true, sort_by.getSelectionModel().getSelectedIndex());
             }
 
             else {
@@ -219,6 +222,7 @@ public class ClientManagerView extends SubScene {
         buttonsWrap1.getChildren().addAll(editButton, bookingButton);
 
         Button removeButton = new Button("Supprimer");
+        removeButton.setDisable(!EmployeeDAO.getConnectedUser().hasPermission(Authorization.CLIENT_UPDATE));
         removeButton.getStylesheets().add(new File("res/style.css").toURI().toString());
         removeButton.getStyleClass().add("record-sales");
         removeButton.setMinWidth(HomeView.TAB_CONTENT_W / 4);

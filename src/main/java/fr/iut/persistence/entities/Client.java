@@ -1,7 +1,5 @@
 package fr.iut.persistence.entities;
 
-import org.hibernate.annotations.Cascade;
-
 import javax.persistence.*;
 import java.util.Set;
 
@@ -58,14 +56,13 @@ public class Client implements EntityModel<Integer> {
     /**
      * Reservations made by the client.
      */
-    @OneToMany(mappedBy = "client", cascade = {CascadeType.ALL})
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @OneToMany(orphanRemoval = true, mappedBy = "client", cascade = {CascadeType.ALL})
     private Set<Reservation> reservations;
 
     /**
      * Purchases made by the client.
      */
-    @OneToMany(mappedBy = "client", cascade = {CascadeType.ALL})
+    @OneToMany(orphanRemoval = true, mappedBy = "client", cascade = {CascadeType.ALL})
     private Set<Purchase> purchases;
 
     public Integer getId() {

@@ -3,6 +3,8 @@ package fr.iut.view;
 import fr.iut.controller.IncidentsController;
 import fr.iut.persistence.entities.Client;
 import fr.iut.persistence.entities.Location;
+import fr.iut.persistence.dao.EmployeeDAO;
+import fr.iut.persistence.entities.Authorization;
 import fr.iut.persistence.entities.Problem;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -128,6 +130,7 @@ public class IncidentsManagerView extends SubScene{
         });
 
         Button newIncident = new Button("+");
+        newIncident.setDisable(!EmployeeDAO.getConnectedUser().hasPermission(Authorization.PROBLEM_UPDATE));
         newIncident.setTooltip(new Tooltip("Ajouter un nouvel incident..."));
         newIncident.getStylesheets().add(new File("res/style.css").toURI().toString());
         newIncident.getStyleClass().add("record-sales");
@@ -274,7 +277,7 @@ public class IncidentsManagerView extends SubScene{
         editButton.getStylesheets().add(new File("res/style.css").toURI().toString());
         editButton.getStyleClass().add("record-sales");
         editButton.setMinWidth(HomeView.TAB_CONTENT_W / 4);
-
+        editButton.setDisable(!EmployeeDAO.getConnectedUser().hasPermission(Authorization.PROBLEM_UPDATE));
         editButton.setOnAction(actionEvent -> {
             final Problem lastClikedCopy = lastClickedValue;
             if(editMode) {
@@ -307,6 +310,7 @@ public class IncidentsManagerView extends SubScene{
         });
 
         Button resolvedButton = new Button("Incident résolu");
+        resolvedButton.setDisable(!EmployeeDAO.getConnectedUser().hasPermission(Authorization.PROBLEM_UPDATE));
         resolvedButton.getStylesheets().add(new File("res/style.css").toURI().toString());
         resolvedButton.getStyleClass().add("record-sales");
         resolvedButton.setMinWidth(HomeView.TAB_CONTENT_W / 4);

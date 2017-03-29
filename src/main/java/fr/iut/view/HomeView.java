@@ -85,7 +85,7 @@ public class HomeView extends Scene {
         VBox verticalTabs = new VBox();
         verticalTabs.getStylesheets().add(new File("res/style.css").toURI().toString());
         verticalTabs.getStyleClass().add("horizontalTabs");
-        verticalTabs.setSpacing(30);
+        verticalTabs.setSpacing(App.SCREEN_H / 30);
 
         BorderPane borderPane = new BorderPane();
 
@@ -102,7 +102,7 @@ public class HomeView extends Scene {
             newTab.getStylesheets().add(new File("res/style.css").toURI().toString());
             newTab.getStyleClass().add("buttonTab");
             newTab.setMinWidth(App.SCREEN_W / 10);
-            newTab.setMinHeight(App.SCREEN_H / 10);
+            newTab.setMinHeight(App.SCREEN_H / 12);
 
             if(i == 0) {
                 if(!connectedEmployee.hasPermission(Authorization.CLIENT_READ))
@@ -192,6 +192,9 @@ public class HomeView extends Scene {
     private void buildMapAndReservationsTab(Tab tab) {
         tab.setText("Carte & Réservations");
 
+        if(!connectedEmployee.hasPermission(Authorization.MAP_READ))
+            tab.setDisable(true);
+
         BorderPane container = new BorderPane();
         MapCreatorView mapCreatorView = (MapCreatorView)controller.getMapController().getView();
 
@@ -253,6 +256,7 @@ public class HomeView extends Scene {
         search_bar.setSpacing(10);
 
         Button newResaButton = new Button("Nouvelle réservation");
+        newResaButton.setDisable(!connectedEmployee.hasPermission(Authorization.RESERVATION_UPDATE));
         newResaButton.getStyleClass().add("record-sales");
         newResaButton.setOnAction(actionEvent -> {
             ReservationManagerDialog reservationManagerDialog = new ReservationManagerDialog(reservationsController);

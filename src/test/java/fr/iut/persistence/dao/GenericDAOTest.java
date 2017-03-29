@@ -50,16 +50,18 @@ public class GenericDAOTest {
 
         GenericDAO<Client, Integer> dao = new GenericDAO<>(Client.class);
 
+        int initialCount = dao.findAll().size();
+
         dao.save(client);
 
-        assertEquals(1, dao.findAll().size());
+        assertEquals(initialCount + 1, dao.findAll().size());
 
         Client saved = dao.findAll().get(0);
 
         saved.setFirstname(TestUtils.randomString());
         dao.update(saved);
 
-        assertEquals(1, dao.findAll().size());
+        assertEquals(initialCount + 1, dao.findAll().size());
 
         Client updated = dao.findAll().get(0);
 
@@ -96,11 +98,11 @@ public class GenericDAOTest {
 
         clientDao.remove(client);
 
-        assertNull(clientDao.findById(client.getId()));
+        assertEquals(initialCount + 1, clientDao.findAll().size());
 
         clientDao.removeAll();
 
-        assertEquals(0, clientDao.count());
+        assertEquals(initialCount, clientDao.findAll().size());
 
         clientDao.removeAll();
     }

@@ -2,7 +2,9 @@ package fr.iut.view;
 
 
 import fr.iut.controller.ProductController;
+import fr.iut.persistence.dao.EmployeeDAO;
 import fr.iut.persistence.dao.GenericDAO;
+import fr.iut.persistence.entities.Authorization;
 import fr.iut.persistence.entities.Product;
 import fr.iut.persistence.entities.Supplier;
 import fr.iut.persistence.entities.SupplierProposeProduct;
@@ -82,6 +84,7 @@ public class ProductManagerView extends SubScene {
 
         HBox sort_options = new HBox();
         Button add_product = new Button("+");
+        add_product.setDisable(!EmployeeDAO.getConnectedUser().hasPermission(Authorization.PRODUCT_UPDATE));
         add_product.setTooltip(new Tooltip("Ajouter un nouveau produit..."));
         add_product.getStylesheets().add(new File("res/style.css").toURI().toString());
         add_product.getStyleClass().add("record-sales");
@@ -153,6 +156,7 @@ public class ProductManagerView extends SubScene {
                 });
             } else if (i == 1) {
                 button.setText("Supprimer");
+                button.setDisable(!EmployeeDAO.getConnectedUser().hasPermission(Authorization.PRODUCT_UPDATE));
                 button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
@@ -168,6 +172,7 @@ public class ProductManagerView extends SubScene {
                 });
             } else {
                 button.setText("Modifier");
+                button.setDisable(!EmployeeDAO.getConnectedUser().hasPermission(Authorization.PRODUCT_UPDATE));
                 button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {

@@ -81,13 +81,13 @@ public class Employee implements EntityModel<Integer> {
     /**
      * Tasks attributed to this employee.
      */
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+    @OneToMany(orphanRemoval = true, mappedBy = "employee", cascade = CascadeType.ALL)
     private Set<Task> tasks;
 
     /**
      * Logs made by this employee if it's a user.
      */
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+    @OneToMany(orphanRemoval = true, mappedBy = "employee", cascade = CascadeType.ALL)
     private Set<Log> logs;
 
     public Integer getId() {

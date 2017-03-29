@@ -45,19 +45,19 @@ public class Product implements EntityModel<Integer> {
     /**
      * Purchases made for this product.
      */
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @OneToMany(orphanRemoval = true, mappedBy = "product", cascade = CascadeType.ALL)
     private Set<Purchase> purchases;
 
     /**
      * Restocking made for this product.
      */
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @OneToMany(orphanRemoval = true, mappedBy = "product", cascade = CascadeType.ALL)
     private Set<Restocking> restockings;
 
     /**
      * Relations between suppliers and this product.
      */
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @OneToMany(orphanRemoval = true, mappedBy = "product", cascade = CascadeType.ALL)
     private Set<SupplierProposeProduct> supplierProposeProducts = new HashSet<>();
 
     public Integer getId() {
