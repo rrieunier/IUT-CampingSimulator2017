@@ -5,9 +5,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -17,6 +15,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by theo on 13/02/17.
@@ -29,46 +28,14 @@ public class ReductionsDialog extends Dialog<Float> {
     private GridPane gridPane = new GridPane();
     private ArrayList<Map<Text, Pair<RadioButton, Float>>> reductionsArrayList = new ArrayList<>();
 
+    private Float default_reduc;
 
-    private App app; //TODO : il faut un controller, pas une instance de App
-
-    private void add(String name, int i, Float value){
-        Text text = new Text(name);
-        text.setStyle("-fx-font-weight: bold;" +
-                "-fx-font-size: 17px");
-        text.setFill(Color.WHITESMOKE);
-        gridPane.add(text, 0, i);
-
-        Text textValue = new Text("(" + value.toString() + "%)");
-        textValue.setStyle("-fx-font-weight: bold;" +
-                "-fx-font-size: 17px");
-        textValue.setFill(Color.WHITESMOKE);
-        gridPane.add(textValue, 1, i);
-
-        RadioButton radioButton = new RadioButton();
-        GridPane.setHalignment(radioButton, HPos.CENTER);
-        gridPane.add(radioButton, 2, i);
-
-        radioButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                for (int i = 0; i < reductionsArrayList.size(); i++){
-                    for (Map.Entry<Text, Pair<RadioButton, Float>> entry : reductionsArrayList.get(i).entrySet()){
-                        if(entry.getValue().getKey().isSelected())
-                            entry.getValue().getKey().setSelected(false);
-                    }
-                }
-                radioButton.setSelected(true);
-            }
-        });
-
-        Pair<RadioButton, Float> pair = new Pair<>(radioButton, value);
-        Map<Text, Pair<RadioButton, Float>> map = new HashMap<>();
-        map.put(text, pair);
-        reductionsArrayList.add(map);
+    public ReductionsDialog() {
+        this(0.f);
     }
 
-    public ReductionsDialog(){
+    public ReductionsDialog(Float default_reduc){
+        this.default_reduc = default_reduc;
         setTitle("Réductions");
 
         DialogPane dialogPane = getDialogPane();
@@ -96,10 +63,10 @@ public class ReductionsDialog extends Dialog<Float> {
         header.setMinWidth(REDUCTIONS_WIDTH);
         wrapper.getChildren().add(header);
 
-        String[] labels = {"Etudiant", "Senior", "Famille", "Groupe", "Autres" };
-        Float[] values = {5f, 5f, 10f, 10f, 0f};
+        String[] labels = {"Senior", "Etudiant", "Famille", "Groupe", "Autres" };
+        Float[] values = {5f, 8f, 10f, 15f, 0f};
         for (int i = 0; i < labels.length; i++) {
-            add(labels[i], i, values[i]);
+            add_line(labels[i], i, values[i]);
         }
 
         TextField textField = new TextField();
@@ -124,13 +91,11 @@ public class ReductionsDialog extends Dialog<Float> {
         dialogPane.setContent(wrapper);
 
         setResultConverter( dialogButton -> {
-            Float res = null;
 
             if (dialogButton == okButtonType){
-                //map = new HashMap<>(1);
                 if(textField.getLength() > 0){
                     for(Map.Entry<Text, Pair<RadioButton, Float>> textPairEntry : reductionsArrayList.get(reductionsArrayList.size()-1).entrySet()){
-                        Pair<RadioButton, Float> pair = new Pair<>(textPairEntry.getValue().getKey(), Float.valueOf(textField.getText().toString()));
+                        Pair<RadioButton, Float> pair = new Pair<>(textPairEntry.getValue().getKey(), Float.valueOf(textField.getText()));
                         textPairEntry.setValue(pair);
                     }
                 }
@@ -138,12 +103,51 @@ public class ReductionsDialog extends Dialog<Float> {
                 for (int i = 0; i < reductionsArrayList.size(); i++){
                     for (Map.Entry<Text, Pair<RadioButton, Float>> entry : reductionsArrayList.get(i).entrySet()){
                         if(entry.getValue().getKey().isSelected())
-                            res = entry.getValue().getValue();
-                            //map.put(entry.getValue().getValue());
+                            return entry.getValue().getValue();
                     }
                 }
             }
-            return res;
+
+            return null;
         });
+    }
+
+    private void add_line(String name, int i, Float value){
+        Text text = new Text(name);
+        text.setStyle("-fx-font-weight: bold;" +
+                "-fx-font-size: 17px");
+        text.setFill(Color.WHITESMOKE);
+        gridPane.add(text, 0, i);
+
+        Text textValue = new Text("(" + value.toString() + "%)");
+        textValue.setStyle("-fx-font-weight: bold;" +
+                "-fx-font-size: 17px");
+        textValue.setFill(Color.WHITESMOKE);
+        gridPane.add(textValue, 1, i);
+
+        RadioButton radioButton = new RadioButton();
+        GridPane.setHalignment(radioButton, HPos.CENTER);
+        gridPane.add(radioButton, 2, i);
+
+        if(value != 0 && value.equals(default_reduc))
+            radioButton.setSelected(true);
+
+        radioButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                for (int i = 0; i < reductionsArrayList.size(); i++){
+                    for (Map.Entry<Text, Pair<RadioButton, Float>> entry : reductionsArrayList.get(i).entrySet()){
+                        if(entry.getValue().getKey().isSelected())
+                            entry.getValue().getKey().setSelected(false);
+                    }
+                }
+                radioButton.setSelected(true);
+            }
+        });
+
+        Pair<RadioButton, Float> pair = new Pair<>(radioButton, value);
+        Map<Text, Pair<RadioButton, Float>> map = new HashMap<>();
+        map.put(text, pair);
+        reductionsArrayList.add(map);
     }
 }

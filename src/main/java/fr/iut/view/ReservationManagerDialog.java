@@ -33,6 +33,7 @@ import java.util.Optional;
 public class ReservationManagerDialog extends Dialog<Void> {
 
     private Reservation reservationToEdit;
+    private Float reduction = 0.f;
 
     public ReservationManagerDialog(ReservationsController controller, Reservation reservation, ImageView reservationPic) {
         this(controller, reservation, null, reservationPic);
@@ -154,11 +155,16 @@ public class ReservationManagerDialog extends Dialog<Void> {
         Button reductionButton = new Button("Reduction");
         reductionButton.getStyleClass().add("record-sales");
         reductionButton.setOnAction(action ->{
-            ReductionsDialog reductionsDialog = new ReductionsDialog();
+            ReductionsDialog reductionsDialog;
+
+            if(this.reservationToEdit != null)
+                reductionsDialog = new ReductionsDialog(this.reservationToEdit.getReduction());
+            else
+                reductionsDialog = new ReductionsDialog();
+
             Optional<Float> result = reductionsDialog.showAndWait();
             result.ifPresent(list -> {
-                this.reservationToEdit.setReduction(result.get());
-                System.out.println(result.get());
+                reduction = result.get();
             });
         });
 
@@ -224,6 +230,8 @@ public class ReservationManagerDialog extends Dialog<Void> {
                 if(this.reservationToEdit == null)
                     this.reservationToEdit = new Reservation();
 
+                this.reservationToEdit.setReduction(reduction);
+
                 Instant instant = Instant.from(beginTime.getValue().atStartOfDay(ZoneId.systemDefault()));
                 Date dateBegin = Date.from(instant);
                 instant = Instant.from(endTime.getValue().atStartOfDay(ZoneId.systemDefault()));
@@ -249,8 +257,12 @@ public class ReservationManagerDialog extends Dialog<Void> {
             }
 
             else if(dialogButton == deleteButtonType) {
-                if(this.reservationToEdit != null)
+                System.out.println("delete button !");
+                if(this.reservationToEdit != null) {
+                    System.out.println("Deleting resa...");
                     controller.removeReservation(this.reservationToEdit);
+                    System.out.println("done");
+                }
             }
 
             return null;
