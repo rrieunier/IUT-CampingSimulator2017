@@ -31,13 +31,13 @@ import java.util.Optional;
 public class ClientManagerView extends SubScene {
 
     private VBox clients;
-    ClientsController controller;
+    private ClientsController controller;
 
-    boolean editMode = false;
+    private boolean editMode = false;
 
-    TextField firstname, name, email, phone;
+    private TextField firstname, name, email, phone;
 
-    Client currentClient = null;
+    private Client currentClient = null;
 
     public ClientManagerView(ClientsController c) {
         super(new BorderPane(), HomeView.TAB_CONTENT_W, HomeView.TAB_CONTENT_H);
@@ -195,6 +195,11 @@ public class ClientManagerView extends SubScene {
                 email.setDisable(true);
                 phone.setDisable(true);
                 editButton.setText("Modifier");
+
+                currentClient.setFirstname(firstname.getText());
+                currentClient.setLastname(name.getText());
+                currentClient.setEmail(email.getText());
+                currentClient.setPhone(phone.getText());
 
                 controller.updateClient(currentClient);
                 createScroll(search_field.getText(), true, sort_by.getSelectionModel().getSelectedIndex());
