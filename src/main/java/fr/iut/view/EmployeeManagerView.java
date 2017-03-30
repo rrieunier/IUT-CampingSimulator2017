@@ -135,9 +135,11 @@ public class EmployeeManagerView extends SubScene {
             employee.setPhone(newEmployee_result.get().get("Téléphone"));
             employee.setEmail(newEmployee_result.get().get("Mail"));
             employee.setLogin(newEmployee_result.get().get("Identifiant"));
+
             if (Objects.equals(newEmployee_result.get().get("Mot de passe"), newEmployee_result.get().get("Retapez le mot de passe"))) {
                 employee.setPassword(ConnectionController.hash(newEmployee_result.get().get("Mot de passe")));
                 controller.saveEmployee(employee);
+                createScroll(search_field.getText(), true, sort_by.getSelectionModel().getSelectedIndex());
             } else {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Oops!");
@@ -148,13 +150,13 @@ public class EmployeeManagerView extends SubScene {
             }
 
 
-            PermissionsDialog permissionsDialog = new PermissionsDialog();
-            Optional<ArrayList<Boolean>> result = permissionsDialog.showAndWait();
-            result.ifPresent(list -> {
-                controller.updateAuthorizations(employee, list);
-            });
+//            PermissionsDialog permissionsDialog = new PermissionsDialog();
+//            Optional<ArrayList<Boolean>> result = permissionsDialog.showAndWait()
+//            result.ifPresent(list -> {
+//                controller.updateAuthorizations(employee, list);
+//            });
 
-            createScroll(search_field.getText(), true, sort_by.getSelectionModel().getSelectedIndex());
+//            createScroll(search_field.getText(), true, sort_by.getSelectionModel().getSelectedIndex());
         });
 
         sort_options.getChildren().addAll(newEmployee, sort_by_label, sort_by);
