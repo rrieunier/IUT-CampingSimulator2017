@@ -4,7 +4,7 @@ Projet PT4 IUT Informatique de Bordeaux.
 
 Progiciel de gestion de camping.
 
-##### Réalisé par :
+#### Réalisé par :
 
 Yann Antonini
 Théo Beguey
@@ -13,7 +13,7 @@ Sylvain Dupouy
 Clément Fleury
 Roman Rieunier
 
-##### Screenshots :
+#### Screenshots :
 ![alt tag](https://github.com/Moccko/campingsimulator2017/raw/master/screenshots/login.png)
 ![alt tag](https://github.com/Moccko/campingsimulator2017/raw/master/screenshots/map&resa.png)
 ![alt tag](https://github.com/Moccko/campingsimulator2017/raw/master/screenshots/clients.png)
