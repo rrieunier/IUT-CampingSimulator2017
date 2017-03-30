@@ -17,10 +17,18 @@ import java.util.Map;
  */
 public class LocationDialog extends Dialog<Map<String, String>> {
 
+    /**
+     * redirect constructor
+     */
     public LocationDialog(ImageView imageView) {
         this(imageView, null);
     }
 
+    /**
+     * Enables the user to create and edit a location on the map
+     * @param imageView represents the image of the location
+     * @param location
+     */
     public LocationDialog(ImageView imageView, Location location) {
 
         Spot spot = null;

@@ -35,16 +35,28 @@ public class ReservationManagerDialog extends Dialog<Void> {
     private Reservation reservationToEdit;
     private Float reduction = 0.f;
 
+    /**
+     * redirect constructor
+     */
     public ReservationManagerDialog(ReservationsController controller, Reservation reservation, ImageView reservationPic) {
         this(controller, reservation, null, reservationPic);
         setTitle("Création d'une réservation");
     }
 
+    /**
+     * redirect constructor
+     */
     public ReservationManagerDialog(ReservationsController controller) {
         this(controller, null, null, null);
         setTitle("Création d'une réservation");
     }
 
+    /**
+     * @param controller
+     * @param reservationToEdit if not null, the Dialog is built in edition mode, else it's built in creation mode
+     * @param clientOfNewReservation if not null, the client passed in parameters will be used for the reservation
+     * @param reservationPic picture representing the location type
+     */
     private  ReservationManagerDialog(ReservationsController controller, Reservation reservationToEdit, Client clientOfNewReservation, ImageView reservationPic) {
 
         this.reservationToEdit = reservationToEdit;

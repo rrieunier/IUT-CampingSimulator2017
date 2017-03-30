@@ -17,7 +17,6 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -53,11 +52,17 @@ public class MapCreatorView extends SubScene {
     private ImageView buttonReset;
     private Text importMapText;
 
+    /**
+     * Selected/Dragging current item
+     */
     private ItemMap selectedItem;
     private double mouseX;
     private double mouseY;
 
-    private boolean employeeHasWriteMapPermission;
+    /**
+     * true if the employee in the DB has the permission to edit the map
+     */
+    private boolean employeeHasUpdateMapPermission;
 
     /**
      * The available items are all the SpotType values
@@ -135,7 +140,7 @@ public class MapCreatorView extends SubScene {
         super(new StackPane(), App.SCREEN_W * 2/3, App.SCREEN_H * 3/4);
         this.controller = controller;
 
-        employeeHasWriteMapPermission = EmployeeDAO.getConnectedUser().hasPermission(Authorization.MAP_UPDATE);
+        employeeHasUpdateMapPermission = EmployeeDAO.getConnectedUser().hasPermission(Authorization.MAP_UPDATE);
 
         availableItems[0] = new ItemMap(SpotType.HOUSE);
         availableItems[1] = new ItemMap(SpotType.TRAILER);
@@ -182,7 +187,7 @@ public class MapCreatorView extends SubScene {
         mapViewPort.setPannable(true);
         scrollContainer.getChildren().add(mapViewPort);
 
-        if(employeeHasWriteMapPermission)
+        if(employeeHasUpdateMapPermission)
             handleDropItem();
 
         HBox items = new HBox();
@@ -195,7 +200,7 @@ public class MapCreatorView extends SubScene {
         StackPane.setMargin(buttonReset, new Insets(20, 20, 0, 0));
         scrollContainer.getChildren().add(buttonReset);
 
-        if(employeeHasWriteMapPermission) {
+        if(employeeHasUpdateMapPermission) {
             buttonReset.setOnMouseClicked(mouseEvent -> {
 
                 Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -274,7 +279,7 @@ public class MapCreatorView extends SubScene {
             ImageView itemBigImage = new ImageView(availableItem.getBigImage());
             ImageView itemSmallImage = new ImageView(availableItem.getSmallImage());
 
-            if(employeeHasWriteMapPermission) {
+            if(employeeHasUpdateMapPermission) {
                 itemBigImage.setOnMousePressed(mouseEvent -> {
                     if (mapFile != null || mapInBdd != null) {
                         selectedItem = availableItem;
@@ -369,7 +374,7 @@ public class MapCreatorView extends SubScene {
 
         edit_result.ifPresent(mapEditResult -> {
 
-            if(!employeeHasWriteMapPermission) {
+            if(!employeeHasUpdateMapPermission) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Impossible");
                 alert.setHeaderText("Vous n'avez pas la permission de modifier les emplacements.");

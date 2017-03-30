@@ -56,7 +56,7 @@ public class App extends Application {
     }
 
     /**
-     * Allows to switch beetween the different states of the application (see State enum)
+     * Allows us to switch beetween the different states of the application (see State enum)
      */
     public void switchState(State state) {
 

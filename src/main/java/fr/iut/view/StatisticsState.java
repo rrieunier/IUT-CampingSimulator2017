@@ -1,2 +1,0 @@
-package fr.iut.view;
-

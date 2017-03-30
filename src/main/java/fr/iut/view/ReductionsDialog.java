@@ -34,6 +34,9 @@ public class ReductionsDialog extends Dialog<Float> {
         this(0.f);
     }
 
+    /**
+     * @param default_reduc is the default value to check when showing the dialog
+     */
     public ReductionsDialog(Float default_reduc){
         this.default_reduc = default_reduc;
         setTitle("Réductions");

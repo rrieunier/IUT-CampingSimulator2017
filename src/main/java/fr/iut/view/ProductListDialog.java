@@ -29,6 +29,53 @@ public class ProductListDialog extends Dialog<ArrayList<Pair<Product, Float>>> {
     private VBox productsWrapper;
     private int iterator_box = 0;
 
+    public ProductListDialog(){
+        setTitle("Liste des produits");
+        DialogPane dialogPane = getDialogPane();
+        dialogPane.getStylesheets().add(new File("res/style.css").toURI().toString());
+        getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+
+        productsWrapper = new VBox();
+        ScrollPane scrollPane = new ScrollPane(productsWrapper);
+        scrollPane.setMaxHeight(PRODUCTSLIST_HEIGHT);
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+
+        HeaderView header = new HeaderView("Liste des produits");
+        header.setMinWidth(PRODUCTSLIST_WIDTH);
+        VBox wrapper = new VBox();
+        wrapper.getChildren().add(header);
+
+        ButtonType okButtonType = new ButtonType("Valider", ButtonBar.ButtonData.OK_DONE);
+        dialogPane.getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
+
+        createProducts();
+
+        productsWrapper.setSpacing(3);
+        wrapper.getChildren().add(scrollPane);
+        dialogPane.setContent(wrapper);
+
+        Region spacer = new Region();
+        ButtonBar.setButtonData(spacer, ButtonBar.ButtonData.BIG_GAP);
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+        dialogPane.applyCss();
+        HBox hbox = (HBox) dialogPane.lookup(".container");
+        hbox.getChildren().add(spacer);
+
+        setResultConverter((ButtonType dialogButton) ->{
+            ArrayList<Pair<Product, Float>> arrayList = new ArrayList<>();
+
+            if(dialogButton == okButtonType){
+                for (int i = 0; i < arrayListProducts.size(); i++) {
+                    if(arrayListProducts.get(i).getValue().isSelected()){
+                        Pair p = new Pair(arrayListProducts.get(i).getKey().getKey(), Float.parseFloat(arrayListProducts.get(i).getKey().getValue().getText().toString()));
+                        arrayList.add(p);
+                    }
+                }
+            }
+            return arrayList;
+        });
+    }
+
     public void add(Product p){
 
         GridPane gridPane = new GridPane();
@@ -94,52 +141,5 @@ public class ProductListDialog extends Dialog<ArrayList<Pair<Product, Float>>> {
                 }
             }
         }
-    }
-
-    public ProductListDialog(){
-        setTitle("Liste des produits");
-        DialogPane dialogPane = getDialogPane();
-        dialogPane.getStylesheets().add(new File("res/style.css").toURI().toString());
-        getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-
-        productsWrapper = new VBox();
-        ScrollPane scrollPane = new ScrollPane(productsWrapper);
-        scrollPane.setMaxHeight(PRODUCTSLIST_HEIGHT);
-        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-
-        HeaderView header = new HeaderView("Liste des produits");
-        header.setMinWidth(PRODUCTSLIST_WIDTH);
-        VBox wrapper = new VBox();
-        wrapper.getChildren().add(header);
-
-        ButtonType okButtonType = new ButtonType("Valider", ButtonBar.ButtonData.OK_DONE);
-        dialogPane.getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
-
-        createProducts();
-
-        productsWrapper.setSpacing(3);
-        wrapper.getChildren().add(scrollPane);
-        dialogPane.setContent(wrapper);
-
-        Region spacer = new Region();
-        ButtonBar.setButtonData(spacer, ButtonBar.ButtonData.BIG_GAP);
-        HBox.setHgrow(spacer, Priority.ALWAYS);
-        dialogPane.applyCss();
-        HBox hbox = (HBox) dialogPane.lookup(".container");
-        hbox.getChildren().add(spacer);
-
-        setResultConverter((ButtonType dialogButton) ->{
-            ArrayList<Pair<Product, Float>> arrayList = new ArrayList<>();
-
-            if(dialogButton == okButtonType){
-                for (int i = 0; i < arrayListProducts.size(); i++) {
-                    if(arrayListProducts.get(i).getValue().isSelected()){
-                        Pair p = new Pair(arrayListProducts.get(i).getKey().getKey(), Float.parseFloat(arrayListProducts.get(i).getKey().getValue().getText().toString()));
-                        arrayList.add(p);
-                    }
-                }
-            }
-            return arrayList;
-        });
     }
 }

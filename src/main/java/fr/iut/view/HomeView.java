@@ -48,8 +48,16 @@ public class HomeView extends Scene {
     private Text notification_text;
     private TextField search_field;
 
+    /**
+     * Tab model which allows us to change programmatically the tab postion
+     */
     SingleSelectionModel<Tab> selectionModelMainTabs;
 
+    /**
+     * The HomeView class is the main graphical interface which redirects on everythings by using buttons, tabs, ...
+     * @param controller
+     * @param connectedEmployee represents as its name suggests, the current connected user, in order to say Welcome to him in the footer
+     */
     public HomeView(HomeController controller, Employee connectedEmployee) {
         super(new BorderPane(), App.SCREEN_W, App.SCREEN_H);
         this.controller = controller;
@@ -75,8 +83,12 @@ public class HomeView extends Scene {
         buildFooter();
     }
 
-    private void buildManagmentTab(Tab tab) {
-        tab.setText("Gestion");
+    /**
+     * Builds all the content of the managment tab, creates the buttons, checks permissions, and includes the other views
+     * @param managmentTab
+     */
+    private void buildManagmentTab(Tab managmentTab) {
+        managmentTab.setText("Gestion");
 
         StackPane container = new StackPane();
         container.setPadding(new Insets(50, 0, 0, LEFT_PADDING_TAB));
@@ -182,18 +194,22 @@ public class HomeView extends Scene {
 
         container.getChildren().add(borderPane);
 
-        tab.setContent(container);
+        managmentTab.setContent(container);
 
         if(defaultSelected != null)
             defaultSelected.fire(); //click button
     }
 
 
-    private void buildMapAndReservationsTab(Tab tab) {
-        tab.setText("Carte & Réservations");
+    /**
+     * Builds all the content of the map&reservations tab
+     * @param reservationAndMapTab
+     */
+    private void buildMapAndReservationsTab(Tab reservationAndMapTab) {
+        reservationAndMapTab.setText("Carte & Réservations");
 
         if(!connectedEmployee.hasPermission(Authorization.MAP_READ))
-            tab.setDisable(true);
+            reservationAndMapTab.setDisable(true);
 
         BorderPane container = new BorderPane();
         MapCreatorView mapCreatorView = (MapCreatorView)controller.getMapController().getView();
@@ -270,9 +286,12 @@ public class HomeView extends Scene {
 
         container.setLeft(reservationsWrapper);
         container.setCenter(mapCreatorView);
-        tab.setContent(container);
+        reservationAndMapTab.setContent(container);
     }
 
+    /**
+     * Build the footer with the welcome message and the notifications
+     */
     private void buildFooter() {
         BorderPane footerWrapper = new BorderPane();
         VBox.setVgrow(footerWrapper, Priority.ALWAYS);

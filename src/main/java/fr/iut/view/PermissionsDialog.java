@@ -26,32 +26,6 @@ public class PermissionsDialog extends Dialog<ArrayList<Boolean>> {
     private ArrayList<RadioButton> radioButtonArrayList = new ArrayList<>();
     private GridPane gridPane = new GridPane();
 
-    private void add(String name, int i){
-        Text text = new Text(name);
-        text.setStyle("-fx-font-weight: bold;" +
-                "-fx-font-size: 17px");
-        text.setFill(Color.WHITESMOKE);
-        gridPane.add(text, 0, i+1);
-
-        RadioButton readButton = new RadioButton();
-        GridPane.setHalignment(readButton, HPos.CENTER);
-        gridPane.add(readButton, 1,i+1);
-
-        RadioButton editButton = new RadioButton();
-        GridPane.setHalignment(editButton, HPos.CENTER);
-        gridPane.add(editButton, 2, i+1);
-
-        editButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                readButton.setSelected(true);
-            }
-        });
-
-        radioButtonArrayList.add(readButton);
-        radioButtonArrayList.add(editButton);
-    }
-
     public PermissionsDialog(){
         setTitle("Permissions");
 
@@ -91,7 +65,7 @@ public class PermissionsDialog extends Dialog<ArrayList<Boolean>> {
 
         String[] labels = {"Clients", "Incidents", "Salariés", "Fournisseurs", "Stocks", "Carte", "Reservation"};
         for(int i=0; i<labels.length; i++) {
-            add(labels[i], i);
+            add_row(labels[i], i);
         }
 
         Text text = new Text("Statistiques");
@@ -142,5 +116,31 @@ public class PermissionsDialog extends Dialog<ArrayList<Boolean>> {
                 }
             }
         }
+    }
+
+    private void add_row(String name, int i){
+        Text text = new Text(name);
+        text.setStyle("-fx-font-weight: bold;" +
+                "-fx-font-size: 17px");
+        text.setFill(Color.WHITESMOKE);
+        gridPane.add(text, 0, i+1);
+
+        RadioButton readButton = new RadioButton();
+        GridPane.setHalignment(readButton, HPos.CENTER);
+        gridPane.add(readButton, 1,i+1);
+
+        RadioButton editButton = new RadioButton();
+        GridPane.setHalignment(editButton, HPos.CENTER);
+        gridPane.add(editButton, 2, i+1);
+
+        editButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                readButton.setSelected(true);
+            }
+        });
+
+        radioButtonArrayList.add(readButton);
+        radioButtonArrayList.add(editButton);
     }
 }

@@ -27,13 +27,26 @@ import java.util.Optional;
 
 public class ClientManagerView extends SubScene {
 
+    /**
+     * Vbox containing clients line by line and the scrollpane contains this vbox
+     */
     private VBox clients;
+
+    /**
+     * controller
+     */
     private ClientsController controller;
 
+    /**
+     * editMode:true = client edition mode enable ; editMode:false = client edition mode disable
+     */
     private boolean editMode = false;
 
     private TextField firstname, name, email, phone;
 
+    /**
+     * Contains the clicked client
+     */
     private Client currentClient = null;
 
     public ClientManagerView(ClientsController c) {
@@ -240,9 +253,9 @@ public class ClientManagerView extends SubScene {
     }
 
     /**
-     * @param c the client
-     * @param i iterator of the list
-     * add a client to the scroll bar
+     * creates a client in the VBox
+     * @param c is the client who will be created
+     * @param i-th client (for the background color)
      */
     private void createElement(Client c, int i){
         HBox clientsBox = new HBox();
@@ -277,7 +290,7 @@ public class ClientManagerView extends SubScene {
     }
 
     /**
-     * @param search the text to contains
+     * @param search the text to contain
      * @param refresh if the clients needs to be refresh from the database
      * @param sort_options sort options
      * create or refresh the scroll bar
@@ -299,6 +312,10 @@ public class ClientManagerView extends SubScene {
         }
     }
 
+    /**
+     * Updates the fields depending on the current client
+     * @param client is who we are displaying in the details
+     */
     private void updateDetail(Client client) {
         firstname.setText(client.getFirstname());
         name.setText(client.getLastname());

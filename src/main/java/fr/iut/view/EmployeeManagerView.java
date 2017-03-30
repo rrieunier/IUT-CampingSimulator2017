@@ -34,13 +34,27 @@ import java.util.Optional;
 
 public class EmployeeManagerView extends SubScene {
 
+
+    /**
+     * VBox containing all the employees
+     */
     private final VBox employees;
+
+    /**
+     * controller
+     */
     EmployeesController controller;
 
+    /**
+     * editMode:true = client edition mode enable ; editMode:false = client edition mode disable
+     */
     private boolean editMode = false;
 
     private TextField firstname, name, email, phone, login, password, confirm;
 
+    /**
+     * contains the clicked employee
+     */
     private Employee currentEmployee = null;
 
     public EmployeeManagerView(EmployeesController c) {
@@ -356,6 +370,10 @@ public class EmployeeManagerView extends SubScene {
         }
     }
 
+    /**
+     * Updates the fields depending on the current employee
+     * @param employee is who we are displaying in the details
+     */
     private void updateDetail(Employee employee) {
         firstname.setText(employee.getFirstName());
         name.setText(employee.getLastName());
