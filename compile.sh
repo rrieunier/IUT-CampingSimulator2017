@@ -16,9 +16,6 @@ if ! dpkg -s mysql-client > /dev/null; then
 	exit
 fi
 
-echo -n "Cleaning project..."
-mvn clean > /dev/null #clean just in case
-echo "Done"
 echo -n "Copying dependencies..."
 mvn dependency:copy-dependencies > /dev/null
 echo "Done"
@@ -30,3 +27,7 @@ mysql -u $user -p < camping-db-creation.sql
 echo "DB created !"
 
 mvn package -Dmaven.test.skip=true
+cp target/campingsimulator2017-1.0-SNAPSHOT.jar .
+cp -r target/dependency-jars .
+mvn clean
+

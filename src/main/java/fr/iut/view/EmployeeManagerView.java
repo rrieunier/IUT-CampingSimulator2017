@@ -135,10 +135,18 @@ public class EmployeeManagerView extends SubScene {
             employee.setPhone(newEmployee_result.get().get("Téléphone"));
             employee.setEmail(newEmployee_result.get().get("Mail"));
             employee.setLogin(newEmployee_result.get().get("Identifiant"));
-            if (Objects.equals(newEmployee_result.get().get("Identifiant"), newEmployee_result.get().get("Retapez le mot de passe")))
+            if (Objects.equals(newEmployee_result.get().get("Mot de passe"), newEmployee_result.get().get("Retapez le mot de passe"))) {
                 employee.setPassword(ConnectionController.hash(newEmployee_result.get().get("Mot de passe")));
+                controller.saveEmployee(employee);
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Oops!");
+                alert.setHeaderText(null);
+                alert.setContentText("Les mots de passe ne sont pas identiques.");
 
-            controller.saveEmployee(employee);
+                alert.showAndWait();
+            }
+
 
             PermissionsDialog permissionsDialog = new PermissionsDialog();
             Optional<ArrayList<Boolean>> result = permissionsDialog.showAndWait();
