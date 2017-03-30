@@ -22,12 +22,11 @@ echo "Done"
 echo -n "Copying dependencies..."
 mvn dependency:copy-dependencies > /dev/null
 echo "Done"
-mvn -Dmaven.test.skip=true -q package exec:java -Dexec.mainClass=fr.iut.App -e
 
 echo "Executing Database creation script"
 echo -n "MySQL user : "
 read user
 mysql -u $user -p < camping-db-creation.sql
+echo "DB created !"
 
-cp target/campingsimulator2017-1.0-SNAPSHOT.jar .
-mvn clean
+mvn package -Dmaven.test.skip=true
