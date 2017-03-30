@@ -8,17 +8,18 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 
+/**
+ * Header of all the windows
+ */
 public class HeaderView extends BorderPane {
 
-    private Text title;
-
-    public HeaderView(String title){
+    public HeaderView(String t){
 
         setPadding(new Insets(15));
         setStyle("-fx-background-color: #336699;");
-        this.title = new Text(title);
-        this.title.setFill(Color.WHITESMOKE);
-        this.title.setFont(Font.font("DejaVu Sans", 30));
-        setCenter(this.title);
+        Text title = new Text(t);
+        title.setFill(Color.WHITESMOKE);
+        title.setFont(Font.font("DejaVu Sans", 30));
+        setCenter(title);
     }
 }

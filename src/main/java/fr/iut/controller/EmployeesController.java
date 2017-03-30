@@ -10,9 +10,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 
-/**
- * Created by shellcode on 2/17/17.
- */
 public class EmployeesController {
 
     private EmployeeDAO daoEmployee = new EmployeeDAO();
@@ -20,7 +17,7 @@ public class EmployeesController {
     private ArrayList<Employee> employees = new ArrayList<>();
 
 
-    public EmployeesController(HomeController homeController) {
+    EmployeesController(HomeController homeController) {
         this.homeController = homeController;
     }
 
@@ -28,34 +25,39 @@ public class EmployeesController {
         return new EmployeeManagerView(this);
     }
 
+    /**
+     * create employees from the database
+     */
     public void createEmployees() {
         employees = (ArrayList<Employee>) daoEmployee.findAll();
     }
 
     public void sortEmployees(int sort_options){
-        employees.sort(new Comparator<Employee>() {
-            @Override
-            public int compare(Employee o1, Employee o2) {
-                double result = 0;
-                switch (sort_options){
-                    case 1:
-                        result = o2.getLastName().toLowerCase().compareTo(o1.getLastName().toLowerCase());
-                        break;
-                    case 2:
-                        result = o1.getFirstName().compareTo(o2.getFirstName());
-                        break;
-                    case 3:
-                        result = o2.getFirstName().compareTo(o1.getFirstName());
-                        break;
-                    default:
-                        result = o1.getLastName().toLowerCase().compareTo(o2.getLastName().toLowerCase());
-                        break;
-                }
-                return (int) result;
+        employees.sort((o1, o2) -> {
+            double result;
+            switch (sort_options){
+                case 1:
+                    result = o2.getLastName().toLowerCase().compareTo(o1.getLastName().toLowerCase());
+                    break;
+                case 2:
+                    result = o1.getFirstName().compareTo(o2.getFirstName());
+                    break;
+                case 3:
+                    result = o2.getFirstName().compareTo(o1.getFirstName());
+                    break;
+                default:
+                    result = o1.getLastName().toLowerCase().compareTo(o2.getLastName().toLowerCase());
+                    break;
             }
+            return (int) result;
         });
     }
 
+    /**
+     * @param employee the employe to update
+     * @param permissions List of permissions
+     * update the authorizations for the employee selected
+     */
     public void updateAuthorizations(Employee employee, ArrayList<Boolean> permissions){
         HashSet<Authorization> authorizations = new HashSet<>();
         for (int i = 0; i < permissions.size(); i++) {

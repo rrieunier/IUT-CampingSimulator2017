@@ -30,9 +30,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 
-/**
- * Created by theo on 01/03/17.
- */
 public class IncidentsManagerView extends SubScene{
 
     /**
@@ -108,24 +105,16 @@ public class IncidentsManagerView extends SubScene{
                         "Date d'apparition (ancien)", "Date de résolution (récent)", "Date de résolution (ancien");
         ComboBox<String> sort_by = new ComboBox<>(options);
         sort_by.getSelectionModel().select(0);
-        sort_by.valueProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                createScroll(search_field.getText().toString(), false, sort_by.getSelectionModel().getSelectedIndex());
-            }
-        });
+        sort_by.valueProperty().addListener((observable, oldValue, newValue) -> createScroll(search_field.getText(), false, sort_by.getSelectionModel().getSelectedIndex()));
         Label sort_by_label = new Label("Tri par: ");
         sort_by_label.setStyle("-fx-text-fill: whitesmoke; -fx-font-size: 18px");
         sort_by_label.setLabelFor(sort_by);
 
 
-        search_field.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                if (event.getCode().equals(KeyCode.ENTER)) {
-                    createScroll(search_field.getText().toString(), false, sort_by.getSelectionModel().getSelectedIndex());
-                    search_field.clear();
-                }
+        search_field.setOnKeyPressed(event -> {
+            if (event.getCode().equals(KeyCode.ENTER)) {
+                createScroll(search_field.getText(), false, sort_by.getSelectionModel().getSelectedIndex());
+                search_field.clear();
             }
         });
 
@@ -138,8 +127,8 @@ public class IncidentsManagerView extends SubScene{
             InputsListDialog newIncidentDialog = new InputsListDialog("Nouvel incident");
             newIncidentDialog.addTextField("Description");
 
-            ComboBox<Client> clientsComboBox = null;
-            ComboBox<Location> locationComboBox = null;
+            ComboBox<Client> clientsComboBox;
+            ComboBox<Location> locationComboBox;
 
             Text clientText = new Text("Client potentiel : ");
             clientText.setFont(new Font(20));
@@ -209,9 +198,7 @@ public class IncidentsManagerView extends SubScene{
 
             controller.saveIncident(problem);
 
-            // TODO : a verifier que les clients / locations fonctionnent...
-
-            createScroll(search_field.getText().toString(), true, sort_by.getSelectionModel().getSelectedIndex());
+            createScroll(search_field.getText(), true, sort_by.getSelectionModel().getSelectedIndex());
         });
 
         HBox resolvedBox = new HBox();
@@ -220,12 +207,7 @@ public class IncidentsManagerView extends SubScene{
         Label resolved_label = new Label("Non résolu uniquement");
         resolved = new RadioButton();
         resolved.setSelected(true);
-        resolved.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                createScroll(search_field.getText().toString(), false, sort_by.getSelectionModel().getSelectedIndex());
-            }
-        });
+        resolved.setOnAction(event -> createScroll(search_field.getText(), false, sort_by.getSelectionModel().getSelectedIndex()));
         resolved_label.setStyle("-fx-text-fill: whitesmoke; -fx-font-size: 18px");
         resolved_label.setLabelFor(resolved);
         resolvedBox.getChildren().addAll(resolved, resolved_label);
@@ -235,7 +217,7 @@ public class IncidentsManagerView extends SubScene{
         header.setLeft(sort_options);
         root.setTop(header);
 
-        createScroll(search_field.getText().toString(), true, 0);
+        createScroll(search_field.getText(), true, 0);
 
         wrapper.getChildren().add(incidentsScroll);
 
@@ -317,7 +299,7 @@ public class IncidentsManagerView extends SubScene{
         resolvedButton.setOnAction(actionEvent -> {
             final Problem lastClikedCopy = lastClickedValue;
             controller.resolveIncident(lastClikedCopy);
-            createScroll(search_field.getText().toString(), true, sort_by.getSelectionModel().getSelectedIndex());
+            createScroll(search_field.getText(), true, sort_by.getSelectionModel().getSelectedIndex());
         });
 
         buttonsWrap.setSpacing(10);
@@ -344,20 +326,17 @@ public class IncidentsManagerView extends SubScene{
     private void createElement(Problem p, int i){
         HBox incidentsBox = new HBox();
 
-        incidentsBox.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                for (int j=0; j<incidents.getChildren().size(); j++) {
-                    if(j % 2 == 1)
-                        incidents.getChildren().get(j).setStyle("-fx-background-color: #336699;");
-                    else
-                        incidents.getChildren().get(j).setStyle("-fx-background-color: #0F355C;");
-                }
-
-                lastClickedValue = p;
-                updateDetail(p);
-                incidentsBox.setStyle("-fx-background-color: #ff6600;");
+        incidentsBox.setOnMouseClicked(event -> {
+            for (int j=0; j<incidents.getChildren().size(); j++) {
+                if(j % 2 == 1)
+                    incidents.getChildren().get(j).setStyle("-fx-background-color: #336699;");
+                else
+                    incidents.getChildren().get(j).setStyle("-fx-background-color: #0F355C;");
             }
+
+            lastClickedValue = p;
+            updateDetail(p);
+            incidentsBox.setStyle("-fx-background-color: #ff6600;");
         });
         incidentsBox.setMinWidth(HomeView.TAB_CONTENT_W / 4);
         incidentsBox.setPadding(new Insets(20));

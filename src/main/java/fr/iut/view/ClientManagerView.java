@@ -25,9 +25,6 @@ import java.io.File;
 import java.util.Map;
 import java.util.Optional;
 
-/**
- * Created by shellcode on 2/17/17.
- */
 public class ClientManagerView extends SubScene {
 
     private VBox clients;
@@ -81,24 +78,16 @@ public class ClientManagerView extends SubScene {
                 FXCollections.observableArrayList("Nom (alphabétique)", "Nom (alphabétique inverse)", "Prénom (alphabétique)", "Prénom (alphabétique inverse)" );
         ComboBox<String> sort_by = new ComboBox<>(options);
         sort_by.getSelectionModel().select(0);
-        sort_by.valueProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                createScroll(search_field.getText(), false, sort_by.getSelectionModel().getSelectedIndex());
-            }
-        });
+        sort_by.valueProperty().addListener((observable, oldValue, newValue) -> createScroll(search_field.getText(), false, sort_by.getSelectionModel().getSelectedIndex()));
         Label sort_by_label = new Label("Tri par: ");
         sort_by_label.setStyle("-fx-text-fill: whitesmoke; -fx-font-size: 18px");
         sort_by_label.setLabelFor(sort_by);
 
 
-        search_field.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                if (event.getCode().equals(KeyCode.ENTER)) {
-                    createScroll(search_field.getText(), false, sort_by.getSelectionModel().getSelectedIndex());
-                    search_field.clear();
-                }
+        search_field.setOnKeyPressed(event -> {
+            if (event.getCode().equals(KeyCode.ENTER)) {
+                createScroll(search_field.getText(), false, sort_by.getSelectionModel().getSelectedIndex());
+                search_field.clear();
             }
         });
 
@@ -220,9 +209,7 @@ public class ClientManagerView extends SubScene {
         bookingButton.getStylesheets().add(new File("res/style.css").toURI().toString());
         bookingButton.getStyleClass().add("record-sales");
         bookingButton.setMinWidth(HomeView.TAB_CONTENT_W / 4);
-        bookingButton.setOnAction(actionEvent -> {
-            controller.displayReservations(currentClient);
-        });
+        bookingButton.setOnAction(actionEvent -> controller.displayReservations(currentClient));
 
         buttonsWrap1.getChildren().addAll(editButton, bookingButton);
 
@@ -252,23 +239,25 @@ public class ClientManagerView extends SubScene {
         root.setCenter(clientDetailsWrapper);
     }
 
+    /**
+     * @param c the client
+     * @param i iterator of the list
+     * add a client to the scroll bar
+     */
     private void createElement(Client c, int i){
         HBox clientsBox = new HBox();
 
-        clientsBox.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                for (int j = 0; j < clients.getChildren().size(); j++) {
-                    if (j % 2 == 1)
-                        clients.getChildren().get(j).setStyle("-fx-background-color: #336699;");
-                    else
-                        clients.getChildren().get(j).setStyle("-fx-background-color: #0F355C;");
-                }
-
-                currentClient = c;
-                updateDetail(c);
-                clientsBox.setStyle("-fx-background-color: #ff6600;");
+        clientsBox.setOnMouseClicked(event -> {
+            for (int j = 0; j < clients.getChildren().size(); j++) {
+                if (j % 2 == 1)
+                    clients.getChildren().get(j).setStyle("-fx-background-color: #336699;");
+                else
+                    clients.getChildren().get(j).setStyle("-fx-background-color: #0F355C;");
             }
+
+            currentClient = c;
+            updateDetail(c);
+            clientsBox.setStyle("-fx-background-color: #ff6600;");
         });
 
         clientsBox.setMinWidth(HomeView.TAB_CONTENT_W / 4);
@@ -287,6 +276,12 @@ public class ClientManagerView extends SubScene {
         clients.getChildren().add(clientsBox);
     }
 
+    /**
+     * @param search the text to contains
+     * @param refresh if the clients needs to be refresh from the database
+     * @param sort_options sort options
+     * create or refresh the scroll bar
+     */
     private void createScroll(String search, boolean refresh, int sort_options){
         clients.getChildren().clear();
 

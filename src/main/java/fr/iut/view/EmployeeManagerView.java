@@ -32,19 +32,16 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-/**
- * Created by shellcode on 2/17/17.
- */
 public class EmployeeManagerView extends SubScene {
 
     private final VBox employees;
     EmployeesController controller;
 
-    boolean editMode = false;
+    private boolean editMode = false;
 
-    TextField firstname, name, email, phone, login, password, confirm;
+    private TextField firstname, name, email, phone, login, password, confirm;
 
-    Employee currentEmployee = null;
+    private Employee currentEmployee = null;
 
     public EmployeeManagerView(EmployeesController c) {
         super(new BorderPane(), HomeView.TAB_CONTENT_W, HomeView.TAB_CONTENT_H);
@@ -90,24 +87,16 @@ public class EmployeeManagerView extends SubScene {
                 FXCollections.observableArrayList("Nom (alphabétique)", "Nom (alphabétique inverse)", "Prénom (alphabétique)", "Prénom (alphabétique inverse)" );
         ComboBox<String> sort_by = new ComboBox<>(options);
         sort_by.getSelectionModel().select(0);
-        sort_by.valueProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                createScroll(search_field.getText().toString(), false, sort_by.getSelectionModel().getSelectedIndex());
-            }
-        });
+        sort_by.valueProperty().addListener((observable, oldValue, newValue) -> createScroll(search_field.getText(), false, sort_by.getSelectionModel().getSelectedIndex()));
         Label sort_by_label = new Label("Tri par: ");
         sort_by_label.setStyle("-fx-text-fill: whitesmoke; -fx-font-size: 18px");
         sort_by_label.setLabelFor(sort_by);
 
 
-        search_field.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                if (event.getCode().equals(KeyCode.ENTER)) {
-                    createScroll(search_field.getText().toString(), false, sort_by.getSelectionModel().getSelectedIndex());
-                    search_field.clear();
-                }
+        search_field.setOnKeyPressed(event -> {
+            if (event.getCode().equals(KeyCode.ENTER)) {
+                createScroll(search_field.getText(), false, sort_by.getSelectionModel().getSelectedIndex());
+                search_field.clear();
             }
         });
 
@@ -149,14 +138,6 @@ public class EmployeeManagerView extends SubScene {
                 alert.showAndWait();
             }
 
-
-//            PermissionsDialog permissionsDialog = new PermissionsDialog();
-//            Optional<ArrayList<Boolean>> result = permissionsDialog.showAndWait()
-//            result.ifPresent(list -> {
-//                controller.updateAuthorizations(employee, list);
-//            });
-
-//            createScroll(search_field.getText(), true, sort_by.getSelectionModel().getSelectedIndex());
         });
 
         sort_options.getChildren().addAll(newEmployee, sort_by_label, sort_by);
@@ -314,23 +295,26 @@ public class EmployeeManagerView extends SubScene {
         BorderPane.setAlignment(wrapWrappers, Pos.CENTER);
         root.setCenter(employeeDetailsWrapper);
     }
+
+    /**
+     * @param e the employe to add
+     * @param i the iterator on the list
+     * add an employee to the scroll
+     */
     private void createElement(Employee e, int i){
         HBox employeesBox = new HBox();
 
-        employeesBox.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                for (int j=0; j<employees.getChildren().size(); j++) {
-                    if(j % 2 == 1)
-                        employees.getChildren().get(j).setStyle("-fx-background-color: #336699;");
-                    else
-                        employees.getChildren().get(j).setStyle("-fx-background-color: #0F355C;");
-                }
-
-                currentEmployee = e;
-                updateDetail(e);
-                employeesBox.setStyle("-fx-background-color: #ff6600;");
+        employeesBox.setOnMouseClicked(event -> {
+            for (int j=0; j<employees.getChildren().size(); j++) {
+                if(j % 2 == 1)
+                    employees.getChildren().get(j).setStyle("-fx-background-color: #336699;");
+                else
+                    employees.getChildren().get(j).setStyle("-fx-background-color: #0F355C;");
             }
+
+            currentEmployee = e;
+            updateDetail(e);
+            employeesBox.setStyle("-fx-background-color: #ff6600;");
         });
         employeesBox.setMinWidth(HomeView.TAB_CONTENT_W / 4);
         employeesBox.setPadding(new Insets(20));
@@ -348,6 +332,12 @@ public class EmployeeManagerView extends SubScene {
         employees.getChildren().add(employeesBox);
     }
 
+    /**
+     * @param search the text
+     * @param refresh if it needs to be refresh
+     * @param sort_options sort options
+     * create or refresh the scroll bar
+     */
     private void createScroll(String search, boolean refresh, int sort_options){
         employees.getChildren().clear();
 

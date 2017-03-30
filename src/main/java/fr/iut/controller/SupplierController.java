@@ -12,10 +12,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
-/**
- * Created by theo on 16/03/17.
- */
 public class SupplierController {
 
     private HomeController homeController;
@@ -23,7 +21,7 @@ public class SupplierController {
     private GenericDAO<Supplier, Integer> daoSuppliers = new GenericDAO<>(Supplier.class);
     private GenericDAO<SupplierProposeProduct, Integer> daoProposeProduct = new GenericDAO<>(SupplierProposeProduct.class);
 
-    public SupplierController(HomeController homeController){ this.homeController = homeController;}
+    SupplierController(HomeController homeController){ this.homeController = homeController;}
 
     public SubScene getView() {
         return new SupplierManagerView(this);
@@ -59,11 +57,15 @@ public class SupplierController {
         }
     }
 
+    /**
+     * @param supplier
+     * remove all the products propose by a supplier
+     */
     public void cleanSupplierProposeProduct(Supplier supplier){
         List<SupplierProposeProduct> list = daoProposeProduct.findAll();
         for (SupplierProposeProduct prod :
                 list) {
-            if(prod.getSupplier().getId() == supplier.getId())
+            if(Objects.equals(prod.getSupplier().getId(), supplier.getId()))
                 daoProposeProduct.remove(prod);
         }
     }
@@ -73,7 +75,7 @@ public class SupplierController {
         List<SupplierProposeProduct> list = daoProposeProduct.findAll();
         for (SupplierProposeProduct prod :
                 list) {
-            if(prod.getSupplier().getId() == supplier.getId()){
+            if(Objects.equals(prod.getSupplier().getId(), supplier.getId())){
                 productsPropose.add(prod);
             }
         }
@@ -81,7 +83,7 @@ public class SupplierController {
     }
 
     /**
-     * @param supplier
+     * @param supplier supplier
      * @throws IOException
      * browse "mailto:email@supplier.com" to send a mail to the supplier
      */
@@ -112,20 +114,17 @@ public class SupplierController {
     }
 
     public void sortSuppliers(int sort_options){
-        suppliers.sort(new Comparator<Supplier>() {
-            @Override
-            public int compare(Supplier o1, Supplier o2) {
-                double result = 0;
-                switch (sort_options){
-                    case 1:
-                        result = o2.getName().toLowerCase().compareTo(o1.getName().toLowerCase());
-                        break;
-                    default:
-                        result = o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
-                        break;
-                }
-                return (int) result;
+        suppliers.sort((o1, o2) -> {
+            double result;
+            switch (sort_options){
+                case 1:
+                    result = o2.getName().toLowerCase().compareTo(o1.getName().toLowerCase());
+                    break;
+                default:
+                    result = o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
+                    break;
             }
+            return (int) result;
         });
     }
 
