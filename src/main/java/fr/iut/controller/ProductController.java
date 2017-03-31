@@ -38,7 +38,6 @@ public class ProductController {
      * @return the whole list of products in database
      */
     public ArrayList<Product> getProductsList() {
-
         return (ArrayList<Product>) dao.findAll();
     }
 

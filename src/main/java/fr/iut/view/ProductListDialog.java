@@ -1,6 +1,7 @@
 package fr.iut.view;
 
 import fr.iut.App;
+import fr.iut.controller.ProductController;
 import fr.iut.persistence.dao.GenericDAO;
 import fr.iut.persistence.entities.Product;
 import fr.iut.persistence.entities.SupplierProposeProduct;
@@ -29,7 +30,13 @@ public class ProductListDialog extends Dialog<ArrayList<Pair<Product, Float>>> {
     private VBox productsWrapper;
     private int iterator_box = 0;
 
-    public ProductListDialog(){
+    private ProductController controller;
+
+    /**
+     * Display a dialog which shows all the products and enables management
+     */
+    public ProductListDialog(ProductController controller){
+        this.controller = controller;
         setTitle("Liste des produits");
         DialogPane dialogPane = getDialogPane();
         dialogPane.getStylesheets().add(new File("res/style.css").toURI().toString());
@@ -76,6 +83,10 @@ public class ProductListDialog extends Dialog<ArrayList<Pair<Product, Float>>> {
         });
     }
 
+    /**
+     * add a product graphically to the dialog
+     * @param p concerned product
+     */
     public void add(Product p){
 
         GridPane gridPane = new GridPane();
@@ -125,9 +136,7 @@ public class ProductListDialog extends Dialog<ArrayList<Pair<Product, Float>>> {
     }
 
     public void createProducts(){
-        GenericDAO<Product, Integer> daoProduct = new GenericDAO<>(Product.class);
-        List<Product> products = daoProduct.findAll();
-        for (Product p: products) {
+        for (Product p: controller.getProductsList()) {
             add(p);
         }
     }

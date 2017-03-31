@@ -104,7 +104,7 @@ public class SupplierManagerView extends SubScene{
         sort_by.valueProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                createScroll(search_field.getText().toString(), false, sort_by.getSelectionModel().getSelectedIndex());
+                createScroll(search_field.getText(), false, sort_by.getSelectionModel().getSelectedIndex());
             }
         });
         Label sort_by_label = new Label("Tri par: ");
@@ -115,7 +115,7 @@ public class SupplierManagerView extends SubScene{
             @Override
             public void handle(KeyEvent event) {
                 if (event.getCode().equals(KeyCode.ENTER)) {
-                    createScroll(search_field.getText().toString(), false, sort_by.getSelectionModel().getSelectedIndex());
+                    createScroll(search_field.getText(), false, sort_by.getSelectionModel().getSelectedIndex());
                     search_field.clear();
                 }
             }
@@ -143,12 +143,12 @@ public class SupplierManagerView extends SubScene{
 
             controller.saveSupplier(supplier);
 
-            Optional<ArrayList<Pair<Product, Float>>> products_result = new ProductListDialog().showAndWait();
+            Optional<ArrayList<Pair<Product, Float>>> products_result = new ProductListDialog(controller.getHomeController().getProductController()).showAndWait();
             products_result.ifPresent(list -> {
                 controller.saveOrUpdateProductsSupplier(supplier, list, false);
             });
 
-            createScroll(search_field.getText().toString(), true, sort_by.getSelectionModel().getSelectedIndex());
+            createScroll(search_field.getText(), true, sort_by.getSelectionModel().getSelectedIndex());
 
         });
 
@@ -159,7 +159,7 @@ public class SupplierManagerView extends SubScene{
 
         wrapper.getChildren().add(suppliersScroll);
 
-        createScroll(search_field.getText().toString(), true, 0);
+        createScroll(search_field.getText(), true, 0);
 
         root.setLeft(wrapper);
 
@@ -219,9 +219,9 @@ public class SupplierManagerView extends SubScene{
                     website.setDisable(true);
                     mail.setDisable(true);
                     editButton.setText("Modifier");
-                    controller.updateSupplier(lastClickedValue, name.getText().toString(), phone.getText().toString(),
-                            website.getText().toString(), mail.getText().toString());
-                    createScroll(search_field.getText().toString(), true, sort_by.getSelectionModel().getSelectedIndex());
+                    controller.updateSupplier(lastClickedValue, name.getText(), phone.getText(),
+                            website.getText(), mail.getText());
+                    createScroll(search_field.getText(), true, sort_by.getSelectionModel().getSelectedIndex());
                 }
                 else{
                     name.setDisable(false);
@@ -244,7 +244,7 @@ public class SupplierManagerView extends SubScene{
         editProductButton.setOnAction(event -> {
             final Supplier lastClikedCopy = lastClickedValue;
             if(lastClickedValue != null){
-                ProductListDialog productListDialog = new ProductListDialog();
+                ProductListDialog productListDialog = new ProductListDialog(controller.getHomeController().getProductController());
                 productListDialog.checkProducts(controller.getProductsProposeBySupplier(lastClikedCopy));
                 Optional<ArrayList<Pair<Product, Float>>> result = productListDialog.showAndWait();
                 result.ifPresent(list -> {

@@ -38,6 +38,10 @@ public class SupplierController {
         daoSuppliers.update(s);
     }
 
+    public HomeController getHomeController() {
+        return homeController;
+    }
+
     public void saveSupplier(Supplier supplier){
         daoSuppliers.save(supplier);
     }

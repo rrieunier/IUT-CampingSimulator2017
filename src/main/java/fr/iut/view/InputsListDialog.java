@@ -29,27 +29,10 @@ public class InputsListDialog extends Dialog<Map<String,String>>{
     private VBox wrapper;
 
 
-    public void addTextField(String text){
-        TextField textField = new TextField();
-        textField.setMaxWidth(WINDOW_WIDTH/1.1);
-        textField.setMinHeight(WINDOW_HEIGHT / 15);
-        textField.setPromptText(text);
-        textField.setStyle("-fx-font-weight: bold;" + "-fx-font-size: 17px;");
-        textFields.add(textField);
-        wrapper.getChildren().add(textField);
-    }
-
-    public void addPasswordField(String text){
-        PasswordField passwordField = new PasswordField();
-        passwordField.setMaxWidth(WINDOW_WIDTH/1.1);
-        passwordField.setMinHeight(WINDOW_HEIGHT / 15);
-        passwordField.setPromptText(text);
-        passwordField.setStyle("-fx-font-weight: bold;" + "-fx-font-size: 17px;");
-        textFields.add(passwordField);
-        wrapper.getChildren().add(passwordField);
-    }
-
-
+    /**
+     * Enables us to create a generic dialog and add as fields as we want
+     * @param title of the dialog
+     */
     public InputsListDialog(String title){
         setTitle(title);
 
@@ -89,6 +72,34 @@ public class InputsListDialog extends Dialog<Map<String,String>>{
             return map;
         });
 
+    }
+
+    /**
+     * add normal input field to the dialog
+     * @param text is the hint of the field
+     */
+    public void addTextField(String text){
+        TextField textField = new TextField();
+        textField.setMaxWidth(WINDOW_WIDTH/1.1);
+        textField.setMinHeight(WINDOW_HEIGHT / 15);
+        textField.setPromptText(text);
+        textField.setStyle("-fx-font-weight: bold;" + "-fx-font-size: 17px;");
+        textFields.add(textField);
+        wrapper.getChildren().add(textField);
+    }
+
+    /**
+     * add input field which chars hidden to the dialog
+     * @param text is the hint of the field
+     */
+    public void addPasswordField(String text){
+        PasswordField passwordField = new PasswordField();
+        passwordField.setMaxWidth(WINDOW_WIDTH/1.1);
+        passwordField.setMinHeight(WINDOW_HEIGHT / 15);
+        passwordField.setPromptText(text);
+        passwordField.setStyle("-fx-font-weight: bold;" + "-fx-font-size: 17px;");
+        textFields.add(passwordField);
+        wrapper.getChildren().add(passwordField);
     }
 
     public VBox getWrapper() { return wrapper; }

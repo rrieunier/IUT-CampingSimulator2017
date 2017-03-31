@@ -26,6 +26,9 @@ public class PermissionsDialog extends Dialog<ArrayList<Boolean>> {
     private ArrayList<RadioButton> radioButtonArrayList = new ArrayList<>();
     private GridPane gridPane = new GridPane();
 
+    /**
+     * Creates a dialog which manages employee permissions
+     */
     public PermissionsDialog(){
         setTitle("Permissions");
 
@@ -107,6 +110,10 @@ public class PermissionsDialog extends Dialog<ArrayList<Boolean>> {
         });
     }
 
+    /**
+     * Checks all the permissions of the employee in param and toggle the radio buttons to the corresponding row
+     * @param employee
+     */
     public void checkPermissions(Employee employee){
         if(employee.getAuthorizations() != null){
             for (Authorization a: employee.getAuthorizations()) {
@@ -118,6 +125,11 @@ public class PermissionsDialog extends Dialog<ArrayList<Boolean>> {
         }
     }
 
+    /**
+     * Create a row with text and radio buttons
+     * @param name of the row
+     * @param i iterator
+     */
     private void add_row(String name, int i){
         Text text = new Text(name);
         text.setStyle("-fx-font-weight: bold;" +
