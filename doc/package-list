@@ -1,0 +1,7 @@
+fr.iut
+fr.iut.controller
+fr.iut.persistence
+fr.iut.persistence.dao
+fr.iut.persistence.entities
+fr.iut.persistence.exception
+fr.iut.view
